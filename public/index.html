@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Senthilvel Vidyalaya School - Fees Management System</title>
+  <!-- Google Fonts: Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Lucide icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Sidebar Navigation -->
+  <aside class="sidebar">
+    <div class="school-brand">
+      <div class="school-logo-badge">SV</div>
+      <div class="brand-text">
+        <h2>Senthilvel Vidyalaya</h2>
+        <p>LKG – 8th Standard Portal</p>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a class="nav-link active" data-tab="dashboard">
+        <i data-lucide="layout-dashboard"></i>
+        <span>Dashboard</span>
+      </a>
+      <a class="nav-link" data-tab="students">
+        <i data-lucide="users"></i>
+        <span>Students Directory</span>
+      </a>
+      <a class="nav-link" data-tab="collect">
+        <i data-lucide="credit-card"></i>
+        <span>Collect Fees</span>
+      </a>
+      <a class="nav-link" data-tab="transactions">
+        <i data-lucide="receipt"></i>
+        <span>Fee Receipts / History</span>
+      </a>
+      <a class="nav-link" data-tab="structure">
+        <i data-lucide="layers"></i>
+        <span>Fee Structure Setup</span>
+      </a>
+      <a class="nav-link" data-tab="reports">
+        <i data-lucide="bar-chart-3"></i>
+        <span>Reports & Dues</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div>
+        <strong>Academic Yr:</strong> 2026-2027
+      </div>
+      <button id="resetDemoBtn" title="Reset Demo Data" class="btn btn-outline btn-sm" style="color: #94a3b8; border-color: #334155; padding: 4px 8px;">
+        <i data-lucide="rotate-ccw" style="width: 14px; height: 14px;"></i>
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main Content Area -->
+  <div class="main-wrapper">
+    <!-- Header -->
+    <header class="top-header">
+      <div class="header-left">
+        <h1 id="pageTitle">Fees Management Dashboard</h1>
+        <p id="schoolSubInfo">Senthilvel Vidyalaya School • Pakkudi, Pudukottai • Ph: 9789277169, 9445987169</p>
+      </div>
+      <div class="header-actions">
+        <div class="academic-badge">
+          <span></span> AY 2026-2027 Active
+        </div>
+        <button class="btn btn-primary" onclick="openNewStudentModal()">
+          <i data-lucide="user-plus"></i> Add Student
+        </div>
+    </header>
+
+    <!-- Page Content Container -->
+    <main class="page-container">
+
+      <!-- TAB 1: DASHBOARD -->
+      <section id="dashboard" class="tab-pane active">
+        <!-- Metric Cards -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-info">
+              <span class="stat-label">Total Expected Fees</span>
+              <div class="stat-val" id="statExpected">₹0</div>
+              <div class="stat-sub">LKG to 8th Standard</div>
+            </div>
+            <div class="stat-icon blue"><i data-lucide="wallet"></i></div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-info">
+              <span class="stat-label">Total Fees Collected</span>
+              <div class="stat-val" style="color: #10b981;" id="statCollected">₹0</div>
+              <div class="stat-sub" id="statPaidPercent">0% of total expected</div>
+            </div>
+            <div class="stat-icon green"><i data-lucide="check-circle-2"></i></div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-info">
+              <span class="stat-label">Outstanding Balance</span>
+              <div class="stat-val" style="color: #ef4444;" id="statDue">₹0</div>
+              <div class="stat-sub" id="statUnpaidCount">0 pending accounts</div>
+            </div>
+            <div class="stat-icon amber"><i data-lucide="alert-circle"></i></div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-info">
+              <span class="stat-label">Enrolled Students</span>
+              <div class="stat-val" id="statTotalStudents">0</div>
+              <div class="stat-sub">Across 10 grade levels</div>
+            </div>
+            <div class="stat-icon purple"><i data-lucide="graduation-cap"></i></div>
+          </div>
+        </div>
+
+        <!-- Grade-wise Overview Table -->
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Class-Wise Fee Collection Breakdown (LKG - 8th Std)</h3>
+            <span class="badge" style="background:#e0f2fe; color:#0369a1;">Standardized Curricula</span>
+          </div>
+          <div class="table-responsive">
+            <table class="custom-table" id="gradeStatsTable">
+              <thead>
+                <tr>
+                  <th>Class / Grade</th>
+                  <th>Students Enrolled</th>
+                  <th>Expected Total</th>
+                  <th>Collected (₹)</th>
+                  <th>Balance Due (₹)</th>
+                  <th>Collection Rate</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="gradeStatsBody">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Recent Transactions in Dashboard -->
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Recent Fee Receipts</h3>
+            <button class="btn btn-outline btn-sm" onclick="switchTab('transactions')">View All Receipts</button>
+          </div>
+          <div class="table-responsive">
+            <table class="custom-table">
+              <thead>
+                <tr>
+                  <th>Receipt No</th>
+                  <th>Student Name</th>
+                  <th>Class</th>
+                  <th>Date</th>
+                  <th>Payment Mode</th>
+                  <th>Amount Paid</th>
+                  <th>Receipt</th>
+                </tr>
+              </thead>
+              <tbody id="dashRecentPayments">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 2: STUDENTS DIRECTORY -->
+      <section id="students" class="tab-pane">
+        <div class="toolbar-row">
+          <div class="filters-group">
+            <div class="search-box">
+              <i data-lucide="search"></i>
+              <input type="text" id="studentSearchInput" placeholder="Search by name, ID, roll no, parent...">
+            </div>
+
+            <select id="filterGrade" class="select-ctrl">
+              <option value="All">All Grades (LKG - 8th)</option>
+              <option value="LKG">LKG</option>
+              <option value="UKG">UKG</option>
+              <option value="1st Std">1st Std</option>
+              <option value="2nd Std">2nd Std</option>
+              <option value="3rd Std">3rd Std</option>
+              <option value="4th Std">4th Std</option>
+              <option value="5th Std">5th Std</option>
+              <option value="6th Std">6th Std</option>
+              <option value="7th Std">7th Std</option>
+              <option value="8th Std">8th Std</option>
+            </select>
+
+            <select id="filterStatus" class="select-ctrl">
+              <option value="All">All Payment Statuses</option>
+              <option value="Paid">Fully Paid</option>
+              <option value="Partial">Partial Dues</option>
+              <option value="Unpaid">Unpaid</option>
+            </select>
+          </div>
+
+          <div style="display:flex; gap:10px;">
+            <button class="btn btn-primary" onclick="openNewStudentModal()">
+              <i data-lucide="plus"></i> Add Student
+            </button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="table-responsive">
+            <table class="custom-table">
+              <thead>
+                <tr>
+                  <th>Student ID & Roll</th>
+                  <th>Student Name</th>
+                  <th>Class & Sec</th>
+                  <th>Parent Contact</th>
+                  <th>Academic Fee</th>
+                  <th>Transport (₹)</th>
+                  <th>Net Total</th>
+                  <th>Paid</th>
+                  <th>Due Balance</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="studentsTableBody">
+                <!-- Populated via JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 3: COLLECT FEES -->
+      <section id="collect" class="tab-pane">
+        <div class="card" style="max-width: 800px; margin: 0 auto;">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title">Fee Collection Window</h3>
+              <p style="font-size:0.8rem; color:#64748b;">Record payment, generate official receipt & update ledger</p>
+            </div>
+            <div class="badge badge-paid">Official SWS Billing</div>
+          </div>
+          <div class="card-body">
+            <form id="collectFeeForm">
+              <div class="form-grid single-col" style="margin-bottom: 20px;">
+                <div class="form-group">
+                  <label>Select Enrolled Student *</label>
+                  <select id="collectStudentSelect" class="form-control" required>
+                    <option value="">-- Choose Student (Type or Select) --</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Student summary card once selected -->
+              <div id="collectStudentPreview" style="display:none; background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:16px; margin-bottom:20px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                  <strong id="previewStudentName" style="font-size:1.05rem; color:#1e3a8a;">Student Name</strong>
+                  <span id="previewStatusBadge" class="badge">Status</span>
+                </div>
+                <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap:10px; font-size:0.85rem;">
+                  <div><span style="color:#64748b;">Grade:</span> <strong id="previewGrade">-</strong></div>
+                  <div><span style="color:#64748b;">Net Payable:</span> <strong id="previewNetPayable">₹0</strong></div>
+                  <div><span style="color:#64748b;">Already Paid:</span> <strong id="previewPaid" style="color:#10b981;">₹0</strong></div>
+                  <div><span style="color:#64748b;">Balance Due:</span> <strong id="previewDue" style="color:#ef4444; font-size:0.95rem;">₹0</strong></div>
+                  <div><span style="color:#64748b;">Boarding Stop:</span> <strong id="previewBoardingArea" style="color:#1e3a8a;">-</strong></div>
+                  <div><span style="color:#64748b;">Transport Plan:</span> <strong id="previewTransport">No</strong></div>
+                  <div><span style="color:#64748b;">Concession:</span> <strong id="previewConcession">₹0</strong></div>
+                </div>
+              </div>
+
+              <div class="form-grid">
+                <div class="form-group">
+                  <label>Payment Amount (₹) *</label>
+                  <input type="number" id="collectAmount" class="form-control" placeholder="Enter amount to collect" min="1" required>
+                </div>
+
+                <div class="form-group">
+                  <label>Fee Term / Installment *</label>
+                  <select id="collectTerm" class="form-control" required>
+                    <option value="Term 1 (June - Sept)">Term 1 (June - Sept)</option>
+                    <option value="Term 2 (Oct - Dec)">Term 2 (Oct - Dec)</option>
+                    <option value="Term 3 (Jan - April)">Term 3 (Jan - April)</option>
+                    <option value="Full Year (Annual Payment)">Full Year (Annual Payment)</option>
+                    <option value="Monthly Transport Fee">Monthly Transport Fee</option>
+                    <option value="Special Assessment / Transport">Special Assessment / Transport</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label>Payment Mode *</label>
+                  <select id="collectMode" class="form-control" required>
+                    <option value="UPI / QR Code">UPI / QR Code (GPay, PhonePe, Paytm)</option>
+                    <option value="Cash">Cash (Counter Deposit)</option>
+                    <option value="Net Banking / NEFT">Net Banking / NEFT / IMPS</option>
+                    <option value="Debit / Credit Card">Debit / Credit Card (POS)</option>
+                    <option value="Cheque / DD">Cheque / Demand Draft</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label>Transaction / Reference No.</label>
+                  <input type="text" id="collectRef" class="form-control" placeholder="e.g. UPI Ref / Cheque No.">
+                </div>
+
+                <!-- Dedicated Transportation Billing Section -->
+                <div class="form-group full-width" style="margin-top: 4px;">
+                  <div style="background: #f8fafc; border: 1.5px solid #cbd5e1; border-radius: 8px; padding: 14px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px;">
+                      <label style="display:flex; align-items:center; gap:8px; font-weight:700; color:#1e3a8a; cursor:pointer; margin:0;">
+                        <input type="checkbox" id="collectIncludeTransport" onchange="toggleCollectTransportSection()">
+                        <span>🚌 Include Transportation Fee in this Receipt</span>
+                      </label>
+                      <span class="badge" style="background:#fef3c7; color:#92400e; font-size:0.75rem;">Monthly or Yearly</span>
+                    </div>
+
+                    <div id="collectTransportFields" style="display:none; padding-top: 10px; border-top: 1px dashed #cbd5e1;">
+                      <div style="display:grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
+                        <div class="form-group">
+                          <label style="font-size:0.82rem;">Transport Billing Plan *</label>
+                          <select id="collectTransportMode" class="form-control" onchange="onCollectTransportModeChange()">
+                            <option value="Monthly">Monthly Transport Fee</option>
+                            <option value="Yearly">Yearly / Annual Transport Fee</option>
+                          </select>
+                        </div>
+
+                        <div class="form-group" id="collectTransportMonthGroup">
+                          <label style="font-size:0.82rem;">Month for Transport Fee</label>
+                          <select id="collectTransportMonth" class="form-control">
+                            <option value="June">June 2026</option>
+                            <option value="July">July 2026</option>
+                            <option value="August">August 2026</option>
+                            <option value="September">September 2026</option>
+                            <option value="October">October 2026</option>
+                            <option value="November">November 2026</option>
+                            <option value="December">December 2026</option>
+                            <option value="January">January 2027</option>
+                            <option value="February">February 2027</option>
+                            <option value="March">March 2027</option>
+                            <option value="April">April 2027</option>
+                            <option value="Multiple Months">Multiple Months</option>
+                          </select>
+                        </div>
+
+                        <div class="form-group">
+                          <label style="font-size:0.82rem;">Bus Boarding Area / Stop * <span style="font-size:0.72rem; color:#64748b;">(Editable for receipt)</span></label>
+                          <input type="text" id="collectBoardingArea" class="form-control" placeholder="e.g. Alangudi, Pakkudi, Keeramangalam">
+                        </div>
+
+                        <div class="form-group">
+                          <label style="font-size:0.82rem;">Transport Fee Amount (₹) * <span style="font-size:0.72rem; color:#64748b;">(Manual override)</span></label>
+                          <input type="number" id="collectTransportFee" class="form-control" placeholder="e.g. 600" min="0">
+                        </div>
+                      </div>
+                      <p style="margin-top:6px; font-size:0.76rem; color:#64748b; margin-bottom:0;">
+                        💡 You can manually specify the boarding stop and amount here; both will be printed on the official receipt.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group full-width">
+                  <label>Fee Components Covered</label>
+                  <div id="feeComponentsContainer" style="display:flex; flex-wrap:wrap; gap:12px; margin-top:4px;">
+                    <!-- Dynamically populated from fee structure columns -->
+                  </div>
+                </div>
+
+                <div class="form-group full-width">
+                  <label>Remarks / Notes</label>
+                  <input type="text" id="collectRemarks" class="form-control" placeholder="Any optional remarks or ledger notes">
+                </div>
+              </div>
+
+              <div style="margin-top:24px; display:flex; justify-content:flex-end; gap:12px;">
+                <button type="reset" class="btn btn-secondary">Clear</button>
+                <button type="submit" class="btn btn-success" style="padding:10px 24px;">
+                  <i data-lucide="check"></i> Submit Payment & Print Receipt
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 4: TRANSACTIONS / RECEIPTS HISTORY -->
+      <section id="transactions" class="tab-pane">
+        <div class="toolbar-row">
+          <div class="filters-group">
+            <select id="filterReceiptGrade" class="select-ctrl">
+              <option value="All">All Grades</option>
+              <option value="LKG">LKG</option>
+              <option value="UKG">UKG</option>
+              <option value="1st Std">1st Std</option>
+              <option value="2nd Std">2nd Std</option>
+              <option value="3rd Std">3rd Std</option>
+              <option value="4th Std">4th Std</option>
+              <option value="5th Std">5th Std</option>
+              <option value="6th Std">6th Std</option>
+              <option value="7th Std">7th Std</option>
+              <option value="8th Std">8th Std</option>
+            </select>
+          </div>
+          <div>
+            <button class="btn btn-outline" onclick="exportReceiptsCSV()">
+              <i data-lucide="download"></i> Export Records (CSV)
+            </button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="table-responsive">
+            <table class="custom-table">
+              <thead>
+                <tr>
+                  <th>Receipt Number</th>
+                  <th>Student ID & Name</th>
+                  <th>Class</th>
+                  <th>Date</th>
+                  <th>Term / Category</th>
+                  <th>Payment Mode</th>
+                  <th>Amount (₹)</th>
+                  <th>Received By</th>
+                  <th>Print / Action</th>
+                </tr>
+              </thead>
+              <tbody id="transactionsTableBody">
+                <!-- Populated via JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 5: FEE STRUCTURE SETUP -->
+      <section id="structure" class="tab-pane">
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title">Annual Standardized Fee Structure (LKG to 8th Standard)</h3>
+              <p style="font-size:0.82rem; color:#64748b;">Click and edit column names (like Lab, Library, etc.) or amounts directly, then click <strong>Save Changes</strong>.</p>
+            </div>
+            <div style="display:flex; gap:10px;">
+              <button class="btn btn-outline btn-sm" onclick="addNewFeeColumn()">
+                <i data-lucide="plus-circle"></i> Add Fee Head
+              </button>
+              <button class="btn btn-primary btn-sm" onclick="saveFeeStructureChanges()">
+                <i data-lucide="save"></i> Save Changes
+              </button>
+            </div>
+          </div>
+          <div class="table-responsive">
+            <table class="custom-table" id="structureTable">
+              <thead>
+                <tr id="structureTableHead">
+                  <th>Class</th>
+                  <!-- Populated via JS with editable column inputs -->
+                  <th style="font-weight:800; color:#1e3a8a; min-width:130px;">Total Annual (₹)</th>
+                </tr>
+              </thead>
+              <tbody id="structureTableBody">
+                <!-- Populated via JS with editable inputs -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Place-Wise Transportation Fee Structure -->
+        <div class="card" style="margin-top: 24px;">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title">Place-Wise Transportation Fee Structure (School Bus / Van Routes)</h3>
+              <p style="font-size:0.82rem; color:#64748b;">Set monthly and yearly transportation fees for each bus boarding place. Students belonging to the same place automatically receive these standard fees.</p>
+            </div>
+            <div style="display:flex; gap:10px;">
+              <button class="btn btn-outline btn-sm" onclick="addNewTransportArea()">
+                <i data-lucide="plus-circle"></i> Add Route Area
+              </button>
+              <button class="btn btn-primary btn-sm" onclick="saveTransportAreas()">
+                <i data-lucide="save"></i> Save Transport Fees
+              </button>
+            </div>
+          </div>
+          <div class="table-responsive">
+            <table class="custom-table" id="transportAreasTable">
+              <thead>
+                <tr>
+                  <th style="min-width: 240px;">Boarding Area / Bus Stop Place</th>
+                  <th style="min-width: 150px;">Monthly Fee (₹)</th>
+                  <th style="min-width: 150px;">Yearly / Annual Fee (₹)</th>
+                  <th style="width: 100px; text-align: center;">Action</th>
+                </tr>
+              </thead>
+              <tbody id="transportAreasTableBody">
+                <!-- Populated via JS with editable inputs -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 6: REPORTS & DUES -->
+      <section id="reports" class="tab-pane">
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-info">
+              <span class="stat-label">Fully Paid Students</span>
+              <div class="stat-val" style="color:#10b981;" id="reportPaidCount">0</div>
+              <div class="stat-sub">Zero pending balance</div>
+            </div>
+            <div class="stat-icon green"><i data-lucide="check-circle"></i></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-info">
+              <span class="stat-label">Partial Dues Pending</span>
+              <div class="stat-val" style="color:#f59e0b;" id="reportPartialCount">0</div>
+              <div class="stat-sub">Installment in progress</div>
+            </div>
+            <div class="stat-icon amber"><i data-lucide="clock"></i></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-info">
+              <span class="stat-label">Completely Unpaid</span>
+              <div class="stat-val" style="color:#ef4444;" id="reportUnpaidCount">0</div>
+              <div class="stat-sub">Action required</div>
+            </div>
+            <div class="stat-icon amber" style="background:#fee2e2; color:#b91c1c;"><i data-lucide="alert-octagon"></i></div>
+          </div>
+        </div>
+
+        <!-- Automated WhatsApp Fee Reminders Card -->
+        <div class="card" style="margin-bottom: 24px; border: 1.5px solid #22c55e; background: linear-gradient(180deg, #f0fdf4 0%, #ffffff 100%);">
+          <div class="card-header" style="border-bottom: 1px solid #dcfce7;">
+            <div>
+              <div style="display:flex; align-items:center; gap:8px;">
+                <span style="background:#25D366; color:white; width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:bold;">
+                  <i data-lucide="message-circle" style="width:18px; height:18px;"></i>
+                </span>
+                <h3 class="card-title" style="color:#166534; font-size:1.05rem;">Automated WhatsApp Parent Fee Due Reminders</h3>
+                <span class="badge" style="background:#22c55e; color:#fff; font-size:0.75rem;">School &amp; Van Dues Itemized</span>
+              </div>
+              <p style="font-size:0.83rem; color:#15803d; margin-top:4px;">
+                Automatically generates itemized messages for each student showing <strong>School Fees (Paid &amp; Pending)</strong> and <strong>Van Fees (Paid &amp; Pending)</strong> sent directly to each parent's WhatsApp number separately.
+              </p>
+            </div>
+            <div style="display:flex; gap:10px; align-items:center;">
+              <button class="btn btn-outline btn-sm" onclick="previewWhatsAppMessageTemplate()" style="border-color:#16a34a; color:#166534;">
+                <i data-lucide="eye"></i> View Template
+              </button>
+              <button class="btn btn-sm" style="background:#25D366; color:#fff; font-weight:700; padding:8px 16px; box-shadow:0 2px 6px rgba(37,211,102,0.3);" onclick="openBulkWhatsAppModal()">
+                <i data-lucide="send"></i> Send Reminders to All Parents (<span id="waDueStudentCount">0</span>)
+              </button>
+            </div>
+          </div>
+          <div style="padding: 12px 20px; font-size: 0.85rem; color:#14532d; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; background:rgba(240, 253, 244, 0.5);">
+            <div>
+              <span>📲 Reminders are sent <strong>individually</strong> to each parent so phone numbers are kept private and compliant.</span>
+            </div>
+            <div style="display:flex; gap:16px; font-weight:600; font-size:0.85rem;">
+              <div>Pending School Fees: <span id="waTotalSchoolDue" style="color:#b91c1c;">₹0</span></div>
+              <div>Pending Van Fees: <span id="waTotalVanDue" style="color:#d97706;">₹0</span></div>
+              <div>Total Outstanding: <span id="waTotalCombinedDue" style="color:#ef4444;">₹0</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Defaulter / Pending Due List</h3>
+            <div style="display:flex; gap:10px;">
+              <button class="btn btn-outline btn-sm" onclick="window.print()">
+                <i data-lucide="printer"></i> Print Defaulter Report
+              </button>
+            </div>
+          </div>
+          <div class="table-responsive">
+            <table class="custom-table">
+              <thead>
+                <tr>
+                  <th>Student Name</th>
+                  <th>Roll No</th>
+                  <th>Class</th>
+                  <th>Parent / Guardian</th>
+                  <th>Contact No</th>
+                  <th>School Due (₹)</th>
+                  <th>Van Due (₹)</th>
+                  <th>Total Due (₹)</th>
+                  <th style="min-width: 170px;">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="defaultersTableBody">
+                <!-- Populated via JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- MODAL: ADD / EDIT STUDENT -->
+  <div class="modal-overlay" id="studentModal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 id="studentModalTitle">Add New Student</h3>
+        <button class="close-btn" onclick="closeStudentModal()">&times;</button>
+      </div>
+      <form id="studentForm">
+        <div class="modal-body">
+          <input type="hidden" id="studentEditId">
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Full Student Name *</label>
+              <input type="text" id="mStudentName" class="form-control" required placeholder="e.g. Aarav Sharma">
+            </div>
+
+            <div class="form-group">
+              <label>Grade / Class *</label>
+              <select id="mStudentGrade" class="form-control" required>
+                <option value="LKG">LKG</option>
+                <option value="UKG">UKG</option>
+                <option value="1st Std">1st Std</option>
+                <option value="2nd Std">2nd Std</option>
+                <option value="3rd Std">3rd Std</option>
+                <option value="4th Std">4th Std</option>
+                <option value="5th Std">5th Std</option>
+                <option value="6th Std">6th Std</option>
+                <option value="7th Std">7th Std</option>
+                <option value="8th Std">8th Std</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>Section</label>
+              <select id="mStudentSection" class="form-control">
+                <option value="A">Section A</option>
+                <option value="B">Section B</option>
+                <option value="C">Section C</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>Roll Number</label>
+              <input type="text" id="mStudentRoll" class="form-control" placeholder="Leave empty for auto-generation">
+            </div>
+
+            <div class="form-group">
+              <label>Parent / Guardian Name *</label>
+              <input type="text" id="mStudentParent" class="form-control" required placeholder="e.g. Ramesh Kumar">
+            </div>
+
+            <div class="form-group">
+              <label>Contact Phone Number *</label>
+              <input type="tel" id="mStudentPhone" class="form-control" required placeholder="10-digit Mobile">
+            </div>
+
+            <div class="form-group">
+              <label>Parent Email ID</label>
+              <input type="email" id="mStudentEmail" class="form-control" placeholder="parent@example.com">
+            </div>
+
+            <div class="form-group">
+              <label>Bus Boarding Area / Place *</label>
+              <select id="mStudentBoardingArea" class="form-control" onchange="onStudentBoardingAreaChange()">
+                <option value="None (Self Commute)">None (Self Commute - No Bus)</option>
+                <!-- Populated dynamically with configured transport areas -->
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>Transportation Payment Plan *</label>
+              <select id="mStudentTransportType" class="form-control" onchange="onStudentTransportTypeChange()">
+                <option value="None">None (Self Commute)</option>
+                <option value="Monthly">Monthly Transport Fee</option>
+                <option value="Yearly">Yearly / Annual Transport Fee</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>Monthly Transport Fee (₹)</label>
+              <input type="number" id="mStudentTransportMonthlyFee" class="form-control" value="0" placeholder="e.g. 600" oninput="onStudentMonthlyFeeInput()">
+            </div>
+
+            <div class="form-group">
+              <label>Annual Transport Total (₹)</label>
+              <input type="number" id="mStudentTransportFee" class="form-control" value="0" placeholder="e.g. 6000">
+            </div>
+
+            <!-- Hidden field for backward compatibility -->
+            <input type="hidden" id="mStudentTransport" value="false">
+
+            <div class="form-group">
+              <label>Scholarship / Fee Concession (₹)</label>
+              <input type="number" id="mStudentConcession" class="form-control" value="0">
+            </div>
+
+            <div class="form-group full-width">
+              <label>Residential Address</label>
+              <input type="text" id="mStudentAddress" class="form-control" placeholder="Street, Area, City">
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeStudentModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="saveStudentBtn">Save Student Record</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: RECEIPT VIEW & PRINT -->
+  <div class="modal-overlay" id="receiptModal">
+    <div class="modal-box modal-lg">
+      <div class="modal-header">
+        <h3>Official Fee Payment Receipt</h3>
+        <button class="close-btn" onclick="closeReceiptModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="receipt-container" id="printableReceipt">
+          <div class="receipt-header">
+            <div style="display:flex; justify-content:center; align-items:center; gap:10px; margin-bottom:4px;">
+              <div style="background:#1e3a8a; color:#fff; font-weight:800; padding:4px 8px; border-radius:6px; font-size:1rem;">SV</div>
+              <h2>SENTHILVEL VIDYALAYA SCHOOL</h2>
+            </div>
+            <p style="font-weight:600;">Affiliated Curriculum • Recognized by Directorate of School Education</p>
+            <p id="rcptSchoolAddress">Pakkudi, Pudukottai | Phone: 9789277169, 9445987169 | Email: senthilvelvidyalaya@gmail.com</p>
+            <div style="display:inline-block; margin-top:8px; border:1px solid #1e3a8a; padding:2px 14px; border-radius:12px; font-weight:700; color:#1e3a8a; font-size:0.8rem;">
+              STUDENT FEE RECEIPT (ACADEMIC YEAR 2026-2027)
+            </div>
+          </div>
+
+          <div class="receipt-meta-grid">
+            <div>
+              <div class="receipt-meta-item"><span>Receipt No:</span> <strong id="rcptNo">-</strong></div>
+              <div class="receipt-meta-item"><span>Date of Payment:</span> <strong id="rcptDate">-</strong></div>
+              <div class="receipt-meta-item"><span>Student Name:</span> <strong id="rcptStudentName">-</strong></div>
+              <div class="receipt-meta-item"><span>Student ID / Roll:</span> <strong id="rcptStudentId">-</strong></div>
+            </div>
+            <div>
+              <div class="receipt-meta-item"><span>Standard / Section:</span> <strong id="rcptGrade">-</strong></div>
+              <div class="receipt-meta-item"><span>Parent / Guardian:</span> <strong id="rcptParent">-</strong></div>
+              <div class="receipt-meta-item"><span>Payment Mode / Txn:</span> <strong id="rcptMode">-</strong></div>
+              <div class="receipt-meta-item"><span>Bus Boarding Stop:</span> <strong id="rcptBoardingArea" style="color:#1e3a8a;">-</strong></div>
+              <div class="receipt-meta-item"><span>Transport Plan:</span> <strong id="rcptTransportPeriod" style="color:#d97706;">-</strong></div>
+            </div>
+          </div>
+
+          <table class="receipt-table">
+            <thead>
+              <tr>
+                <th style="width: 50px;">Sl. No.</th>
+                <th>Fee Description / Particulars</th>
+                <th>Academic Term</th>
+                <th style="text-align: right;">Amount (₹)</th>
+              </tr>
+            </thead>
+            <tbody id="rcptItemsBody">
+              <!-- Dynamically populated -->
+            </tbody>
+            <tfoot>
+              <tr style="background:#f1f5f9; font-weight:800;">
+                <td colspan="3" style="text-align: right; padding:12px;">Total Amount Received:</td>
+                <td id="rcptTotalAmount" style="text-align: right; font-size:1.1rem; color:#1e3a8a; padding:12px;">₹0</td>
+              </tr>
+            </tfoot>
+          </table>
+
+          <div style="background:#f8fafc; padding:14px; border-radius:8px; margin-bottom:20px; font-size:0.85rem; border:1px solid #cbd5e1;">
+            <div style="display:grid; grid-template-columns: repeat(4, 1fr); text-align:center; gap:8px;">
+              <div>Course Base Fee: <strong id="rcptAcademicBase">₹0</strong></div>
+              <div>School Transport Fee: <strong id="rcptTransportAmount" style="color:#d97706;">₹0</strong></div>
+              <div>Total Fees Paid To Date: <strong id="rcptCumPaid" style="color:#10b981;">₹0</strong></div>
+              <div>Remaining Due Balance: <strong id="rcptRemainingDue" style="color:#ef4444;">₹0</strong></div>
+            </div>
+            <div style="display:flex; justify-content:space-between; margin-top:8px; padding-top:8px; border-top:1px dashed #cbd5e1; font-size:0.8rem; color:#475569;">
+              <span>Net Annual Payable: <strong id="rcptAnnualNet">₹0</strong></span>
+              <span id="rcptConcessionNote">Scholarship / Concession: <strong id="rcptConcessionAmt">₹0</strong></span>
+              <span>Bus Route Status: <strong id="rcptBusStatus">Not Opted</strong></span>
+            </div>
+          </div>
+
+          <div class="receipt-signatures">
+            <div class="sig-box">
+              Student / Parent Signature
+            </div>
+            <div class="sig-box" id="rcptAuthorizedSign">
+              Authorized Cashier / Accountant
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="closeReceiptModal()">Close</button>
+        <button type="button" class="btn" style="background:#25D366; color:#fff; font-weight:700;" onclick="sendCurrentReceiptWhatsApp()">
+          <i data-lucide="message-circle"></i> Send WhatsApp to Parent
+        </button>
+        <button type="button" class="btn btn-primary" onclick="window.print()">
+          <i data-lucide="printer"></i> Print Receipt
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: BULK / INDIVIDUAL WHATSAPP REMINDERS -->
+  <div class="modal-overlay" id="whatsappModal">
+    <div class="modal-box modal-lg">
+      <div class="modal-header" style="background:#f0fdf4; border-bottom:1px solid #bbf7d0;">
+        <div style="display:flex; align-items:center; gap:10px;">
+          <span style="background:#25D366; color:#fff; width:34px; height:34px; border-radius:50%; display:flex; align-items:center; justify-content:center;">
+            <i data-lucide="message-circle" style="width:20px; height:20px;"></i>
+          </span>
+          <div>
+            <h3 style="color:#166534; margin:0; font-size:1.15rem;">Automated WhatsApp Parent Fee Due Reminders</h3>
+            <p style="font-size:0.8rem; color:#15803d; margin:0;">Itemized School Fees &amp; Van Fees breakdown sent separately to each parent</p>
+          </div>
+        </div>
+        <button class="close-btn" onclick="closeWhatsAppModal()">&times;</button>
+      </div>
+      <div class="modal-body" style="padding:18px 24px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; background:#f8fafc; padding:12px 18px; border-radius:8px; border:1px solid #e2e8f0; flex-wrap:wrap; gap:10px;">
+          <div>
+            <strong>Due Students: <span id="waModalDueCount" style="color:#ef4444;">0</span></strong>
+            <span style="margin: 0 10px; color:#cbd5e1;">|</span>
+            <span style="color:#64748b; font-size:0.85rem;">Clicking "Open WhatsApp" opens each parent's chat directly with pre-filled itemized dues.</span>
+          </div>
+          <button class="btn btn-sm btn-primary" onclick="sendNextWhatsAppInQueue()">
+            <i data-lucide="play"></i> Open Next Parent Chat
+          </button>
+        </div>
+
+        <div class="table-responsive" style="max-height: 420px; overflow-y:auto;">
+          <table class="custom-table">
+            <thead>
+              <tr>
+                <th>Student &amp; Class</th>
+                <th>Parent &amp; Phone</th>
+                <th>School Due (₹)</th>
+                <th>Van Due (₹)</th>
+                <th>Total Due (₹)</th>
+                <th>Status</th>
+                <th>Direct Action</th>
+              </tr>
+            </thead>
+            <tbody id="waRemindersTableBody">
+              <!-- Populated via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="closeWhatsAppModal()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: WHATSAPP TEMPLATE PREVIEW -->
+  <div class="modal-overlay" id="waTemplateModal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3>WhatsApp Message Template Preview</h3>
+        <button class="close-btn" onclick="closeWaTemplateModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size:0.85rem; color:#64748b; margin-bottom:12px;">This exact itemized breakdown is generated and sent to each parent separately with their specific school and van fee records:</p>
+        <pre id="waTemplatePreviewText" style="background:#f1f5f9; padding:16px; border-radius:8px; font-family:monospace; font-size:0.82rem; white-space:pre-wrap; color:#0f172a; border:1px solid #cbd5e1;"></pre>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="closeWaTemplateModal()">Close</button>
+        <button type="button" class="btn btn-outline" onclick="copyWaTemplateText()">
+          <i data-lucide="copy"></i> Copy Text
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notification Toast -->
+  <div class="toast" id="toastBox">
+    <i data-lucide="check-circle" style="color:#10b981;"></i>
+    <span id="toastMsg">Operation successful</span>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

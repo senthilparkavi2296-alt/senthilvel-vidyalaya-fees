@@ -1,0 +1,399 @@
+{
+  "feeColumns": [
+    {
+      "key": "tuitionFee",
+      "name": "Tuition"
+    },
+    {
+      "key": "termFee",
+      "name": "Term"
+    },
+    {
+      "key": "examFee",
+      "name": "Exam"
+    },
+    {
+      "key": "labFee",
+      "name": "Lab"
+    },
+    {
+      "key": "libraryFee",
+      "name": "Library"
+    },
+    {
+      "key": "sportsFee",
+      "name": "Sports"
+    }
+  ],
+  "feeStructures": [
+    {
+      "grade": "LKG",
+      "tuitionFee": 14000,
+      "termFee": 3000,
+      "examFee": 1500,
+      "labFee": 500,
+      "libraryFee": 500,
+      "sportsFee": 1000,
+      "totalFee": 20000
+    },
+    {
+      "grade": "UKG",
+      "tuitionFee": 15000,
+      "termFee": 3000,
+      "examFee": 1500,
+      "labFee": 500,
+      "libraryFee": 500,
+      "sportsFee": 1000,
+      "totalFee": 21500
+    },
+    {
+      "grade": "1st Std",
+      "tuitionFee": 17000,
+      "termFee": 3500,
+      "examFee": 1800,
+      "labFee": 1000,
+      "libraryFee": 700,
+      "sportsFee": 1000,
+      "totalFee": 25000
+    },
+    {
+      "grade": "2nd Std",
+      "tuitionFee": 18000,
+      "termFee": 3500,
+      "examFee": 1800,
+      "labFee": 1000,
+      "libraryFee": 700,
+      "sportsFee": 1000,
+      "totalFee": 26000
+    },
+    {
+      "grade": "3rd Std",
+      "tuitionFee": 19000,
+      "termFee": 4000,
+      "examFee": 2000,
+      "labFee": 1200,
+      "libraryFee": 800,
+      "sportsFee": 1000,
+      "totalFee": 28000
+    },
+    {
+      "grade": "4th Std",
+      "tuitionFee": 20000,
+      "termFee": 4000,
+      "examFee": 2000,
+      "labFee": 1500,
+      "libraryFee": 1000,
+      "sportsFee": 1500,
+      "totalFee": 30000
+    },
+    {
+      "grade": "5th Std",
+      "tuitionFee": 21000,
+      "termFee": 4500,
+      "examFee": 2200,
+      "labFee": 1800,
+      "libraryFee": 1000,
+      "sportsFee": 1500,
+      "totalFee": 32000
+    },
+    {
+      "grade": "6th Std",
+      "tuitionFee": 23000,
+      "termFee": 5000,
+      "examFee": 2500,
+      "labFee": 2000,
+      "libraryFee": 1200,
+      "sportsFee": 1800,
+      "totalFee": 35500
+    },
+    {
+      "grade": "7th Std",
+      "tuitionFee": 24500,
+      "termFee": 5000,
+      "examFee": 2500,
+      "labFee": 2500,
+      "libraryFee": 1200,
+      "sportsFee": 1800,
+      "totalFee": 37500
+    },
+    {
+      "grade": "8th Std",
+      "tuitionFee": 26000,
+      "termFee": 5500,
+      "examFee": 2800,
+      "labFee": 3000,
+      "libraryFee": 1200,
+      "sportsFee": 2000,
+      "totalFee": 40500
+    }
+  ],
+  "students": [
+    {
+      "id": "SV-2026-001",
+      "rollNo": "LKG-01",
+      "name": "Aadhavan K.",
+      "grade": "LKG",
+      "section": "A",
+      "parentName": "Karthik R.",
+      "contact": "9876543210",
+      "email": "karthik.r@example.com",
+      "address": "12, Gandhi Street, Pakkudi",
+      "boardingArea": "Pakkudi (Local / Village)",
+      "transportOpted": true,
+      "transportType": "Yearly",
+      "transportMonthlyFee": 500,
+      "transportFee": 5000,
+      "concession": 1000,
+      "academicYear": "2026-2027"
+    },
+    {
+      "id": "SV-2026-002",
+      "rollNo": "UKG-04",
+      "name": "Diya Lakshmi S.",
+      "grade": "UKG",
+      "section": "B",
+      "parentName": "Sivakumar M.",
+      "contact": "9841234567",
+      "email": "siva.kumar@example.com",
+      "address": "45, Kamarajar Salai, Pudukottai",
+      "boardingArea": "None (Self Commute)",
+      "transportOpted": false,
+      "transportType": "None",
+      "transportMonthlyFee": 0,
+      "transportFee": 0,
+      "concession": 0,
+      "academicYear": "2026-2027"
+    },
+    {
+      "id": "SV-2026-003",
+      "rollNo": "1STD-12",
+      "name": "Pranav Raj V.",
+      "grade": "1st Std",
+      "section": "A",
+      "parentName": "Vijay Anand P.",
+      "contact": "9940123987",
+      "email": "vijayanand@example.com",
+      "address": "88, Anna Nagar, Alangudi",
+      "boardingArea": "Alangudi",
+      "transportOpted": true,
+      "transportType": "Yearly",
+      "transportMonthlyFee": 600,
+      "transportFee": 6000,
+      "concession": 0,
+      "academicYear": "2026-2027"
+    },
+    {
+      "id": "SV-2026-004",
+      "rollNo": "3STD-05",
+      "name": "Kavya Murugan",
+      "grade": "3rd Std",
+      "section": "A",
+      "parentName": "Murugan Selvam",
+      "contact": "9789654123",
+      "email": "murugan.s@example.com",
+      "address": "3/14, Main Road, Alangudi",
+      "boardingArea": "Alangudi",
+      "transportOpted": true,
+      "transportType": "Monthly",
+      "transportMonthlyFee": 600,
+      "transportFee": 6000,
+      "concession": 1500,
+      "academicYear": "2026-2027"
+    },
+    {
+      "id": "SV-2026-005",
+      "rollNo": "5STD-19",
+      "name": "Rithik Roshan M.",
+      "grade": "5th Std",
+      "section": "B",
+      "parentName": "Manikandan T.",
+      "contact": "9443217890",
+      "email": "mani.tech@example.com",
+      "address": "71, South Veli St, Pudukottai",
+      "boardingArea": "None (Self Commute)",
+      "transportOpted": false,
+      "transportType": "None",
+      "transportMonthlyFee": 0,
+      "transportFee": 0,
+      "concession": 0,
+      "academicYear": "2026-2027"
+    },
+    {
+      "id": "SV-2026-006",
+      "rollNo": "8STD-08",
+      "name": "Sowmya Sundaram",
+      "grade": "8th Std",
+      "section": "A",
+      "parentName": "Sundaramurthy G.",
+      "contact": "9865123489",
+      "email": "sundaram.g@example.com",
+      "address": "102, Bus Stand Road, Keeramangalam",
+      "boardingArea": "Keeramangalam",
+      "transportOpted": true,
+      "transportType": "Yearly",
+      "transportMonthlyFee": 700,
+      "transportFee": 7000,
+      "concession": 2000,
+      "academicYear": "2026-2027"
+    }
+  ],
+  "payments": [
+    {
+      "receiptNo": "REC-2026-1004",
+      "studentId": "SV-2026-004",
+      "studentName": "Kavya Murugan",
+      "grade": "3rd Std",
+      "date": "2026-10-13",
+      "term": "Term 1",
+      "feeCategories": [
+        "Tuition Fee",
+        "Transport Fee"
+      ],
+      "amount": 5600,
+      "paymentMethod": "UPI / QR Code",
+      "transactionId": "TXN-876636",
+      "remarks": "",
+      "receivedBy": "Accounts Admin",
+      "boardingArea": "Alangudi Bus Stop",
+      "transportPaymentMode": "Monthly",
+      "transportMonth": "July",
+      "transportFee": 600,
+      "transportOpted": true
+    },
+    {
+      "receiptNo": "REC-2026-1001",
+      "studentId": "SV-2026-001",
+      "studentName": "Aadhavan K.",
+      "grade": "LKG",
+      "date": "2026-06-15",
+      "term": "Term 1",
+      "feeCategories": [
+        "Tuition Fee",
+        "Term Fee"
+      ],
+      "amount": 10000,
+      "paymentMethod": "UPI",
+      "transactionId": "UPI/261665421/001",
+      "remarks": "First term fee paid promptly",
+      "receivedBy": "Accounts Officer - Rajesh"
+    },
+    {
+      "receiptNo": "REC-2026-1002",
+      "studentId": "SV-2026-003",
+      "studentName": "Pranav Raj V.",
+      "grade": "1st Std",
+      "date": "2026-06-20",
+      "term": "Full Year",
+      "feeCategories": [
+        "Tuition Fee",
+        "Term Fee",
+        "Transport Fee",
+        "Exam Fee"
+      ],
+      "amount": 31000,
+      "paymentMethod": "Net Banking",
+      "transactionId": "HDFC9982410294",
+      "remarks": "Annual payment with transport",
+      "receivedBy": "Admin - Meenakshi"
+    },
+    {
+      "receiptNo": "REC-2026-1003",
+      "studentId": "SV-2026-006",
+      "studentName": "Sowmya Sundaram",
+      "grade": "8th Std",
+      "date": "2026-07-02",
+      "term": "Term 1",
+      "feeCategories": [
+        "Tuition Fee",
+        "Lab Fee"
+      ],
+      "amount": 15000,
+      "paymentMethod": "Cash",
+      "transactionId": "CASH-CNTR-09",
+      "remarks": "Partial payment receipt",
+      "receivedBy": "Cashier - Saravanan"
+    }
+  ],
+  "schoolInfo": {
+    "name": "Senthilvel Vidyalaya School",
+    "tagline": "Excellence in Education (LKG to 8th Std)",
+    "affiliation": "State Board & Matriculation Curriculum",
+    "address": "Pakkudi, Pudukottai",
+    "phone": "9789277169, 9445987169",
+    "email": "senthilvelvidyalaya@gmail.com",
+    "academicYear": "2026-2027"
+  },
+  "transportAreas": [
+    {
+      "id": "area-1",
+      "placeName": "Pakkudi (Local / Village)",
+      "monthlyFee": 500,
+      "yearlyFee": 5000
+    },
+    {
+      "id": "area-2",
+      "placeName": "Alangudi",
+      "monthlyFee": 600,
+      "yearlyFee": 6000
+    },
+    {
+      "id": "area-3",
+      "placeName": "Keeramangalam",
+      "monthlyFee": 700,
+      "yearlyFee": 7000
+    },
+    {
+      "id": "area-4",
+      "placeName": "Pudukkottai Town",
+      "monthlyFee": 800,
+      "yearlyFee": 8000
+    },
+    {
+      "id": "area-5",
+      "placeName": "Vadakadu",
+      "monthlyFee": 650,
+      "yearlyFee": 6500
+    },
+    {
+      "id": "area-6",
+      "placeName": "Perungalur",
+      "monthlyFee": 750,
+      "yearlyFee": 7500
+    }
+  ],
+  "whatsappLogs": [
+    {
+      "id": "wa-1791904238021",
+      "timestamp": "2026-10-13T15:10:38.021Z",
+      "studentId": "SV-2026-001",
+      "studentName": "Aadhavan K.",
+      "parentName": "Karthik R.",
+      "contact": "9876543210",
+      "amountDue": 14000,
+      "mode": "Bulk Queue",
+      "status": "Sent"
+    },
+    {
+      "id": "wa-1791902922480",
+      "timestamp": "2026-10-13T14:48:42.480Z",
+      "studentId": "SV-2026-001",
+      "studentName": "Aadhavan K.",
+      "parentName": "Karthik R.",
+      "contact": "9876543210",
+      "amountDue": 14000,
+      "mode": "Single Reminder",
+      "status": "Sent"
+    },
+    {
+      "id": "wa-1791902842297",
+      "timestamp": "2026-10-13T14:47:22.297Z",
+      "studentId": "SV-2026-001",
+      "studentName": "Aadhavan K.",
+      "parentName": "Karthik R.",
+      "contact": "9876543210",
+      "amountDue": 14000,
+      "mode": "Single Reminder",
+      "status": "Sent"
+    }
+  ]
+}

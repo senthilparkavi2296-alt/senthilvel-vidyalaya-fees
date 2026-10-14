@@ -1,0 +1,13 @@
+{
+  "name": "senthilvel-vidyalaya-fees",
+  "version": "1.0.0",
+  "description": "Comprehensive School Fees Management System for Senthilvel Vidyalaya School (LKG - 8th Std)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "cors": "^2.8.5"
+  }
+}
