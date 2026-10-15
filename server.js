@@ -43,143 +43,17 @@ const initialFeeStructures = [
   { grade: "8th Std", tuitionFee: 26000, termFee: 5500, examFee: 2800, labFee: 3000, libraryFee: 1200, sportsFee: 2000, totalFee: 40500 }
 ];
 
-const initialStudents = [
-  {
-    id: "SV-2026-001",
-    rollNo: "LKG-01",
-    name: "Aadhavan K.",
-    grade: "LKG",
-    section: "A",
-    parentName: "Karthik R.",
-    contact: "9876543210",
-    email: "karthik.r@example.com",
-    address: "12, Gandhi Street, Pudukottai",
-    transportOpted: true,
-    transportFee: 5000,
-    concession: 1000,
-    academicYear: "2026-2027"
-  },
-  {
-    id: "SV-2026-002",
-    rollNo: "UKG-04",
-    name: "Diya Lakshmi S.",
-    grade: "UKG",
-    section: "B",
-    parentName: "Sivakumar M.",
-    contact: "9841234567",
-    email: "siva.kumar@example.com",
-    address: "45, Kamarajar Salai, Pudukottai",
-    transportOpted: false,
-    transportFee: 0,
-    concession: 0,
-    academicYear: "2026-2027"
-  },
-  {
-    id: "SV-2026-003",
-    rollNo: "1STD-12",
-    name: "Pranav Raj V.",
-    grade: "1st Std",
-    section: "A",
-    parentName: "Vijay Anand P.",
-    contact: "9940123987",
-    email: "vijayanand@example.com",
-    address: "88, Anna Nagar, Pudukottai",
-    transportOpted: true,
-    transportFee: 6000,
-    concession: 0,
-    academicYear: "2026-2027"
-  },
-  {
-    id: "SV-2026-004",
-    rollNo: "3STD-05",
-    name: "Kavya Murugan",
-    grade: "3rd Std",
-    section: "A",
-    parentName: "Murugan Selvam",
-    contact: "9789654123",
-    email: "murugan.s@example.com",
-    address: "3/14, Bypass Road, Pudukottai",
-    transportOpted: true,
-    transportFee: 6000,
-    concession: 1500,
-    academicYear: "2026-2027"
-  },
-  {
-    id: "SV-2026-005",
-    rollNo: "5STD-19",
-    name: "Rithik Roshan M.",
-    grade: "5th Std",
-    section: "B",
-    parentName: "Manikandan T.",
-    contact: "9443217890",
-    email: "mani.tech@example.com",
-    address: "71, South Veli St, Pudukottai",
-    transportOpted: false,
-    transportFee: 0,
-    concession: 0,
-    academicYear: "2026-2027"
-  },
-  {
-    id: "SV-2026-006",
-    rollNo: "8STD-08",
-    name: "Sowmya Sundaram",
-    grade: "8th Std",
-    section: "A",
-    parentName: "Sundaramurthy G.",
-    contact: "9865123489",
-    email: "sundaram.g@example.com",
-    address: "102, KK Nagar, Pudukottai",
-    transportOpted: true,
-    transportFee: 7000,
-    concession: 2000,
-    academicYear: "2026-2027"
+let initialStudents = [];
+try {
+  const seedFile = path.join(__dirname, 'seed_students.json');
+  if (fs.existsSync(seedFile)) {
+    initialStudents = JSON.parse(fs.readFileSync(seedFile, 'utf8'));
   }
-];
+} catch (e) {
+  console.error("Error loading seed_students.json:", e);
+}
 
-const initialPayments = [
-  {
-    receiptNo: "REC-2026-1001",
-    studentId: "SV-2026-001",
-    studentName: "Aadhavan K.",
-    grade: "LKG",
-    date: "2026-06-15",
-    term: "Term 1",
-    feeCategories: ["Tuition Fee", "Term Fee"],
-    amount: 10000,
-    paymentMethod: "UPI",
-    transactionId: "UPI/261665421/001",
-    remarks: "First term fee paid promptly",
-    receivedBy: "Accounts Officer - Rajesh"
-  },
-  {
-    receiptNo: "REC-2026-1002",
-    studentId: "SV-2026-003",
-    studentName: "Pranav Raj V.",
-    grade: "1st Std",
-    date: "2026-06-20",
-    term: "Full Year",
-    feeCategories: ["Tuition Fee", "Term Fee", "Transport Fee", "Exam Fee"],
-    amount: 31000,
-    paymentMethod: "Net Banking",
-    transactionId: "HDFC9982410294",
-    remarks: "Annual payment with transport",
-    receivedBy: "Admin - Meenakshi"
-  },
-  {
-    receiptNo: "REC-2026-1003",
-    studentId: "SV-2026-006",
-    studentName: "Sowmya Sundaram",
-    grade: "8th Std",
-    date: "2026-07-02",
-    term: "Term 1",
-    feeCategories: ["Tuition Fee", "Lab Fee"],
-    amount: 15000,
-    paymentMethod: "Cash",
-    transactionId: "CASH-CNTR-09",
-    remarks: "Partial payment receipt",
-    receivedBy: "Cashier - Saravanan"
-  }
-];
+const initialPayments = [];
 
 // Helper to initialize or load DB
 function loadDatabase() {

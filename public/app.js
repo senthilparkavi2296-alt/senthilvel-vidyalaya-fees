@@ -244,10 +244,11 @@ function renderStudentsTable(students) {
     tr.innerHTML = `
       <td>
         <div style="font-weight:700; color:#1e3a8a;">${s.id}</div>
-        <div style="font-size:0.75rem; color:#64748b;">Roll: ${s.rollNo || '-'}</div>
+        <div style="font-size:0.75rem; color:#64748b;">Roll: ${s.rollNo || '-'}${s.admissionNo ? ` | Adm: ${s.admissionNo}` : ''}</div>
       </td>
       <td>
         <strong style="color:#0f172a;">${s.name}</strong>
+        ${s.nameTamil ? `<div style="font-size:0.75rem; color:#64748b; font-weight:500;">${s.nameTamil}</div>` : ''}
       </td>
       <td><span class="grade-pill">${s.grade}</span> Sec ${s.section || 'A'}</td>
       <td>
@@ -1365,11 +1366,15 @@ function filterStudentsList() {
     const matchesGrade = (selectedGrade === 'All') || (s.grade === selectedGrade);
     const matchesStatus = (selectedStatus === 'All') || (s.status === selectedStatus);
     const matchesQuery = !query || (
-      s.name.toLowerCase().includes(query) ||
-      s.id.toLowerCase().includes(query) ||
+      (s.name && s.name.toLowerCase().includes(query)) ||
+      (s.nameTamil && s.nameTamil.toLowerCase().includes(query)) ||
+      (s.id && s.id.toLowerCase().includes(query)) ||
+      (s.emisId && s.emisId.includes(query)) ||
+      (s.admissionNo && s.admissionNo.toLowerCase().includes(query)) ||
       (s.rollNo && s.rollNo.toLowerCase().includes(query)) ||
       (s.parentName && s.parentName.toLowerCase().includes(query)) ||
-      (s.contact && s.contact.includes(query))
+      (s.contact && s.contact.includes(query)) ||
+      (s.address && s.address.toLowerCase().includes(query))
     );
     return matchesGrade && matchesStatus && matchesQuery;
   });
