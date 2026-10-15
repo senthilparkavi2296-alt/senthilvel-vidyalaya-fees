@@ -25,14 +25,49 @@ function initIcons() {
   }
 }
 
-// Navigation Tabs
+// Navigation Tabs & Mobile Drawer
 function setupNavigation() {
+  const sidebar = document.getElementById('appSidebar');
+  const backdrop = document.getElementById('sidebarBackdrop');
+  const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+  const sidebarCloseBtn = document.getElementById('sidebarCloseBtn');
+
+  function openSidebar() {
+    if (sidebar) sidebar.classList.add('open');
+    if (backdrop) backdrop.classList.add('active');
+  }
+
+  function closeSidebar() {
+    if (sidebar) sidebar.classList.remove('open');
+    if (backdrop) backdrop.classList.remove('active');
+  }
+
+  if (mobileMenuBtn) {
+    mobileMenuBtn.addEventListener('click', openSidebar);
+  }
+  if (sidebarCloseBtn) {
+    sidebarCloseBtn.addEventListener('click', closeSidebar);
+  }
+  if (backdrop) {
+    backdrop.addEventListener('click', closeSidebar);
+  }
+
+  // Close sidebar on Escape key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && sidebar && sidebar.classList.contains('open')) {
+      closeSidebar();
+    }
+  });
+
   const links = document.querySelectorAll('.sidebar-nav .nav-link');
   links.forEach(link => {
     link.addEventListener('click', (e) => {
       e.preventDefault();
       const tab = link.getAttribute('data-tab');
       switchTab(tab);
+      if (window.innerWidth <= 992) {
+        closeSidebar();
+      }
     });
   });
 

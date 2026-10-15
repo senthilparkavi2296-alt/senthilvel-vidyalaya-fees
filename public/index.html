@@ -14,14 +14,18 @@
 </head>
 <body>
 
+  <!-- Sidebar Backdrop for Mobile -->
+  <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
   <!-- Sidebar Navigation -->
-  <aside class="sidebar">
+  <aside class="sidebar" id="appSidebar">
     <div class="school-brand">
       <div class="school-logo-badge">SV</div>
       <div class="brand-text">
         <h2>Senthilvel Vidyalaya</h2>
         <p>LKG – 8th Standard Portal</p>
       </div>
+      <button class="sidebar-close-btn" id="sidebarCloseBtn" aria-label="Close Navigation">&times;</button>
     </div>
 
     <nav class="sidebar-nav">
@@ -65,17 +69,23 @@
   <div class="main-wrapper">
     <!-- Header -->
     <header class="top-header">
-      <div class="header-left">
-        <h1 id="pageTitle">Fees Management Dashboard</h1>
-        <p id="schoolSubInfo">Senthilvel Vidyalaya School • Pakkudi, Pudukottai • Ph: 9789277169, 9445987169</p>
+      <div style="display:flex; align-items:center; gap:12px;">
+        <button id="mobileMenuBtn" class="mobile-menu-btn" aria-label="Open Navigation">
+          <i data-lucide="menu"></i>
+        </button>
+        <div class="header-left">
+          <h1 id="pageTitle">Fees Management Dashboard</h1>
+          <p id="schoolSubInfo">Senthilvel Vidyalaya School • Pakkudi, Pudukottai • Ph: 9789277169, 9445987169</p>
+        </div>
       </div>
       <div class="header-actions">
         <div class="academic-badge">
           <span></span> AY 2026-2027 Active
         </div>
         <button class="btn btn-primary" onclick="openNewStudentModal()">
-          <i data-lucide="user-plus"></i> Add Student
-        </div>
+          <i data-lucide="user-plus"></i> <span class="btn-text">Add Student</span>
+        </button>
+      </div>
     </header>
 
     <!-- Page Content Container -->
@@ -266,7 +276,7 @@
                   <strong id="previewStudentName" style="font-size:1.05rem; color:#1e3a8a;">Student Name</strong>
                   <span id="previewStatusBadge" class="badge">Status</span>
                 </div>
-                <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap:10px; font-size:0.85rem;">
+                <div class="student-preview-grid" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap:10px; font-size:0.85rem;">
                   <div><span style="color:#64748b;">Grade:</span> <strong id="previewGrade">-</strong></div>
                   <div><span style="color:#64748b;">Net Payable:</span> <strong id="previewNetPayable">₹0</strong></div>
                   <div><span style="color:#64748b;">Already Paid:</span> <strong id="previewPaid" style="color:#10b981;">₹0</strong></div>
@@ -775,13 +785,13 @@
           </table>
 
           <div style="background:#f8fafc; padding:14px; border-radius:8px; margin-bottom:20px; font-size:0.85rem; border:1px solid #cbd5e1;">
-            <div style="display:grid; grid-template-columns: repeat(4, 1fr); text-align:center; gap:8px;">
+            <div class="receipt-summary-grid" style="display:grid; grid-template-columns: repeat(4, 1fr); text-align:center; gap:8px;">
               <div>Course Base Fee: <strong id="rcptAcademicBase">₹0</strong></div>
               <div>School Transport Fee: <strong id="rcptTransportAmount" style="color:#d97706;">₹0</strong></div>
               <div>Total Fees Paid To Date: <strong id="rcptCumPaid" style="color:#10b981;">₹0</strong></div>
               <div>Remaining Due Balance: <strong id="rcptRemainingDue" style="color:#ef4444;">₹0</strong></div>
             </div>
-            <div style="display:flex; justify-content:space-between; margin-top:8px; padding-top:8px; border-top:1px dashed #cbd5e1; font-size:0.8rem; color:#475569;">
+            <div class="receipt-summary-meta" style="display:flex; justify-content:space-between; margin-top:8px; padding-top:8px; border-top:1px dashed #cbd5e1; font-size:0.8rem; color:#475569; flex-wrap:wrap; gap:8px;">
               <span>Net Annual Payable: <strong id="rcptAnnualNet">₹0</strong></span>
               <span id="rcptConcessionNote">Scholarship / Concession: <strong id="rcptConcessionAmt">₹0</strong></span>
               <span>Bus Route Status: <strong id="rcptBusStatus">Not Opted</strong></span>
