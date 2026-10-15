@@ -129,10 +129,9 @@
   ],
   "students": [
     {
-      "id": "SV-2032379023",
+      "id": "SV-2026-001",
       "rollNo": "LKG-01",
       "admissionNo": "207",
-      "emisId": "2032379023",
       "name": "DHARSHITH G",
       "nameTamil": "தர்ஷித் ஜா",
       "grade": "LKG",
@@ -155,10 +154,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2033130207",
+      "id": "SV-2026-002",
       "rollNo": "LKG-02",
       "admissionNo": "23",
-      "emisId": "2033130207",
       "name": "HASWANTH S",
       "nameTamil": "ஹஸ்வந்த்",
       "grade": "LKG",
@@ -181,10 +179,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2032371997",
+      "id": "SV-2026-003",
       "rollNo": "LKG-03",
       "admissionNo": "206",
-      "emisId": "2032371997",
       "name": "JEEVA P",
       "nameTamil": "ஜீவா பி",
       "grade": "LKG",
@@ -207,10 +204,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2032723136",
+      "id": "SV-2026-004",
       "rollNo": "LKG-04",
       "admissionNo": "241",
-      "emisId": "2032723136",
       "name": "K HARSHA MITHRAN",
       "nameTamil": "கா ஹர்ஷ மித்ரன்",
       "grade": "LKG",
@@ -233,10 +229,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2032622980",
+      "id": "SV-2026-005",
       "rollNo": "LKG-05",
       "admissionNo": "219",
-      "emisId": "2032622980",
       "name": "K SANJAY",
       "nameTamil": "கா சஞ்சய்",
       "grade": "LKG",
@@ -259,10 +254,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2033132418",
+      "id": "SV-2026-006",
       "rollNo": "LKG-06",
       "admissionNo": "221",
-      "emisId": "2033132418",
       "name": "KALAIARASAN K",
       "nameTamil": "கலையரசன்",
       "grade": "LKG",
@@ -285,10 +279,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2032371165",
+      "id": "SV-2026-007",
       "rollNo": "LKG-07",
       "admissionNo": "205",
-      "emisId": "2032371165",
       "name": "KARUNASHAKAR S",
       "nameTamil": "கருணாசகர் செ",
       "grade": "LKG",
@@ -311,10 +304,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2032370148",
+      "id": "SV-2026-008",
       "rollNo": "LKG-08",
       "admissionNo": "203",
-      "emisId": "2032370148",
       "name": "MAKIZHNAN C",
       "nameTamil": "மகிழநன் கி",
       "grade": "LKG",
@@ -337,10 +329,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2032607869",
+      "id": "SV-2026-009",
       "rollNo": "LKG-09",
       "admissionNo": "213",
-      "emisId": "2032607869",
       "name": "NAHELESH PANDI V",
       "nameTamil": "நகிலேஷ் பாண்டி வெ",
       "grade": "LKG",
@@ -363,10 +354,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2032370707",
+      "id": "SV-2026-010",
       "rollNo": "LKG-10",
       "admissionNo": "204",
-      "emisId": "2032370707",
       "name": "NISHANTH MARAN R",
       "nameTamil": "நிஷாந்த் மாறன் ரா",
       "grade": "LKG",
@@ -389,10 +379,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2032722940",
+      "id": "SV-2026-011",
       "rollNo": "LKG-11",
       "admissionNo": "233",
-      "emisId": "2032722940",
       "name": "P G NAVIN",
       "nameTamil": "ப கௌ நவீன்",
       "grade": "LKG",
@@ -415,10 +404,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2032692031",
+      "id": "SV-2026-012",
       "rollNo": "LKG-12",
       "admissionNo": "231",
-      "emisId": "2032692031",
       "name": "R PRAJESH VISHNU",
       "nameTamil": "ரா பிரஜேஷ் விஷ்ணு",
       "grade": "LKG",
@@ -441,10 +429,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2032619576",
+      "id": "SV-2026-013",
       "rollNo": "LKG-13",
       "admissionNo": "218",
-      "emisId": "2032619576",
       "name": "S TAMILMARAN",
       "nameTamil": "சு தமிழ்மாறன்",
       "grade": "LKG",
@@ -467,10 +454,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2032366574",
+      "id": "SV-2026-014",
       "rollNo": "LKG-14",
       "admissionNo": "201",
-      "emisId": "2032366574",
       "name": "SAI SHARAN M",
       "nameTamil": "சாய் சரண் ம",
       "grade": "LKG",
@@ -493,10 +479,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2032723182",
+      "id": "SV-2026-015",
       "rollNo": "LKG-15",
       "admissionNo": "245",
-      "emisId": "2032723182",
       "name": "SARVIN B",
       "nameTamil": "ஸர்வின் பா",
       "grade": "LKG",
@@ -519,10 +504,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2032858253",
+      "id": "SV-2026-016",
       "rollNo": "LKG-16",
       "admissionNo": "252",
-      "emisId": "2032858253",
       "name": "T DHARSHIK",
       "nameTamil": "த தர்ஷிக்",
       "grade": "LKG",
@@ -545,10 +529,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2032639620",
+      "id": "SV-2026-017",
       "rollNo": "LKG-17",
       "admissionNo": "215",
-      "emisId": "2032639620",
       "name": "VAIJITH K",
       "nameTamil": "கு வைஜித்",
       "grade": "LKG",
@@ -571,10 +554,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2032725334",
+      "id": "SV-2026-018",
       "rollNo": "LKG-18",
       "admissionNo": "246",
-      "emisId": "2032725334",
       "name": "G APARNA",
       "nameTamil": "கு அபர்ணா",
       "grade": "LKG",
@@ -597,10 +579,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2032723158",
+      "id": "SV-2026-019",
       "rollNo": "LKG-19",
       "admissionNo": "244",
-      "emisId": "2032723158",
       "name": "K SHALINI",
       "nameTamil": "கு ஷாலினி",
       "grade": "LKG",
@@ -623,10 +604,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2032858435",
+      "id": "SV-2026-020",
       "rollNo": "LKG-20",
       "admissionNo": "256",
-      "emisId": "2032858435",
       "name": "M DARSHANA",
       "nameTamil": "மா தர்ஷனா",
       "grade": "LKG",
@@ -649,10 +629,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2032621319",
+      "id": "SV-2026-021",
       "rollNo": "LKG-21",
       "admissionNo": "220",
-      "emisId": "2032621319",
       "name": "M K SRIMERSHIKA",
       "nameTamil": "ம கௌ ஸ்ரீமெர்ஷிகா",
       "grade": "LKG",
@@ -675,10 +654,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2032725388",
+      "id": "SV-2026-022",
       "rollNo": "LKG-22",
       "admissionNo": "248",
-      "emisId": "2032725388",
       "name": "P SAINDHAVI",
       "nameTamil": "பு சைந்தவி",
       "grade": "LKG",
@@ -701,10 +679,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2032691292",
+      "id": "SV-2026-023",
       "rollNo": "LKG-23",
       "admissionNo": "222",
-      "emisId": "2032691292",
       "name": "R RITHANYA",
       "nameTamil": "ரா ரிதன்யா",
       "grade": "LKG",
@@ -727,10 +704,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2032368964",
+      "id": "SV-2026-024",
       "rollNo": "LKG-24",
       "admissionNo": "202",
-      "emisId": "2032368964",
       "name": "SUDHARSHINI K",
       "nameTamil": "சுதர்ஷினி க",
       "grade": "LKG",
@@ -753,10 +729,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2033156880",
+      "id": "SV-2026-025",
       "rollNo": "UKG-01",
       "admissionNo": "212",
-      "emisId": "2033156880",
       "name": "A PAVAN",
       "nameTamil": "அ பவன்",
       "grade": "UKG",
@@ -779,10 +754,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2031809301",
+      "id": "SV-2026-026",
       "rollNo": "UKG-02",
       "admissionNo": "154",
-      "emisId": "2031809301",
       "name": "A RIVAAN AADHESH",
       "nameTamil": "அ ரிவான் ஆதேஷ்",
       "grade": "UKG",
@@ -805,10 +779,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2031760866",
+      "id": "SV-2026-027",
       "rollNo": "UKG-03",
       "admissionNo": "146",
-      "emisId": "2031760866",
       "name": "B KRUTHICK",
       "nameTamil": "பா கிருத்திக்",
       "grade": "UKG",
@@ -831,10 +804,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2033164066",
+      "id": "SV-2026-028",
       "rollNo": "UKG-04",
       "admissionNo": "262",
-      "emisId": "2033164066",
       "name": "C KAVIN",
       "nameTamil": "ச கவின்",
       "grade": "UKG",
@@ -857,10 +829,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2032639774",
+      "id": "SV-2026-029",
       "rollNo": "UKG-05",
       "admissionNo": "216",
-      "emisId": "2032639774",
       "name": "D DHARAN SANJAY",
       "nameTamil": "த தரண் சஞ்சய்",
       "grade": "UKG",
@@ -883,10 +854,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2032691403",
+      "id": "SV-2026-030",
       "rollNo": "UKG-06",
       "admissionNo": "223",
-      "emisId": "2032691403",
       "name": "D JEEVAN",
       "nameTamil": "து ஜீவன்",
       "grade": "UKG",
@@ -909,10 +879,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2032858503",
+      "id": "SV-2026-031",
       "rollNo": "UKG-07",
       "admissionNo": "255",
-      "emisId": "2032858503",
       "name": "D SHERWIN",
       "nameTamil": "து ஷெர்வின்",
       "grade": "UKG",
@@ -935,10 +904,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2032722888",
+      "id": "SV-2026-032",
       "rollNo": "UKG-08",
       "admissionNo": "232",
-      "emisId": "2032722888",
       "name": "DHARSHAN S",
       "nameTamil": "தர்ஷன் செ",
       "grade": "UKG",
@@ -961,10 +929,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2032639516",
+      "id": "SV-2026-033",
       "rollNo": "UKG-09",
       "admissionNo": "214",
-      "emisId": "2032639516",
       "name": "I C IVAAN INIGO",
       "nameTamil": "இ க இவான் இனிகோ",
       "grade": "UKG",
@@ -987,10 +954,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2032299341",
+      "id": "SV-2026-034",
       "rollNo": "UKG-10",
       "admissionNo": "204",
-      "emisId": "2032299341",
       "name": "K GUKAN",
       "nameTamil": "க குகன்",
       "grade": "UKG",
@@ -1013,10 +979,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2031971163",
+      "id": "SV-2026-035",
       "rollNo": "UKG-11",
       "admissionNo": "191",
-      "emisId": "2031971163",
       "name": "KIRTHIK SASTHA R",
       "nameTamil": "கீர்த்திக் சாஸ்தா ரா",
       "grade": "UKG",
@@ -1039,10 +1004,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2032691476",
+      "id": "SV-2026-036",
       "rollNo": "UKG-12",
       "admissionNo": "224",
-      "emisId": "2032691476",
       "name": "M KATHIRVELU",
       "nameTamil": "மு கதிர்வேலு",
       "grade": "UKG",
@@ -1065,10 +1029,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2032858207",
+      "id": "SV-2026-037",
       "rollNo": "UKG-13",
       "admissionNo": "250",
-      "emisId": "2032858207",
       "name": "M P KAVIN",
       "nameTamil": "மு ப கவின்",
       "grade": "UKG",
@@ -1091,10 +1054,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2032691873",
+      "id": "SV-2026-038",
       "rollNo": "UKG-14",
       "admissionNo": "227",
-      "emisId": "2032691873",
       "name": "M SABARI",
       "nameTamil": "மு சபரி",
       "grade": "UKG",
@@ -1117,10 +1079,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2031825943",
+      "id": "SV-2026-039",
       "rollNo": "UKG-15",
       "admissionNo": "163",
-      "emisId": "2031825943",
       "name": "P MOKITH",
       "nameTamil": "ப மோகித்",
       "grade": "UKG",
@@ -1143,10 +1104,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2031760799",
+      "id": "SV-2026-040",
       "rollNo": "UKG-16",
       "admissionNo": "145",
-      "emisId": "2031760799",
       "name": "P MUTHUN PRABHA",
       "nameTamil": "பி மிதுன் பிரபா",
       "grade": "UKG",
@@ -1169,10 +1129,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2031820575",
+      "id": "SV-2026-041",
       "rollNo": "UKG-17",
       "admissionNo": "157",
-      "emisId": "2031820575",
       "name": "P R SRIDEV",
       "nameTamil": "பா ரா ஸ்ரீதேவ்",
       "grade": "UKG",
@@ -1195,10 +1154,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2031884516",
+      "id": "SV-2026-042",
       "rollNo": "UKG-18",
       "admissionNo": "177",
-      "emisId": "2031884516",
       "name": "P SUNDARAPANDI",
       "nameTamil": "பி சுந்தரபாண்டி",
       "grade": "UKG",
@@ -1221,10 +1179,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2031820554",
+      "id": "SV-2026-043",
       "rollNo": "UKG-19",
       "admissionNo": "156",
-      "emisId": "2031820554",
       "name": "P THEERAN",
       "nameTamil": "ப தீரன்",
       "grade": "UKG",
@@ -1247,10 +1204,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2032858172",
+      "id": "SV-2026-044",
       "rollNo": "UKG-20",
       "admissionNo": "251",
-      "emisId": "2032858172",
       "name": "PRAVEEN S",
       "nameTamil": "பிரவீன் ச",
       "grade": "UKG",
@@ -1273,10 +1229,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2032691524",
+      "id": "SV-2026-045",
       "rollNo": "UKG-21",
       "admissionNo": "225",
-      "emisId": "2032691524",
       "name": "R GOKUL",
       "nameTamil": "ரெ கோகுல்",
       "grade": "UKG",
@@ -1299,10 +1254,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2031971131",
+      "id": "SV-2026-046",
       "rollNo": "UKG-22",
       "admissionNo": "171",
-      "emisId": "2031971131",
       "name": "R KAVINAYAN",
       "nameTamil": "ரா கவினயன்",
       "grade": "UKG",
@@ -1325,10 +1279,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2032606963",
+      "id": "SV-2026-047",
       "rollNo": "UKG-23",
       "admissionNo": "208",
-      "emisId": "2032606963",
       "name": "R NITHIN",
       "nameTamil": "ர நிதின்",
       "grade": "UKG",
@@ -1351,10 +1304,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2032725362",
+      "id": "SV-2026-048",
       "rollNo": "UKG-24",
       "admissionNo": "247",
-      "emisId": "2032725362",
       "name": "REEGAN S",
       "nameTamil": "ரீகன் ஸ்",
       "grade": "UKG",
@@ -1377,10 +1329,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2031760942",
+      "id": "SV-2026-049",
       "rollNo": "UKG-25",
       "admissionNo": "147",
-      "emisId": "2031760942",
       "name": "S AJAY",
       "nameTamil": "சு அஜய்",
       "grade": "UKG",
@@ -1403,10 +1354,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2031884573",
+      "id": "SV-2026-050",
       "rollNo": "UKG-26",
       "admissionNo": "180",
-      "emisId": "2031884573",
       "name": "S SHANMUGAGANAPATHY",
       "nameTamil": "செ சண்முககணபதி",
       "grade": "UKG",
@@ -1429,10 +1379,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2033156892",
+      "id": "SV-2026-051",
       "rollNo": "UKG-27",
       "admissionNo": "260",
-      "emisId": "2033156892",
       "name": "S VISHANT",
       "nameTamil": "விசாந்த் சி",
       "grade": "UKG",
@@ -1455,10 +1404,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2033129899",
+      "id": "SV-2026-052",
       "rollNo": "UKG-28",
       "admissionNo": "255",
-      "emisId": "2033129899",
       "name": "SHERWIN D",
       "nameTamil": "ஷெர்வின்",
       "grade": "UKG",
@@ -1481,10 +1429,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2032723016",
+      "id": "SV-2026-053",
       "rollNo": "UKG-29",
       "admissionNo": "237",
-      "emisId": "2032723016",
       "name": "SRI DHARAN S",
       "nameTamil": "ஸ்ரீ தரன் சு",
       "grade": "UKG",
@@ -1507,10 +1454,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2032196649",
+      "id": "SV-2026-054",
       "rollNo": "UKG-30",
       "admissionNo": "193",
-      "emisId": "2032196649",
       "name": "THOMAS A",
       "nameTamil": "தாமஸ் ஆ",
       "grade": "UKG",
@@ -1533,10 +1479,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2032691943",
+      "id": "SV-2026-055",
       "rollNo": "UKG-31",
       "admissionNo": "230",
-      "emisId": "2032691943",
       "name": "VARMAN S",
       "nameTamil": "வர்மன் ச",
       "grade": "UKG",
@@ -1559,10 +1504,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2031820603",
+      "id": "SV-2026-056",
       "rollNo": "UKG-32",
       "admissionNo": "158",
-      "emisId": "2031820603",
       "name": "X LINSON STEFFIN",
       "nameTamil": "சே லின்சன் ஸ்டெஃபின்",
       "grade": "UKG",
@@ -1585,10 +1529,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2031971155",
+      "id": "SV-2026-057",
       "rollNo": "UKG-33",
       "admissionNo": "174",
-      "emisId": "2031971155",
       "name": "A DHARSHIKA SRI",
       "nameTamil": "ஐ தர்ஷிக ஸ்ரீ",
       "grade": "UKG",
@@ -1611,10 +1554,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2032195754",
+      "id": "SV-2026-058",
       "rollNo": "UKG-34",
       "admissionNo": "196",
-      "emisId": "2032195754",
       "name": "AISHWARYA J G",
       "nameTamil": "ஐஸ்வர்யா ஜெ கு",
       "grade": "UKG",
@@ -1637,10 +1579,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2032858363",
+      "id": "SV-2026-059",
       "rollNo": "UKG-35",
       "admissionNo": "257",
-      "emisId": "2032858363",
       "name": "B DHARSHINI",
       "nameTamil": "பா தர்ஷினி",
       "grade": "UKG",
@@ -1663,10 +1604,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2032639880",
+      "id": "SV-2026-060",
       "rollNo": "UKG-36",
       "admissionNo": "217",
-      "emisId": "2032639880",
       "name": "D DHANSHIKA",
       "nameTamil": "த தன்ஷிகா",
       "grade": "UKG",
@@ -1689,10 +1629,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2033132887",
+      "id": "SV-2026-061",
       "rollNo": "UKG-37",
       "admissionNo": "259",
-      "emisId": "2033132887",
       "name": "DHARANIKHA SRI S",
       "nameTamil": "தரணிகா ஸ்ரீ",
       "grade": "UKG",
@@ -1715,10 +1654,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2031831775",
+      "id": "SV-2026-062",
       "rollNo": "UKG-38",
       "admissionNo": "166",
-      "emisId": "2031831775",
       "name": "HARINIGA R",
       "nameTamil": "ஹரிணிகா ரா",
       "grade": "UKG",
@@ -1741,10 +1679,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2032615314",
+      "id": "SV-2026-063",
       "rollNo": "UKG-39",
       "admissionNo": "236",
-      "emisId": "2032615314",
       "name": "HARSHIKA N",
       "nameTamil": "ஹர்ஷிகா நா",
       "grade": "UKG",
@@ -1767,10 +1704,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2033156902",
+      "id": "SV-2026-064",
       "rollNo": "UKG-40",
       "admissionNo": "261",
-      "emisId": "2033156902",
       "name": "HARSHINI S",
       "nameTamil": "ஹர்ஷினி",
       "grade": "UKG",
@@ -1793,10 +1729,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2031884634",
+      "id": "SV-2026-065",
       "rollNo": "UKG-41",
       "admissionNo": "185",
-      "emisId": "2031884634",
       "name": "KAVIYAZHINI M",
       "nameTamil": "கவியாழினி ம",
       "grade": "UKG",
@@ -1819,10 +1754,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2032691818",
+      "id": "SV-2026-066",
       "rollNo": "UKG-42",
       "admissionNo": "226",
-      "emisId": "2032691818",
       "name": "KRISHITHA M",
       "nameTamil": "கிரிஷிதா மு",
       "grade": "UKG",
@@ -1845,10 +1779,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2032858043",
+      "id": "SV-2026-067",
       "rollNo": "UKG-43",
       "admissionNo": "240",
-      "emisId": "2032858043",
       "name": "LITHIKA R",
       "nameTamil": "லித்திகா ரா",
       "grade": "UKG",
@@ -1871,10 +1804,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2032722973",
+      "id": "SV-2026-068",
       "rollNo": "UKG-44",
       "admissionNo": "235",
-      "emisId": "2032722973",
       "name": "M SAI PALLAVI",
       "nameTamil": "மு சாய் பல்லவி",
       "grade": "UKG",
@@ -1897,10 +1829,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2031831799",
+      "id": "SV-2026-069",
       "rollNo": "UKG-45",
       "admissionNo": "169",
-      "emisId": "2031831799",
       "name": "MAHATHI SRI S",
       "nameTamil": "மகதி ஸ்ரீ ச",
       "grade": "UKG",
@@ -1923,10 +1854,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2031766413",
+      "id": "SV-2026-070",
       "rollNo": "UKG-46",
       "admissionNo": "150",
-      "emisId": "2031766413",
       "name": "MAHISHA SREE S",
       "nameTamil": "மஹிஷா ஸ்ரீ ச",
       "grade": "UKG",
@@ -1949,10 +1879,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2032946027",
+      "id": "SV-2026-071",
       "rollNo": "UKG-47",
       "admissionNo": "229",
-      "emisId": "2032946027",
       "name": "MOHANA SRI R",
       "nameTamil": "மோகனா ஸ்ரீ",
       "grade": "UKG",
@@ -1975,10 +1904,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2031971159",
+      "id": "SV-2026-072",
       "rollNo": "UKG-48",
       "admissionNo": "181",
-      "emisId": "2031971159",
       "name": "P JESSICA MAGDHALIN",
       "nameTamil": "பி ஜெசிக்கா மாக்தலின்",
       "grade": "UKG",
@@ -2001,10 +1929,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2031879201",
+      "id": "SV-2026-073",
       "rollNo": "UKG-49",
       "admissionNo": "172",
-      "emisId": "2031879201",
       "name": "P VENPA",
       "nameTamil": "பு வெண்பா",
       "grade": "UKG",
@@ -2027,10 +1954,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2031884524",
+      "id": "SV-2026-074",
       "rollNo": "UKG-50",
       "admissionNo": "178",
-      "emisId": "2031884524",
       "name": "R MITHRA",
       "nameTamil": "ர மித்ரா",
       "grade": "UKG",
@@ -2053,10 +1979,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2031971143",
+      "id": "SV-2026-075",
       "rollNo": "UKG-51",
       "admissionNo": "168",
-      "emisId": "2031971143",
       "name": "S PRITHIKASRI",
       "nameTamil": "சே பிரித்திகாஸ்ரீ",
       "grade": "UKG",
@@ -2079,10 +2004,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2032858477",
+      "id": "SV-2026-076",
       "rollNo": "UKG-52",
       "admissionNo": "254",
-      "emisId": "2032858477",
       "name": "SHARMITHA A",
       "nameTamil": "ஷர்மிதா ஐ",
       "grade": "UKG",
@@ -2105,10 +2029,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2031809107",
+      "id": "SV-2026-077",
       "rollNo": "UKG-53",
       "admissionNo": "151",
-      "emisId": "2031809107",
       "name": "T VARNASRI",
       "nameTamil": "த வர்ணஸ்ரீ",
       "grade": "UKG",
@@ -2131,10 +2054,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2033308672",
+      "id": "SV-2026-078",
       "rollNo": "UKG-54",
       "admissionNo": "263",
-      "emisId": "2033308672",
       "name": "THIYASRI",
       "nameTamil": "தியாஸ்ரீ",
       "grade": "UKG",
@@ -2157,10 +2079,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2031824885",
+      "id": "SV-2026-079",
       "rollNo": "UKG-55",
       "admissionNo": "162",
-      "emisId": "2031824885",
       "name": "V J MUZHUMATHI",
       "nameTamil": "வே ஜா முழுமதி",
       "grade": "UKG",
@@ -2183,10 +2104,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2031809253",
+      "id": "SV-2026-080",
       "rollNo": "UKG-56",
       "admissionNo": "153",
-      "emisId": "2031809253",
       "name": "V MITHUNYA SRI",
       "nameTamil": "வி மிதுன்யா ஸ்ரீ",
       "grade": "UKG",
@@ -2209,10 +2129,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2030380869",
+      "id": "SV-2026-081",
       "rollNo": "1STD-01",
       "admissionNo": "073",
-      "emisId": "2030380869",
       "name": "ALAN REX",
       "nameTamil": "ஆலன் ரெக்ஸ் அ",
       "grade": "1st Std",
@@ -2235,10 +2154,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2032858132",
+      "id": "SV-2026-082",
       "rollNo": "1STD-02",
       "admissionNo": "249",
-      "emisId": "2032858132",
       "name": "B RITHISHVARAN",
       "nameTamil": "பா ரித்திஷ்வரன்",
       "grade": "1st Std",
@@ -2261,10 +2179,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2030385823",
+      "id": "SV-2026-083",
       "rollNo": "1STD-03",
       "admissionNo": "075",
-      "emisId": "2030385823",
       "name": "DEEPAN P",
       "nameTamil": "தீபன் பி",
       "grade": "1st Std",
@@ -2287,10 +2204,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2032607469",
+      "id": "SV-2026-084",
       "rollNo": "1STD-04",
       "admissionNo": "210",
-      "emisId": "2032607469",
       "name": "G SANJIT",
       "nameTamil": "கு ஷன்ஜித்",
       "grade": "1st Std",
@@ -2313,10 +2229,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2031765349",
+      "id": "SV-2026-085",
       "rollNo": "1STD-05",
       "admissionNo": "148",
-      "emisId": "2031765349",
       "name": "JEFERIN XAVIER A",
       "nameTamil": "ஜெஃபெரின் சேவியர் அ",
       "grade": "1st Std",
@@ -2339,10 +2254,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2031831817",
+      "id": "SV-2026-086",
       "rollNo": "1STD-06",
       "admissionNo": "170",
-      "emisId": "2031831817",
       "name": "KAVIN R",
       "nameTamil": "கவின் ரெ",
       "grade": "1st Std",
@@ -2365,10 +2279,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2031879220",
+      "id": "SV-2026-087",
       "rollNo": "1STD-07",
       "admissionNo": "173",
-      "emisId": "2031879220",
       "name": "M YUGESH",
       "nameTamil": "ம யுகேஸ்",
       "grade": "1st Std",
@@ -2391,10 +2304,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2030709409",
+      "id": "SV-2026-088",
       "rollNo": "1STD-08",
       "admissionNo": "101",
-      "emisId": "2030709409",
       "name": "MITHRAN P",
       "nameTamil": "மித்ரன் ப",
       "grade": "1st Std",
@@ -2417,10 +2329,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2031884681",
+      "id": "SV-2026-089",
       "rollNo": "1STD-09",
       "admissionNo": "188",
-      "emisId": "2031884681",
       "name": "P SUDHARSAN",
       "nameTamil": "சுதர்சன்",
       "grade": "1st Std",
@@ -2443,10 +2354,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2030385882",
+      "id": "SV-2026-090",
       "rollNo": "1STD-10",
       "admissionNo": "081",
-      "emisId": "2030385882",
       "name": "SAATVIK",
       "nameTamil": "சாத்விக்",
       "grade": "1st Std",
@@ -2469,10 +2379,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2031884649",
+      "id": "SV-2026-091",
       "rollNo": "1STD-11",
       "admissionNo": "186",
-      "emisId": "2031884649",
       "name": "T SABAREESHWARAN",
       "nameTamil": "தீ சபரீஸ்வரன்",
       "grade": "1st Std",
@@ -2495,10 +2404,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2031765847",
+      "id": "SV-2026-092",
       "rollNo": "1STD-12",
       "admissionNo": "149",
-      "emisId": "2031765847",
       "name": "THANISH M",
       "nameTamil": "தனிஷ் ம",
       "grade": "1st Std",
@@ -2521,10 +2429,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2030529658",
+      "id": "SV-2026-093",
       "rollNo": "1STD-13",
       "admissionNo": "084",
-      "emisId": "2030529658",
       "name": "THARANISH RAM D",
       "nameTamil": "தரணிஷ் ராம் து",
       "grade": "1st Std",
@@ -2547,10 +2454,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2031689205",
+      "id": "SV-2026-094",
       "rollNo": "1STD-14",
       "admissionNo": "243",
-      "emisId": "2031689205",
       "name": "YASHVANTH M",
       "nameTamil": "யஷ்வந்த் மு",
       "grade": "1st Std",
@@ -2573,10 +2479,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2030815692",
+      "id": "SV-2026-095",
       "rollNo": "1STD-15",
       "admissionNo": "089",
-      "emisId": "2030815692",
       "name": "ANCY FARRAH A",
       "nameTamil": "ஆன்சி ஃபர்ரா ஆ",
       "grade": "1st Std",
@@ -2599,10 +2504,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2030710350",
+      "id": "SV-2026-096",
       "rollNo": "1STD-16",
       "admissionNo": "114",
-      "emisId": "2030710350",
       "name": "ASHVIKA SRI S",
       "nameTamil": "அஷ்விகாஸ்ரீ ச",
       "grade": "1st Std",
@@ -2625,10 +2529,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2030381177",
+      "id": "SV-2026-097",
       "rollNo": "1STD-17",
       "admissionNo": "076",
-      "emisId": "2030381177",
       "name": "DEVASHRI",
       "nameTamil": "தேவஸ்ரீ மோ",
       "grade": "1st Std",
@@ -2651,10 +2554,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2031825462",
+      "id": "SV-2026-098",
       "rollNo": "1STD-18",
       "admissionNo": "164",
-      "emisId": "2031825462",
       "name": "M NARMATHASRI",
       "nameTamil": "மு நர்மதாஸ்ரீ",
       "grade": "1st Std",
@@ -2677,10 +2579,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2031164730",
+      "id": "SV-2026-099",
       "rollNo": "1STD-19",
       "admissionNo": "130",
-      "emisId": "2031164730",
       "name": "PRANIKA",
       "nameTamil": "ப்ரனிகா",
       "grade": "1st Std",
@@ -2703,10 +2604,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2031809193",
+      "id": "SV-2026-100",
       "rollNo": "1STD-20",
       "admissionNo": "152",
-      "emisId": "2031809193",
       "name": "RITHIKA SRI S",
       "nameTamil": "ரித்திகா ஸ்ரீ ச",
       "grade": "1st Std",
@@ -2729,10 +2629,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2030381621",
+      "id": "SV-2026-101",
       "rollNo": "1STD-21",
       "admissionNo": "080",
-      "emisId": "2030381621",
       "name": "S HIMASREE",
       "nameTamil": "சௌ ஹீமாஸ்ரீ",
       "grade": "1st Std",
@@ -2755,10 +2654,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2030709006",
+      "id": "SV-2026-102",
       "rollNo": "1STD-22",
       "admissionNo": "83",
-      "emisId": "2030709006",
       "name": "SAATVIKA S",
       "nameTamil": "சாத்விக்கா செ",
       "grade": "1st Std",
@@ -2781,10 +2679,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2030381373",
+      "id": "SV-2026-103",
       "rollNo": "1STD-23",
       "admissionNo": "082",
-      "emisId": "2030381373",
       "name": "T KAVINYASRI",
       "nameTamil": "தி கவின்யாஸ்ரீ",
       "grade": "1st Std",
@@ -2807,10 +2704,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2032223502",
+      "id": "SV-2026-104",
       "rollNo": "1STD-24",
       "admissionNo": "200",
-      "emisId": "2032223502",
       "name": "THAMIZH INIYAL",
       "nameTamil": "தமிழ் இனியாள்",
       "grade": "1st Std",
@@ -2833,10 +2729,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2030588282",
+      "id": "SV-2026-105",
       "rollNo": "1STD-25",
       "admissionNo": "088",
-      "emisId": "2030588282",
       "name": "YOHITHA SRI R",
       "nameTamil": "யோகிதா ஸ்ரீ ரா",
       "grade": "1st Std",
@@ -2859,10 +2754,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2030774553",
+      "id": "SV-2026-106",
       "rollNo": "2STD-01",
       "admissionNo": "253",
-      "emisId": "2030774553",
       "name": "AKILAN K",
       "nameTamil": "அகிலன் கி",
       "grade": "2nd Std",
@@ -2885,10 +2779,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2030710254",
+      "id": "SV-2026-107",
       "rollNo": "2STD-02",
       "admissionNo": "111",
-      "emisId": "2030710254",
       "name": "DURGESH V",
       "nameTamil": "துர்கேஷ்  வீ",
       "grade": "2nd Std",
@@ -2911,10 +2804,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2029153161",
+      "id": "SV-2026-108",
       "rollNo": "2STD-03",
       "admissionNo": "003",
-      "emisId": "2029153161",
       "name": "GOWTHAM",
       "nameTamil": "கௌதம்",
       "grade": "2nd Std",
@@ -2937,10 +2829,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2029194876",
+      "id": "SV-2026-109",
       "rollNo": "2STD-04",
       "admissionNo": "017",
-      "emisId": "2029194876",
       "name": "HARIHARAN R",
       "nameTamil": "ஹரிஹரன்",
       "grade": "2nd Std",
@@ -2963,10 +2854,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2029153232",
+      "id": "SV-2026-110",
       "rollNo": "2STD-05",
       "admissionNo": "004",
-      "emisId": "2029153232",
       "name": "JAYA THARSAN",
       "nameTamil": "ஜெய தர்சன்",
       "grade": "2nd Std",
@@ -2989,10 +2879,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2030530434",
+      "id": "SV-2026-111",
       "rollNo": "2STD-06",
       "admissionNo": "086",
-      "emisId": "2030530434",
       "name": "JEEVA K",
       "nameTamil": "ஜீவா கா",
       "grade": "2nd Std",
@@ -3015,10 +2904,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2031164740",
+      "id": "SV-2026-112",
       "rollNo": "2STD-07",
       "admissionNo": "131",
-      "emisId": "2031164740",
       "name": "KAPILASWARAN",
       "nameTamil": "கபிலேஸ்வரன்",
       "grade": "2nd Std",
@@ -3041,10 +2929,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2029195101",
+      "id": "SV-2026-113",
       "rollNo": "2STD-08",
       "admissionNo": "019",
-      "emisId": "2029195101",
       "name": "LAKSHAN P",
       "nameTamil": "லட்சன்",
       "grade": "2nd Std",
@@ -3067,10 +2954,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2029898372",
+      "id": "SV-2026-114",
       "rollNo": "2STD-09",
       "admissionNo": "58",
-      "emisId": "2029898372",
       "name": "MITHRAN",
       "nameTamil": "மித்ரன்",
       "grade": "2nd Std",
@@ -3093,10 +2979,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2030727037",
+      "id": "SV-2026-115",
       "rollNo": "2STD-10",
       "admissionNo": "130",
-      "emisId": "2030727037",
       "name": "MORIS ROMAN R",
       "nameTamil": "மோரிஸ் ரோமன் ரா",
       "grade": "2nd Std",
@@ -3119,10 +3004,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2030589407",
+      "id": "SV-2026-116",
       "rollNo": "2STD-11",
       "admissionNo": "092",
-      "emisId": "2030589407",
       "name": "MUNEESWARAN S",
       "nameTamil": "முனீஸ்வரன் செ",
       "grade": "2nd Std",
@@ -3145,10 +3029,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2029898225",
+      "id": "SV-2026-117",
       "rollNo": "2STD-12",
       "admissionNo": "53",
-      "emisId": "2029898225",
       "name": "NALLAMUTHAZHAGAN",
       "nameTamil": "நல்லமுத்தழகன்",
       "grade": "2nd Std",
@@ -3171,10 +3054,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2031884550",
+      "id": "SV-2026-118",
       "rollNo": "2STD-13",
       "admissionNo": "179",
-      "emisId": "2031884550",
       "name": "O YUDHARSAN",
       "nameTamil": "ஓ யுதர்ஷன்",
       "grade": "2nd Std",
@@ -3197,10 +3079,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2030109179",
+      "id": "SV-2026-119",
       "rollNo": "2STD-14",
       "admissionNo": "66",
-      "emisId": "2030109179",
       "name": "PRABHAS",
       "nameTamil": "பிரபாஸ்",
       "grade": "2nd Std",
@@ -3223,10 +3104,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2029194652",
+      "id": "SV-2026-120",
       "rollNo": "2STD-15",
       "admissionNo": "011",
-      "emisId": "2029194652",
       "name": "PRAGUL",
       "nameTamil": "பிரகுல்",
       "grade": "2nd Std",
@@ -3249,10 +3129,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2030709466",
+      "id": "SV-2026-121",
       "rollNo": "2STD-16",
       "admissionNo": "104",
-      "emisId": "2030709466",
       "name": "RAJAPUGAZH B",
       "nameTamil": "ராஜபுகழ் பா",
       "grade": "2nd Std",
@@ -3275,10 +3154,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2030726951",
+      "id": "SV-2026-122",
       "rollNo": "2STD-17",
       "admissionNo": "128",
-      "emisId": "2030726951",
       "name": "RITHAN K",
       "nameTamil": "ரிதன் க",
       "grade": "2nd Std",
@@ -3301,10 +3179,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2031820681",
+      "id": "SV-2026-123",
       "rollNo": "2STD-18",
       "admissionNo": "161",
-      "emisId": "2031820681",
       "name": "S THASHVIN",
       "nameTamil": "தஸ்வின்",
       "grade": "2nd Std",
@@ -3327,10 +3204,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2030109317",
+      "id": "SV-2026-124",
       "rollNo": "2STD-19",
       "admissionNo": "68",
-      "emisId": "2030109317",
       "name": "SAIDHARSHAN",
       "nameTamil": "சாய்தர்ஷன்",
       "grade": "2nd Std",
@@ -3353,10 +3229,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2030709105",
+      "id": "SV-2026-125",
       "rollNo": "2STD-20",
       "admissionNo": "2277",
-      "emisId": "2030709105",
       "name": "SHIJON A",
       "nameTamil": "சிஜோன்  அ",
       "grade": "2nd Std",
@@ -3379,10 +3254,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2029754419",
+      "id": "SV-2026-126",
       "rollNo": "2STD-21",
       "admissionNo": "209",
-      "emisId": "2029754419",
       "name": "TAMILMANI M",
       "nameTamil": "தமிழ்மணி மு",
       "grade": "2nd Std",
@@ -3405,10 +3279,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2030709187",
+      "id": "SV-2026-127",
       "rollNo": "2STD-22",
       "admissionNo": "095",
-      "emisId": "2030709187",
       "name": "THEERAN T",
       "nameTamil": "தீரன் த",
       "grade": "2nd Std",
@@ -3431,10 +3304,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2030127181",
+      "id": "SV-2026-128",
       "rollNo": "2STD-23",
       "admissionNo": "71",
-      "emisId": "2030127181",
       "name": "VINSTO",
       "nameTamil": "வின்ஸ்டோ",
       "grade": "2nd Std",
@@ -3457,10 +3329,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2030709327",
+      "id": "SV-2026-129",
       "rollNo": "2STD-24",
       "admissionNo": "099",
-      "emisId": "2030709327",
       "name": "YURENDRA KUMAR G",
       "nameTamil": "யூரேந்திர குமார் கு",
       "grade": "2nd Std",
@@ -3483,10 +3354,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2029224019",
+      "id": "SV-2026-130",
       "rollNo": "2STD-25",
       "admissionNo": "030",
-      "emisId": "2029224019",
       "name": "ANCY JOSHNA U",
       "nameTamil": "ஆன்சி ஜோஷ்னா",
       "grade": "2nd Std",
@@ -3509,10 +3379,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2029153266",
+      "id": "SV-2026-131",
       "rollNo": "2STD-26",
       "admissionNo": "005",
-      "emisId": "2029153266",
       "name": "ARSHITHA",
       "nameTamil": "அர்ஷிதா",
       "grade": "2nd Std",
@@ -3535,10 +3404,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2029099590",
+      "id": "SV-2026-132",
       "rollNo": "2STD-27",
       "admissionNo": "001",
-      "emisId": "2029099590",
       "name": "ASHLIN SWASTHIKA",
       "nameTamil": "அஷ்லின் ஸ்வஸ்திகா",
       "grade": "2nd Std",
@@ -3561,10 +3429,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2030709273",
+      "id": "SV-2026-133",
       "rollNo": "2STD-28",
       "admissionNo": "097",
-      "emisId": "2030709273",
       "name": "AVANTHIKA SRI R",
       "nameTamil": "அவந்திகா ஸ்ரீ ரா",
       "grade": "2nd Std",
@@ -3587,10 +3454,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2029194807",
+      "id": "SV-2026-134",
       "rollNo": "2STD-29",
       "admissionNo": "015",
-      "emisId": "2029194807",
       "name": "BRIGIDA A",
       "nameTamil": "பிரிஜிடா",
       "grade": "2nd Std",
@@ -3613,10 +3479,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2030709354",
+      "id": "SV-2026-135",
       "rollNo": "2STD-30",
       "admissionNo": "100",
-      "emisId": "2030709354",
       "name": "DURGASHINI D",
       "nameTamil": "துர்காஷினி து",
       "grade": "2nd Std",
@@ -3639,10 +3504,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2029345871",
+      "id": "SV-2026-136",
       "rollNo": "2STD-31",
       "admissionNo": "039",
-      "emisId": "2029345871",
       "name": "JANA SRI",
       "nameTamil": "",
       "grade": "2nd Std",
@@ -3665,10 +3529,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2031141237",
+      "id": "SV-2026-137",
       "rollNo": "2STD-32",
       "admissionNo": "239",
-      "emisId": "2031141237",
       "name": "KANISHKA G M",
       "nameTamil": "கனிஷ்கா க ம",
       "grade": "2nd Std",
@@ -3691,10 +3554,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2029153082",
+      "id": "SV-2026-138",
       "rollNo": "2STD-33",
       "admissionNo": "002",
-      "emisId": "2029153082",
       "name": "KIRUBASHINI",
       "nameTamil": "கிருபாசினி",
       "grade": "2nd Std",
@@ -3717,10 +3579,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2030709294",
+      "id": "SV-2026-139",
       "rollNo": "2STD-34",
       "admissionNo": "098",
-      "emisId": "2030709294",
       "name": "LIYA SRI K",
       "nameTamil": "லியா ஸ்ரீ கு",
       "grade": "2nd Std",
@@ -3743,10 +3604,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2029176633",
+      "id": "SV-2026-140",
       "rollNo": "2STD-35",
       "admissionNo": "010",
-      "emisId": "2029176633",
       "name": "MAHALAKSHMI",
       "nameTamil": "மகாலட்சுமி",
       "grade": "2nd Std",
@@ -3769,10 +3629,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-1029677921",
+      "id": "SV-2026-141",
       "rollNo": "2STD-36",
       "admissionNo": "116",
-      "emisId": "1029677921",
       "name": "PRATHIKSHA",
       "nameTamil": "பிரதிக் ஷா",
       "grade": "2nd Std",
@@ -3795,10 +3654,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2030366742",
+      "id": "SV-2026-142",
       "rollNo": "2STD-37",
       "admissionNo": "187",
-      "emisId": "2030366742",
       "name": "PUGAZHINI R R",
       "nameTamil": "புகழினி ரா ரா",
       "grade": "2nd Std",
@@ -3821,10 +3679,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2030710468",
+      "id": "SV-2026-143",
       "rollNo": "2STD-38",
       "admissionNo": "117",
-      "emisId": "2030710468",
       "name": "RIAJOSH A",
       "nameTamil": "ரியாஜோஸ் அ",
       "grade": "2nd Std",
@@ -3847,10 +3704,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2030822451",
+      "id": "SV-2026-144",
       "rollNo": "2STD-39",
       "admissionNo": "110",
-      "emisId": "2030822451",
       "name": "RIYANA I",
       "nameTamil": "ரியானா இ",
       "grade": "2nd Std",
@@ -3873,10 +3729,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2029138299",
+      "id": "SV-2026-145",
       "rollNo": "2STD-40",
       "admissionNo": "211",
-      "emisId": "2029138299",
       "name": "SUDHIKSHA K",
       "nameTamil": "சுதிக் ஷா கா",
       "grade": "2nd Std",
@@ -3899,10 +3754,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2028168317",
+      "id": "SV-2026-146",
       "rollNo": "3STD-01",
       "admissionNo": "309",
-      "emisId": "2028168317",
       "name": "ARUNPRASATH",
       "nameTamil": "அருண்பிரசாத்",
       "grade": "3rd Std",
@@ -3925,10 +3779,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2028298178",
+      "id": "SV-2026-147",
       "rollNo": "3STD-02",
       "admissionNo": "337",
-      "emisId": "2028298178",
       "name": "BALA CHANDAR",
       "nameTamil": "பால சந்தர்",
       "grade": "3rd Std",
@@ -3951,10 +3804,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2029223976",
+      "id": "SV-2026-148",
       "rollNo": "3STD-03",
       "admissionNo": "026",
-      "emisId": "2029223976",
       "name": "HARSHITH A",
       "nameTamil": "",
       "grade": "3rd Std",
@@ -3977,10 +3829,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2029224002",
+      "id": "SV-2026-149",
       "rollNo": "3STD-04",
       "admissionNo": "029",
-      "emisId": "2029224002",
       "name": "KISHANTH A",
       "nameTamil": "",
       "grade": "3rd Std",
@@ -4003,10 +3854,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2029224044",
+      "id": "SV-2026-150",
       "rollNo": "3STD-05",
       "admissionNo": "031",
-      "emisId": "2029224044",
       "name": "LOKITH MITHRAN",
       "nameTamil": "லோகித் மித்ரன்",
       "grade": "3rd Std",
@@ -4029,10 +3879,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2028170652",
+      "id": "SV-2026-151",
       "rollNo": "3STD-06",
       "admissionNo": "314",
-      "emisId": "2028170652",
       "name": "MAXLIN",
       "nameTamil": "மேக்ஸ்லின்",
       "grade": "3rd Std",
@@ -4055,10 +3904,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2028245193",
+      "id": "SV-2026-152",
       "rollNo": "3STD-07",
       "admissionNo": "328",
-      "emisId": "2028245193",
       "name": "RAGHAVAN",
       "nameTamil": "ராகவன்",
       "grade": "3rd Std",
@@ -4081,10 +3929,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2028434344",
+      "id": "SV-2026-153",
       "rollNo": "3STD-08",
       "admissionNo": "312",
-      "emisId": "2028434344",
       "name": "RAJARISHI",
       "nameTamil": "ராஜரிஷி",
       "grade": "3rd Std",
@@ -4107,10 +3954,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2030822435",
+      "id": "SV-2026-154",
       "rollNo": "3STD-09",
       "admissionNo": "133",
-      "emisId": "2030822435",
       "name": "RISHWANTH R",
       "nameTamil": "ரிஷ்வந்த் ரெ",
       "grade": "3rd Std",
@@ -4133,10 +3979,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2029898295",
+      "id": "SV-2026-155",
       "rollNo": "3STD-10",
       "admissionNo": "167",
-      "emisId": "2029898295",
       "name": "RUKESH",
       "nameTamil": "ருகேஷ்",
       "grade": "3rd Std",
@@ -4159,10 +4004,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2029891843",
+      "id": "SV-2026-156",
       "rollNo": "3STD-11",
       "admissionNo": "40",
-      "emisId": "2029891843",
       "name": "VIBHU",
       "nameTamil": "விபு",
       "grade": "3rd Std",
@@ -4185,10 +4029,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2029588370",
+      "id": "SV-2026-157",
       "rollNo": "3STD-12",
       "admissionNo": "257A",
-      "emisId": "2029588370",
       "name": "VIPANESH P",
       "nameTamil": "விபனேஷ் ப",
       "grade": "3rd Std",
@@ -4211,10 +4054,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2030726721",
+      "id": "SV-2026-158",
       "rollNo": "3STD-13",
       "admissionNo": "123",
-      "emisId": "2030726721",
       "name": "VISHVANANDHAN",
       "nameTamil": "விஸ்வாநந்தன் சி",
       "grade": "3rd Std",
@@ -4237,10 +4079,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2030926650",
+      "id": "SV-2026-159",
       "rollNo": "3STD-14",
       "admissionNo": "137",
-      "emisId": "2030926650",
       "name": "DARIKA M",
       "nameTamil": "டாரிகா ம",
       "grade": "3rd Std",
@@ -4263,10 +4104,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2029891820",
+      "id": "SV-2026-160",
       "rollNo": "3STD-15",
       "admissionNo": "43",
-      "emisId": "2029891820",
       "name": "DEEPA SRI",
       "nameTamil": "தீபா ஸ்ரீ",
       "grade": "3rd Std",
@@ -4289,10 +4129,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2028875712",
+      "id": "SV-2026-161",
       "rollNo": "3STD-16",
       "admissionNo": "347",
-      "emisId": "2028875712",
       "name": "DHANSHIKA",
       "nameTamil": "தன்ஷிகா",
       "grade": "3rd Std",
@@ -4315,10 +4154,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2028170013",
+      "id": "SV-2026-162",
       "rollNo": "3STD-17",
       "admissionNo": "308",
-      "emisId": "2028170013",
       "name": "HARINIGA",
       "nameTamil": "ஹரிணிகா",
       "grade": "3rd Std",
@@ -4341,10 +4179,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2028868746",
+      "id": "SV-2026-163",
       "rollNo": "3STD-18",
       "admissionNo": "346",
-      "emisId": "2028868746",
       "name": "KANISHKA",
       "nameTamil": "கனிஷ்கா",
       "grade": "3rd Std",
@@ -4367,10 +4204,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2028851038",
+      "id": "SV-2026-164",
       "rollNo": "3STD-19",
       "admissionNo": "343",
-      "emisId": "2028851038",
       "name": "KANSHIKA",
       "nameTamil": "கனிஷ்கா",
       "grade": "3rd Std",
@@ -4393,10 +4229,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2030710284",
+      "id": "SV-2026-165",
       "rollNo": "3STD-20",
       "admissionNo": "112",
-      "emisId": "2030710284",
       "name": "KARNISIKA P",
       "nameTamil": "கார்னிசிகா பா",
       "grade": "3rd Std",
@@ -4419,10 +4254,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2028298097",
+      "id": "SV-2026-166",
       "rollNo": "3STD-21",
       "admissionNo": "331",
-      "emisId": "2028298097",
       "name": "MIRNALINI",
       "nameTamil": "மிர்னாலினி",
       "grade": "3rd Std",
@@ -4445,10 +4279,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2028169651",
+      "id": "SV-2026-167",
       "rollNo": "3STD-22",
       "admissionNo": "313",
-      "emisId": "2028169651",
       "name": "NIRANJANA",
       "nameTamil": "நிரஞ்சனா",
       "grade": "3rd Std",
@@ -4471,10 +4304,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2029171062",
+      "id": "SV-2026-168",
       "rollNo": "3STD-23",
       "admissionNo": "007",
-      "emisId": "2029171062",
       "name": "SHIVANI R",
       "nameTamil": "ஷிவானி ரா",
       "grade": "3rd Std",
@@ -4497,10 +4329,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2029176583",
+      "id": "SV-2026-169",
       "rollNo": "3STD-24",
       "admissionNo": "008",
-      "emisId": "2029176583",
       "name": "SHIVIKA R",
       "nameTamil": "",
       "grade": "3rd Std",
@@ -4523,10 +4354,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2028168840",
+      "id": "SV-2026-170",
       "rollNo": "3STD-25",
       "admissionNo": "002",
-      "emisId": "2028168840",
       "name": "SRUTHI",
       "nameTamil": "ஸ்ருதி",
       "grade": "3rd Std",
@@ -4549,10 +4379,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2028875650",
+      "id": "SV-2026-171",
       "rollNo": "4STD-01",
       "admissionNo": "351",
-      "emisId": "2028875650",
       "name": "HARI ROSHAN",
       "nameTamil": "ஹரி ரோஷன்",
       "grade": "4th Std",
@@ -4575,10 +4404,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2028297507",
+      "id": "SV-2026-172",
       "rollNo": "4STD-02",
       "admissionNo": "334",
-      "emisId": "2028297507",
       "name": "JOYSON THAIRIYAM",
       "nameTamil": "ஜாய்சன் தைரியம்",
       "grade": "4th Std",
@@ -4601,10 +4429,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2029194726",
+      "id": "SV-2026-173",
       "rollNo": "4STD-03",
       "admissionNo": "269",
-      "emisId": "2029194726",
       "name": "PRATHEESH M",
       "nameTamil": "பிரதீஷ்",
       "grade": "4th Std",
@@ -4627,10 +4454,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2029223985",
+      "id": "SV-2026-174",
       "rollNo": "4STD-04",
       "admissionNo": "027",
-      "emisId": "2029223985",
       "name": "PRAVEEN R",
       "nameTamil": "",
       "grade": "4th Std",
@@ -4653,10 +4479,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2028537467",
+      "id": "SV-2026-175",
       "rollNo": "4STD-05",
       "admissionNo": "230",
-      "emisId": "2028537467",
       "name": "RISHVANTH",
       "nameTamil": "ரிஷ்வந்த்",
       "grade": "4th Std",
@@ -4679,10 +4504,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2028297235",
+      "id": "SV-2026-176",
       "rollNo": "4STD-06",
       "admissionNo": "326",
-      "emisId": "2028297235",
       "name": "SAI SARAN",
       "nameTamil": "சாய் சரண்",
       "grade": "4th Std",
@@ -4705,10 +4529,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2029891832",
+      "id": "SV-2026-177",
       "rollNo": "4STD-07",
       "admissionNo": "42",
-      "emisId": "2029891832",
       "name": "SUSANTH",
       "nameTamil": "சுசாந்த்",
       "grade": "4th Std",
@@ -4731,10 +4554,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2028297449",
+      "id": "SV-2026-178",
       "rollNo": "4STD-08",
       "admissionNo": "026",
-      "emisId": "2028297449",
       "name": "THARUN RAJ",
       "nameTamil": "தருண் ராஜ்",
       "grade": "4th Std",
@@ -4757,10 +4579,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2027236282",
+      "id": "SV-2026-179",
       "rollNo": "4STD-09",
       "admissionNo": "290",
-      "emisId": "2027236282",
       "name": "ADHIKSHA",
       "nameTamil": "அதிக்சா",
       "grade": "4th Std",
@@ -4783,10 +4604,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2029176604",
+      "id": "SV-2026-180",
       "rollNo": "4STD-10",
       "admissionNo": "009",
-      "emisId": "2029176604",
       "name": "ASWITHA S",
       "nameTamil": "அஸ்விதா எஸ்",
       "grade": "4th Std",
@@ -4809,10 +4629,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2028297284",
+      "id": "SV-2026-181",
       "rollNo": "4STD-11",
       "admissionNo": "317",
-      "emisId": "2028297284",
       "name": "BHAVANYA R",
       "nameTamil": "பாவன்யா",
       "grade": "4th Std",
@@ -4835,10 +4654,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2029223915",
+      "id": "SV-2026-182",
       "rollNo": "4STD-12",
       "admissionNo": "022",
-      "emisId": "2029223915",
       "name": "DHARSHIKA G",
       "nameTamil": "",
       "grade": "4th Std",
@@ -4861,10 +4679,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2028697448",
+      "id": "SV-2026-183",
       "rollNo": "4STD-13",
       "admissionNo": "242",
-      "emisId": "2028697448",
       "name": "GOWSHIKA M",
       "nameTamil": "கௌசிகா",
       "grade": "4th Std",
@@ -4887,10 +4704,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2029891751",
+      "id": "SV-2026-184",
       "rollNo": "4STD-14",
       "admissionNo": "47",
-      "emisId": "2029891751",
       "name": "HARINISRI",
       "nameTamil": "ஹரினிஸ்ரீ",
       "grade": "4th Std",
@@ -4913,10 +4729,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2029598963",
+      "id": "SV-2026-185",
       "rollNo": "4STD-15",
       "admissionNo": "129",
-      "emisId": "2029598963",
       "name": "JASRITHA SRI K",
       "nameTamil": "ஜஷ்ஸ்ரீதா ஸ்ரீ",
       "grade": "4th Std",
@@ -4939,10 +4754,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2028868821",
+      "id": "SV-2026-186",
       "rollNo": "4STD-16",
       "admissionNo": "348",
-      "emisId": "2028868821",
       "name": "JOSIYA JEROLINE",
       "nameTamil": "ஜோசியா ஜெரோலின்",
       "grade": "4th Std",
@@ -4965,10 +4779,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2027236299",
+      "id": "SV-2026-187",
       "rollNo": "4STD-17",
       "admissionNo": "06",
-      "emisId": "2027236299",
       "name": "KALARANI",
       "nameTamil": "கலாராணி",
       "grade": "4th Std",
@@ -4991,10 +4804,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2028435089",
+      "id": "SV-2026-188",
       "rollNo": "4STD-18",
       "admissionNo": "054",
-      "emisId": "2028435089",
       "name": "LAKSHITHA",
       "nameTamil": "லக்ஷிதா",
       "grade": "4th Std",
@@ -5017,10 +4829,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2028180458",
+      "id": "SV-2026-189",
       "rollNo": "4STD-19",
       "admissionNo": "65",
-      "emisId": "2028180458",
       "name": "LISHA",
       "nameTamil": "லிஷா",
       "grade": "4th Std",
@@ -5043,10 +4854,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2029344389",
+      "id": "SV-2026-190",
       "rollNo": "4STD-20",
       "admissionNo": "036",
-      "emisId": "2029344389",
       "name": "MERRY YASHVI A",
       "nameTamil": "மேரி யாஷ்வி",
       "grade": "4th Std",
@@ -5069,10 +4879,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2028434677",
+      "id": "SV-2026-191",
       "rollNo": "4STD-21",
       "admissionNo": "052",
-      "emisId": "2028434677",
       "name": "MOUNIKA",
       "nameTamil": "மௌனிகா",
       "grade": "4th Std",
@@ -5095,10 +4904,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2028297696",
+      "id": "SV-2026-192",
       "rollNo": "4STD-22",
       "admissionNo": "235",
-      "emisId": "2028297696",
       "name": "PRATHIKSHA K",
       "nameTamil": "பிரதிக்ஷா கே",
       "grade": "4th Std",
@@ -5121,10 +4929,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-1027572637",
+      "id": "SV-2026-193",
       "rollNo": "4STD-23",
       "admissionNo": "302",
-      "emisId": "1027572637",
       "name": "PRIYA SRI",
       "nameTamil": "ப்ரியா ஸ்ரீ",
       "grade": "4th Std",
@@ -5147,10 +4954,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2027236322",
+      "id": "SV-2026-194",
       "rollNo": "4STD-24",
       "admissionNo": "08",
-      "emisId": "2027236322",
       "name": "SATHANA",
       "nameTamil": "சாதனா",
       "grade": "4th Std",
@@ -5173,10 +4979,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2027236338",
+      "id": "SV-2026-195",
       "rollNo": "4STD-25",
       "admissionNo": "10",
-      "emisId": "2027236338",
       "name": "VIBASHINI",
       "nameTamil": "விபாசிணி",
       "grade": "4th Std",
@@ -5199,10 +5004,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2027081025",
+      "id": "SV-2026-196",
       "rollNo": "5STD-01",
       "admissionNo": "296",
-      "emisId": "2027081025",
       "name": "HASWANTH",
       "nameTamil": "ஹஸ்வந்த்",
       "grade": "5th Std",
@@ -5225,10 +5029,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2026286010",
+      "id": "SV-2026-197",
       "rollNo": "5STD-02",
       "admissionNo": "280",
-      "emisId": "2026286010",
       "name": "KEVIN WESLEY",
       "nameTamil": "கெவின் வெஸ்லி",
       "grade": "5th Std",
@@ -5251,10 +5054,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2028176470",
+      "id": "SV-2026-198",
       "rollNo": "5STD-03",
       "admissionNo": "131",
-      "emisId": "2028176470",
       "name": "NAVEENKUMAR",
       "nameTamil": "நவீன்குமார்",
       "grade": "5th Std",
@@ -5277,10 +5079,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-1027470970",
+      "id": "SV-2026-199",
       "rollNo": "5STD-04",
       "admissionNo": "124",
-      "emisId": "1027470970",
       "name": "NOORUL HAQ B",
       "nameTamil": "நூருல் ஹக் ப",
       "grade": "5th Std",
@@ -5303,10 +5104,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-1027686478",
+      "id": "SV-2026-200",
       "rollNo": "5STD-05",
       "admissionNo": "180",
-      "emisId": "1027686478",
       "name": "PAVITHRAN A",
       "nameTamil": "பவித்ரன் ஆ",
       "grade": "5th Std",
@@ -5329,10 +5129,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2026286077",
+      "id": "SV-2026-201",
       "rollNo": "5STD-06",
       "admissionNo": "281",
-      "emisId": "2026286077",
       "name": "PRANAV MARAN",
       "nameTamil": "பிரணவ் மாறன்",
       "grade": "5th Std",
@@ -5355,10 +5154,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2026286175",
+      "id": "SV-2026-202",
       "rollNo": "5STD-07",
       "admissionNo": "282",
-      "emisId": "2026286175",
       "name": "RAKSAN BALA",
       "nameTamil": "ரக்சன் பாலா",
       "grade": "5th Std",
@@ -5381,10 +5179,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2029907909",
+      "id": "SV-2026-203",
       "rollNo": "5STD-08",
       "admissionNo": "307",
-      "emisId": "2029907909",
       "name": "SUDHARSAN",
       "nameTamil": "சுதர்சன்",
       "grade": "5th Std",
@@ -5407,10 +5204,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2027081070",
+      "id": "SV-2026-204",
       "rollNo": "5STD-09",
       "admissionNo": "294",
-      "emisId": "2027081070",
       "name": "AGALYA",
       "nameTamil": "அகல்யா",
       "grade": "5th Std",
@@ -5433,10 +5229,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2026285899",
+      "id": "SV-2026-205",
       "rollNo": "5STD-10",
       "admissionNo": "279",
-      "emisId": "2026285899",
       "name": "HARANI DEVI",
       "nameTamil": "ஹரணி தேவி",
       "grade": "5th Std",
@@ -5459,10 +5254,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2027081273",
+      "id": "SV-2026-206",
       "rollNo": "5STD-11",
       "admissionNo": "293",
-      "emisId": "2027081273",
       "name": "JEEVITHA D",
       "nameTamil": "ஜீவிதா து",
       "grade": "5th Std",
@@ -5485,10 +5279,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2028297847",
+      "id": "SV-2026-207",
       "rollNo": "5STD-12",
       "admissionNo": "142",
-      "emisId": "2028297847",
       "name": "KANISHKA",
       "nameTamil": "கனிஷ்கா",
       "grade": "5th Std",
@@ -5511,10 +5304,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-1028089730",
+      "id": "SV-2026-208",
       "rollNo": "5STD-13",
       "admissionNo": "093",
-      "emisId": "1028089730",
       "name": "KOKILARANI T",
       "nameTamil": "கோகிலா ராணி தி",
       "grade": "5th Std",
@@ -5537,10 +5329,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2028297810",
+      "id": "SV-2026-209",
       "rollNo": "5STD-14",
       "admissionNo": "142",
-      "emisId": "2028297810",
       "name": "NANTHINI",
       "nameTamil": "நந்தினி",
       "grade": "5th Std",
@@ -5563,10 +5354,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2028297935",
+      "id": "SV-2026-210",
       "rollNo": "5STD-15",
       "admissionNo": "133",
-      "emisId": "2028297935",
       "name": "REXY",
       "nameTamil": "ரெக்ஸி",
       "grade": "5th Std",
@@ -5589,10 +5379,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-1027572595",
+      "id": "SV-2026-211",
       "rollNo": "5STD-16",
       "admissionNo": "300",
-      "emisId": "1027572595",
       "name": "SATHANA P",
       "nameTamil": "சாதணா",
       "grade": "5th Std",
@@ -5615,10 +5404,9 @@
       "academicYear": "2026-2027"
     },
     {
-      "id": "SV-2028297176",
+      "id": "SV-2026-212",
       "rollNo": "5STD-17",
       "admissionNo": "138",
-      "emisId": "2028297176",
       "name": "YUVASRIKA R",
       "nameTamil": "யுவஸ்ரிகா ஆர்",
       "grade": "5th Std",

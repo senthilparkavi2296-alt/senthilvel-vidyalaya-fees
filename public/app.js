@@ -1369,7 +1369,6 @@ function filterStudentsList() {
       (s.name && s.name.toLowerCase().includes(query)) ||
       (s.nameTamil && s.nameTamil.toLowerCase().includes(query)) ||
       (s.id && s.id.toLowerCase().includes(query)) ||
-      (s.emisId && s.emisId.includes(query)) ||
       (s.admissionNo && s.admissionNo.toLowerCase().includes(query)) ||
       (s.rollNo && s.rollNo.toLowerCase().includes(query)) ||
       (s.parentName && s.parentName.toLowerCase().includes(query)) ||
