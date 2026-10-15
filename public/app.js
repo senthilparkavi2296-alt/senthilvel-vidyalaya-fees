@@ -243,8 +243,8 @@ function renderStudentsTable(students) {
 
     tr.innerHTML = `
       <td>
-        <div style="font-weight:700; color:#1e3a8a;">${s.id}</div>
-        <div style="font-size:0.75rem; color:#64748b;">Roll: ${s.rollNo || '-'}${s.admissionNo ? ` | Adm: ${s.admissionNo}` : ''}</div>
+        <div style="font-weight:700; color:#1e3a8a; font-size:0.95rem;">${s.rollNo}</div>
+        ${s.admissionNo ? `<div style="font-size:0.75rem; color:#64748b;">Adm: ${s.admissionNo}</div>` : ''}
       </td>
       <td>
         <strong style="color:#0f172a;">${s.name}</strong>
@@ -1205,7 +1205,7 @@ async function viewReceipt(receiptNo) {
     document.getElementById('rcptNo').innerText = p.receiptNo;
     document.getElementById('rcptDate').innerText = p.date;
     document.getElementById('rcptStudentName').innerText = p.studentName;
-    document.getElementById('rcptStudentId').innerText = `${p.studentId} / Roll: ${s?.rollNo || '-'}`;
+    document.getElementById('rcptStudentId').innerText = s?.admissionNo ? `${s.rollNo} (Adm No: ${s.admissionNo})` : (s?.rollNo || p.studentId || '-');
     document.getElementById('rcptGrade').innerText = `${p.grade} (Sec ${s?.section || 'A'})`;
     document.getElementById('rcptParent').innerText = s?.parentName || 'Parent / Guardian';
     document.getElementById('rcptMode').innerText = `${p.paymentMethod} (Txn: ${p.transactionId || 'N/A'})`;
@@ -1434,7 +1434,7 @@ function formatStudentWhatsAppMessage(student) {
   return `🏫 *${schoolName.toUpperCase()}*
 📍 ${schoolAddr} | 📞 ${schoolPhone}
 ----------------------------------------
-Dear Parent of *${s.name}* (Class: *${s.grade} - Sec ${s.section || 'A'}*, Roll: *${s.rollNo || s.id}*),
+Dear Parent of *${s.name}* (Class: *${s.grade} - Sec ${s.section || 'A'}*, Roll No: *${s.rollNo}*),
 
 Official Fee Status Update for Academic Year 2026-2027:
 

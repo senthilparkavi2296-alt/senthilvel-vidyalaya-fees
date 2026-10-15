@@ -340,14 +340,15 @@ app.post('/api/students', (req, res) => {
   }
 
   const count = db.students.length + 1;
-  const newId = `SV-2026-${String(count).padStart(3, '0')}`;
+  const gradeCode = newStudent.grade.replace(/[^A-Za-z0-9]/g, '').toUpperCase();
+  const rollNo = newStudent.rollNo ? newStudent.rollNo.trim() : `${gradeCode}-${String(count).padStart(2, '0')}`;
   
   const tFee = Number(newStudent.transportFee || 0);
   const tOpted = Boolean(newStudent.transportOpted === true || newStudent.transportOpted === 'true' || tFee > 0);
 
   const studentData = {
-    id: newStudent.id || newId,
-    rollNo: newStudent.rollNo || `${newStudent.grade.replace(/\s+/g, '').toUpperCase()}-${String(count).padStart(2, '0')}`,
+    id: rollNo,
+    rollNo: rollNo,
     name: newStudent.name.trim(),
     grade: newStudent.grade,
     section: newStudent.section || 'A',
