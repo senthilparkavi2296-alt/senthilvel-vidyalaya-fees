@@ -244,7 +244,7 @@ function renderStudentsTable(students) {
     tr.innerHTML = `
       <td>
         <div style="font-weight:700; color:#1e3a8a; font-size:0.95rem;">${s.rollNo}</div>
-        ${s.admissionNo ? `<div style="font-size:0.75rem; color:#64748b;">Adm: ${s.admissionNo}</div>` : ''}
+        ${s.cardNo ? `<div style="font-size:0.72rem; color:#64748b;">Card: #${s.cardNo}</div>` : ''}
       </td>
       <td>
         <strong style="color:#0f172a;">${s.name}</strong>
@@ -1371,6 +1371,7 @@ function filterStudentsList() {
       (s.id && s.id.toLowerCase().includes(query)) ||
       (s.admissionNo && s.admissionNo.toLowerCase().includes(query)) ||
       (s.rollNo && s.rollNo.toLowerCase().includes(query)) ||
+      (s.cardNo && s.cardNo.includes(query)) ||
       (s.parentName && s.parentName.toLowerCase().includes(query)) ||
       (s.contact && s.contact.includes(query)) ||
       (s.address && s.address.toLowerCase().includes(query))
