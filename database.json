@@ -28,103 +28,103 @@
   "feeStructures": [
     {
       "grade": "LKG",
-      "tuitionFee": 14000,
-      "termFee": 3000,
-      "examFee": 1500,
-      "labFee": 500,
+      "tuitionFee": 15000,
+      "termFee": 2000,
+      "examFee": 1000,
+      "labFee": 0,
       "libraryFee": 500,
-      "sportsFee": 1000,
-      "totalFee": 20000
+      "sportsFee": 500,
+      "totalFee": 19000
     },
     {
       "grade": "UKG",
       "tuitionFee": 15000,
-      "termFee": 3000,
-      "examFee": 1500,
-      "labFee": 500,
+      "termFee": 2000,
+      "examFee": 1000,
+      "labFee": 0,
       "libraryFee": 500,
-      "sportsFee": 1000,
-      "totalFee": 21500
+      "sportsFee": 500,
+      "totalFee": 19000
     },
     {
       "grade": "1st Std",
-      "tuitionFee": 17000,
-      "termFee": 3500,
-      "examFee": 1800,
-      "labFee": 1000,
-      "libraryFee": 700,
-      "sportsFee": 1000,
-      "totalFee": 25000
+      "tuitionFee": 15000,
+      "termFee": 2500,
+      "examFee": 1500,
+      "labFee": 500,
+      "libraryFee": 500,
+      "sportsFee": 0,
+      "totalFee": 20000
     },
     {
       "grade": "2nd Std",
-      "tuitionFee": 18000,
-      "termFee": 3500,
-      "examFee": 1800,
-      "labFee": 1000,
-      "libraryFee": 700,
-      "sportsFee": 1000,
-      "totalFee": 26000
+      "tuitionFee": 15000,
+      "termFee": 2500,
+      "examFee": 1500,
+      "labFee": 500,
+      "libraryFee": 500,
+      "sportsFee": 0,
+      "totalFee": 20000
     },
     {
       "grade": "3rd Std",
-      "tuitionFee": 19000,
-      "termFee": 4000,
-      "examFee": 2000,
-      "labFee": 1200,
-      "libraryFee": 800,
-      "sportsFee": 1000,
-      "totalFee": 28000
+      "tuitionFee": 15000,
+      "termFee": 2500,
+      "examFee": 1500,
+      "labFee": 500,
+      "libraryFee": 500,
+      "sportsFee": 0,
+      "totalFee": 20000
     },
     {
       "grade": "4th Std",
-      "tuitionFee": 20000,
-      "termFee": 4000,
-      "examFee": 2000,
-      "labFee": 1500,
-      "libraryFee": 1000,
-      "sportsFee": 1500,
-      "totalFee": 30000
+      "tuitionFee": 15000,
+      "termFee": 2500,
+      "examFee": 1500,
+      "labFee": 500,
+      "libraryFee": 500,
+      "sportsFee": 0,
+      "totalFee": 20000
     },
     {
       "grade": "5th Std",
-      "tuitionFee": 21000,
-      "termFee": 4500,
-      "examFee": 2200,
-      "labFee": 1800,
-      "libraryFee": 1000,
-      "sportsFee": 1500,
-      "totalFee": 32000
+      "tuitionFee": 16000,
+      "termFee": 3000,
+      "examFee": 1500,
+      "labFee": 750,
+      "libraryFee": 750,
+      "sportsFee": 0,
+      "totalFee": 22000
     },
     {
       "grade": "6th Std",
-      "tuitionFee": 23000,
-      "termFee": 5000,
-      "examFee": 2500,
-      "labFee": 2000,
-      "libraryFee": 1200,
-      "sportsFee": 1800,
-      "totalFee": 35500
+      "tuitionFee": 16000,
+      "termFee": 3000,
+      "examFee": 1500,
+      "labFee": 750,
+      "libraryFee": 750,
+      "sportsFee": 0,
+      "totalFee": 22000
     },
     {
       "grade": "7th Std",
-      "tuitionFee": 24500,
-      "termFee": 5000,
-      "examFee": 2500,
-      "labFee": 2500,
-      "libraryFee": 1200,
-      "sportsFee": 1800,
-      "totalFee": 37500
+      "tuitionFee": 16000,
+      "termFee": 3000,
+      "examFee": 1500,
+      "labFee": 750,
+      "libraryFee": 750,
+      "sportsFee": 0,
+      "totalFee": 22000
     },
     {
       "grade": "8th Std",
-      "tuitionFee": 26000,
-      "termFee": 5500,
-      "examFee": 2800,
-      "labFee": 3000,
-      "libraryFee": 1200,
-      "sportsFee": 2000,
-      "totalFee": 40500
+      "tuitionFee": 16000,
+      "termFee": 3000,
+      "examFee": 1500,
+      "labFee": 750,
+      "libraryFee": 750,
+      "sportsFee": 0,
+      "totalFee": 22000
     }
   ],
   "students": [
@@ -12324,6 +12324,27 @@
       "paymentMethod": "Cash",
       "transactionId": "REG-REC-2026-1037",
       "remarks": "Paid on 10/05",
+      "receivedBy": "School Accounts Office",
+      "boardingArea": "None (Self Commute)",
+      "transportPaymentMode": "None",
+      "transportMonth": "",
+      "transportFee": 0,
+      "transportOpted": false
+    },
+    {
+      "receiptNo": "REC-2026-1949",
+      "studentId": "49",
+      "studentName": "SHERWIN",
+      "grade": "UKG",
+      "date": "2026-09-22",
+      "term": "Term 1",
+      "feeCategories": [
+        "School Academic Fees"
+      ],
+      "amount": 5000,
+      "paymentMethod": "Cash",
+      "transactionId": "REG-REC-2026-1112",
+      "remarks": "Duplicate record synced with Roll 28",
       "receivedBy": "School Accounts Office",
       "boardingArea": "None (Self Commute)",
       "transportPaymentMode": "None",
