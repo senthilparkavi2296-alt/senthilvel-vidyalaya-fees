@@ -535,11 +535,78 @@ app.get('/api/whatsapp/due-reminders', (req, res) => {
   const studentsWithSummary = db.students.map(s => getStudentFeeSummary(s, db));
   const dueStudents = studentsWithSummary.filter(s => s.balanceDue > 0);
 
+  const VAN_MONTHS_LIST = [
+    'June', 'July', 'August', 'September', 'October', 'November', 
+    'December', 'January', 'February', 'March', 'April'
+  ];
+
+  const TAMIL_MONTHS_MAP = {
+    'June': 'ஜூன்', 'July': 'ஜூலை', 'August': 'ஆகஸ்ட்', 'September': 'செப்டம்பர்',
+    'October': 'அக்டோபர்', 'November': 'நவம்பர்', 'December': 'டிசம்பர்',
+    'January': 'ஜனவரி', 'February': 'பிப்ரவரி', 'March': 'மார்ச்', 'April': 'ஏப்ரல்'
+  };
+
   const reminders = dueStudents.map(s => {
     const rawContact = String(s.contact || '').replace(/[^0-9]/g, '');
     let phone = rawContact;
     if (phone.length === 10) {
       phone = `91${phone}`;
+    }
+
+    // Van 11-month calculation:
+    const studentVanPmts = db.payments.filter(p => 
+      p.studentId === s.id && 
+      (p.feeCategories && p.feeCategories.includes('Transport / Van Fees'))
+    );
+
+    const paidMonths = [];
+    VAN_MONTHS_LIST.forEach(m => {
+      if (studentVanPmts.some(p => 
+        (p.transportMonth && p.transportMonth.toLowerCase().includes(m.toLowerCase())) ||
+        (p.term && p.term.toLowerCase().includes(m.toLowerCase()))
+      )) {
+        paidMonths.push(m);
+      }
+    });
+
+    const remainingMonths = s.transportOpted 
+      ? VAN_MONTHS_LIST.filter(m => !paidMonths.includes(m))
+      : [];
+
+    const monthlyRate = Number(s.transportMonthlyFee || 0);
+    const annualVanFee = Number(s.transportFee || (monthlyRate * 11));
+    const vanPaid = Number(s.vanPaid || 0);
+    const vanDue = Number(s.vanDue || 0);
+
+    const engPaidMonthsStr = paidMonths.length > 0 ? paidMonths.join(', ') : 'None yet';
+    const engRemMonthsStr = remainingMonths.length > 0 ? remainingMonths.join(', ') : (s.transportOpted ? 'Nil (Fully Paid)' : 'Not Opted');
+    const tamilPaidMonthsStr = paidMonths.length > 0 ? paidMonths.map(m => TAMIL_MONTHS_MAP[m] || m).join(', ') : 'இதுவரை செலுத்தப்படவில்லை';
+    const tamilRemMonthsStr = remainingMonths.length > 0 ? remainingMonths.map(m => TAMIL_MONTHS_MAP[m] || m).join(', ') : (s.transportOpted ? 'முழுவதும் செலுத்தப்பட்டது' : 'தேர்வு செய்யப்படவில்லை');
+
+    let vanEngSection = '';
+    let vanTamSection = '';
+
+    if (s.transportOpted) {
+      vanEngSection = 
+`🚌 *VAN / TRANSPORTATION FEES (11-MONTH ACADEMIC YEAR):*
+• Monthly Rate: ₹${monthlyRate}/month
+• Total Annual Van Fee: ₹${annualVanFee.toLocaleString('en-IN')} (11 Months)
+• *Months Paid (${paidMonths.length}/11):* ${engPaidMonthsStr}
+• *Van Paid Amount:* ₹${vanPaid.toLocaleString('en-IN')}
+• *Remaining Due Months (${remainingMonths.length}/11):* ${engRemMonthsStr}
+• *Pending Van Due: ₹${vanDue.toLocaleString('en-IN')}*`;
+
+      vanTamSection = 
+`🚌 *பள்ளி வேன் கட்டணம் (11 மாதங்கள்):*
+• மாத கட்டணம்: ₹${monthlyRate}/மாதம்
+• மொத்த ஆண்டு வேன் கட்டணம்: ₹${annualVanFee.toLocaleString('en-IN')} (11 மாதங்கள்)
+• *செலுத்தப்பட்ட மாதங்கள் (${paidMonths.length}/11):* ${tamilPaidMonthsStr}
+• *செலுத்திய வேன் தொகை:* ₹${vanPaid.toLocaleString('en-IN')}
+• *செலுத்த வேண்டிய மீதமுள்ள மாதங்கள் (${remainingMonths.length}/11):* ${tamilRemMonthsStr}
+• *செலுத்த வேண்டிய வேன் நிலுவை: ₹${vanDue.toLocaleString('en-IN')}*`;
+    } else {
+      vanEngSection = `🚌 *VAN / TRANSPORTATION FEES:* Self Commute (Not Opted)`;
+      vanTamSection = `🚌 *பள்ளி வேன் கட்டணம்:* சொந்தப் பயணம் (தேர்வு செய்யப்படவில்லை)`;
     }
 
     const message = 
@@ -555,22 +622,37 @@ Official Fee Status Update for Academic Year 2026-2027:
 • Paid Amount: ₹${(s.schoolPaid || 0).toLocaleString('en-IN')}
 • *Pending School Due: ₹${(s.schoolDue || 0).toLocaleString('en-IN')}*
 
-🚌 *VAN / TRANSPORTATION FEES:*
-• Route / Boarding Stop: ${s.boardingArea || 'Local Stop'} (${s.transportType || (s.transportOpted ? 'Bus' : 'None')})
-• Total Van Fee: ₹${(s.transportFee || 0).toLocaleString('en-IN')}
-• Paid Amount: ₹${(s.vanPaid || 0).toLocaleString('en-IN')}
-• *Pending Van Due: ₹${(s.vanDue || 0).toLocaleString('en-IN')}*
+${vanEngSection}
 
 ----------------------------------------
 💰 *TOTAL CONSOLIDATED SUMMARY:*
 • Net Annual Payable: ₹${s.netPayable.toLocaleString('en-IN')}
 • Total Paid to Date: ₹${s.totalPaid.toLocaleString('en-IN')}
 ⚠️ *TOTAL BALANCE DUE: ₹${s.balanceDue.toLocaleString('en-IN')}*
+
+========================================
+🇮🇳 *தமிழ் வடிவம் (TAMIL VERSION)*:
 ----------------------------------------
-Kindly clear the pending fees at the school accounts counter or via UPI (GPay/PhonePe).
-For payment assistance, please call: 9789277169 / 9445987169.
-Thank you!
-- Accounts Office, Senthilvel Vidyalaya School`;
+அன்புள்ள பெற்றோருக்கு வணக்கம்! மாணவர்/மாணவி: *${s.name}* (வகுப்பு: *${s.grade}*, எண்: *${s.rollNo || s.id}*),
+
+2026-2027 கல்வியாண்டிற்கான கட்டண விபரம்:
+
+📚 *பள்ளி கல்விக்கட்டணம்:*
+• மொத்த பள்ளி கட்டணம்: ₹${(s.netSchoolPayable || 0).toLocaleString('en-IN')}
+• செலுத்திய தொகை: ₹${(s.schoolPaid || 0).toLocaleString('en-IN')}
+• *செலுத்த வேண்டிய பள்ளி நிலுவை: ₹${(s.schoolDue || 0).toLocaleString('en-IN')}*
+
+${vanTamSection}
+
+💰 *ஒட்டுமொத்த கட்டண விபரம்:*
+• ஆண்டு மொத்த கட்டணம்: ₹${s.netPayable.toLocaleString('en-IN')}
+• இதுவரை செலுத்திய மொத்த தொகை: ₹${s.totalPaid.toLocaleString('en-IN')}
+⚠️ *மொத்த நிலுவைத் தொகை: ₹${s.balanceDue.toLocaleString('en-IN')}*
+----------------------------------------
+நிலுவையில் உள்ள கட்டணத்தை பள்ளி அலுவலகத்தில் ரொக்கமாகவோ அல்லது UPI (GPay/PhonePe) மூலமாகவோ செலுத்துமாறு கேட்டுக்கொள்கிறோம்.
+தொடர்புக்கு: 9789277169 / 9445987169.
+நன்றி!
+- கணக்கு அலுவலகம், செந்தில்வேல் வித்யாலயா பள்ளி`;
 
     const whatsappUrl = phone ? `https://wa.me/${phone}?text=${encodeURIComponent(message)}` : '';
 

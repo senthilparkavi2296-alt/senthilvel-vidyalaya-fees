@@ -111,6 +111,7 @@ function switchTab(tabId) {
   // Update header title
   const titles = {
     'dashboard': 'Fees Management Dashboard',
+    'vanfees': 'School Van & Transportation Fees Register (11-Month Tracking)',
     'students': 'Students & Fees Ledger Directory',
     'collect': 'Collect Student Fees',
     'transactions': 'Fee Payment History & Official Receipts',
@@ -120,6 +121,10 @@ function switchTab(tabId) {
   const titleElem = document.getElementById('pageTitle');
   if (titleElem && titles[tabId]) {
     titleElem.innerText = titles[tabId];
+  }
+
+  if (tabId === 'vanfees') {
+    renderVanFeesTab();
   }
 
   initIcons();
@@ -138,6 +143,8 @@ async function loadAllData() {
     populateStudentSelect();
     populateStudentModalBoardingAreas();
     renderDefaulters();
+    renderVanFeesTab();
+    updateDashboardVanStats();
     initIcons();
   } catch (err) {
     console.error("Error loading application data:", err);
@@ -1261,20 +1268,29 @@ async function viewReceipt(receiptNo) {
       const isTransport = cat.toLowerCase().includes('transport');
       if (isTransport) {
         const tr = document.createElement('tr');
-        const desc = `Transportation Fee - Route: ${resolvedBoarding}`;
+        const monthPaid = p.transportMonth || p.term || 'Monthly Van Fee';
+        const vanDetails = s ? getStudentVanMonthDetails(s) : null;
+        const progressNote = vanDetails ? ` (${vanDetails.paidCount} of 11 Months Paid, ${vanDetails.remainingCount} Months Remaining)` : '';
+        const desc = `School Van / Transportation Fee — Month: ${monthPaid}`;
         const cycle = p.transportPaymentMode === 'Monthly' 
-          ? `Monthly Plan (${p.transportMonth || 'Month'})` 
+          ? `Monthly Fee: ${monthPaid}` 
           : `Yearly / Annual (2026-2027)`;
-        const lineAmt = transportAmt > 0 ? `₹${transportAmt.toLocaleString('en-IN')}` : 'Included';
+        const lineAmt = `₹${Number(p.amount).toLocaleString('en-IN')}`;
 
         tr.innerHTML = `
           <td>${slNo++}</td>
           <td>
-            <strong>${desc}</strong>
-            <span class="badge" style="background:#fef3c7; color:#92400e; margin-left:6px; font-size:0.75rem;">Stop: ${resolvedBoarding}</span>
+            <div style="font-weight:700; color:#1e3a8a; font-size:0.95rem;">${desc}</div>
+            <div style="margin-top:4px; display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
+              <span class="badge" style="background:#dcfce7; color:#15803d; font-weight:700; font-size:0.75rem;">
+                Paid Month: ${monthPaid}
+              </span>
+              <span class="badge" style="background:#fef3c7; color:#92400e; font-size:0.75rem;">Route Stop: ${resolvedBoarding}</span>
+              ${progressNote ? `<span style="font-size:0.75rem; color:#64748b; font-weight:600;">${progressNote}</span>` : ''}
+            </div>
           </td>
-          <td>${cycle}</td>
-          <td style="text-align: right; font-weight:700; color:#d97706;">${lineAmt}</td>
+          <td><strong style="color:#2563eb;">${cycle}</strong></td>
+          <td style="text-align: right; font-weight:800; color:#10b981; font-size:1.05rem;">${lineAmt}</td>
         `;
         tbody.appendChild(tr);
       } else {
@@ -1346,15 +1362,25 @@ function setupSearchAndFilters() {
 
   // Receipt filter
   const rGrade = document.getElementById('filterReceiptGrade');
-  rGrade.addEventListener('change', () => {
-    const selected = rGrade.value;
-    if (selected === 'All') {
-      renderTransactionsTable(allReceipts);
-    } else {
-      const filtered = allReceipts.filter(r => r.grade === selected);
-      renderTransactionsTable(filtered);
-    }
-  });
+  if (rGrade) {
+    rGrade.addEventListener('change', () => {
+      const selected = rGrade.value;
+      if (selected === 'All') {
+        renderTransactionsTable(allReceipts);
+      } else {
+        const filtered = allReceipts.filter(r => r.grade === selected);
+        renderTransactionsTable(filtered);
+      }
+    });
+  }
+
+  // Van Register Filters
+  const vanSearch = document.getElementById('vanSearchInput');
+  const vanGrade = document.getElementById('vanFilterGrade');
+  const vanStatus = document.getElementById('vanFilterStatus');
+  if (vanSearch) vanSearch.addEventListener('input', () => filterVanRegister());
+  if (vanGrade) vanGrade.addEventListener('change', () => filterVanRegister());
+  if (vanStatus) vanStatus.addEventListener('change', () => filterVanRegister());
 }
 
 function filterStudentsList() {
@@ -1426,11 +1452,96 @@ function showToast(message, isError = false) {
 }
 
 // 7. Automated WhatsApp Due Reminders System
+const VAN_MONTHS_LIST = [
+  'June', 'July', 'August', 'September', 'October', 'November', 
+  'December', 'January', 'February', 'March', 'April'
+];
+
+const TAMIL_MONTHS_MAP = {
+  'June': 'ஜூன்', 'July': 'ஜூலை', 'August': 'ஆகஸ்ட்', 'September': 'செப்டம்பர்',
+  'October': 'அக்டோபர்', 'November': 'நவம்பர்', 'December': 'டிசம்பர்',
+  'January': 'ஜனவரி', 'February': 'பிப்ரவரி', 'March': 'மார்ச்', 'April': 'ஏப்ரல்'
+};
+
+function getStudentVanMonthDetails(student) {
+  const s = student;
+  const vanPmts = (s.payments || []).filter(p => 
+    p.feeCategories && p.feeCategories.includes('Transport / Van Fees')
+  );
+
+  const paidMonths = [];
+  const monthPaymentMap = {};
+
+  VAN_MONTHS_LIST.forEach(m => {
+    const pmt = vanPmts.find(p => 
+      (p.transportMonth && p.transportMonth.toLowerCase().includes(m.toLowerCase())) ||
+      (p.term && p.term.toLowerCase().includes(m.toLowerCase()))
+    );
+    if (pmt) {
+      paidMonths.push(m);
+      monthPaymentMap[m] = pmt;
+    }
+  });
+
+  const remainingMonths = s.transportOpted 
+    ? VAN_MONTHS_LIST.filter(m => !paidMonths.includes(m))
+    : [];
+
+  const monthlyRate = Number(s.transportMonthlyFee || 0);
+  const annualVanFee = Number(s.transportFee || (monthlyRate * 11));
+  const vanPaid = Number(s.vanPaid !== undefined ? s.vanPaid : vanPmts.reduce((sum, p) => sum + Number(p.amount || 0), 0));
+  const vanDue = Math.max(0, annualVanFee - vanPaid);
+
+  return {
+    monthlyRate,
+    annualVanFee,
+    vanPaid,
+    vanDue,
+    paidMonths,
+    remainingMonths,
+    paidCount: paidMonths.length,
+    remainingCount: remainingMonths.length,
+    monthPaymentMap
+  };
+}
+
 function formatStudentWhatsAppMessage(student) {
   const s = student;
   const schoolName = schoolInfo.name || "Senthilvel Vidyalaya School";
   const schoolAddr = schoolInfo.address || "Pakkudi, Pudukottai";
   const schoolPhone = schoolInfo.phone || "9789277169, 9445987169";
+
+  const van = getStudentVanMonthDetails(s);
+  const engPaidMonthsStr = van.paidMonths.length > 0 ? van.paidMonths.join(', ') : 'None yet';
+  const engRemMonthsStr = van.remainingMonths.length > 0 ? van.remainingMonths.join(', ') : (s.transportOpted ? 'Nil (Fully Paid)' : 'Not Opted');
+  const tamilPaidMonthsStr = van.paidMonths.length > 0 ? van.paidMonths.map(m => TAMIL_MONTHS_MAP[m] || m).join(', ') : 'இதுவரை செலுத்தப்படவில்லை';
+  const tamilRemMonthsStr = van.remainingMonths.length > 0 ? van.remainingMonths.map(m => TAMIL_MONTHS_MAP[m] || m).join(', ') : (s.transportOpted ? 'முழுவதும் செலுத்தப்பட்டது' : 'தேர்வு செய்யப்படவில்லை');
+
+  let vanEngSection = '';
+  let vanTamSection = '';
+
+  if (s.transportOpted) {
+    vanEngSection = 
+`🚌 *VAN / TRANSPORTATION FEES (11-MONTH ACADEMIC YEAR):*
+• Monthly Rate: ₹${van.monthlyRate}/month
+• Total Annual Van Fee: ₹${van.annualVanFee.toLocaleString('en-IN')} (11 Months)
+• *Months Paid (${van.paidCount}/11):* ${engPaidMonthsStr}
+• *Van Paid Amount:* ₹${van.vanPaid.toLocaleString('en-IN')}
+• *Remaining Due Months (${van.remainingCount}/11):* ${engRemMonthsStr}
+• *Pending Van Due: ₹${van.vanDue.toLocaleString('en-IN')}*`;
+
+    vanTamSection = 
+`🚌 *பள்ளி வேன் கட்டணம் (11 மாதங்கள்):*
+• மாத கட்டணம்: ₹${van.monthlyRate}/மாதம்
+• மொத்த ஆண்டு வேன் கட்டணம்: ₹${van.annualVanFee.toLocaleString('en-IN')} (11 மாதங்கள்)
+• *செலுத்தப்பட்ட மாதங்கள் (${van.paidCount}/11):* ${tamilPaidMonthsStr}
+• *செலுத்திய வேன் தொகை:* ₹${van.vanPaid.toLocaleString('en-IN')}
+• *செலுத்த வேண்டிய மீதமுள்ள மாதங்கள் (${van.remainingCount}/11):* ${tamilRemMonthsStr}
+• *செலுத்த வேண்டிய வேன் நிலுவை: ₹${van.vanDue.toLocaleString('en-IN')}*`;
+  } else {
+    vanEngSection = `🚌 *VAN / TRANSPORTATION FEES:* Self Commute (Not Opted)`;
+    vanTamSection = `🚌 *பள்ளி வேன் கட்டணம்:* சொந்தப் பயணம் (தேர்வு செய்யப்படவில்லை)`;
+  }
 
   return `🏫 *${schoolName.toUpperCase()}*
 📍 ${schoolAddr} | 📞 ${schoolPhone}
@@ -1444,22 +1555,37 @@ Official Fee Status Update for Academic Year 2026-2027:
 • Paid Amount: ₹${(s.schoolPaid || 0).toLocaleString('en-IN')}
 • *Pending School Due: ₹${(s.schoolDue || 0).toLocaleString('en-IN')}*
 
-🚌 *VAN / TRANSPORTATION FEES:*
-• Route / Boarding Stop: ${s.boardingArea || 'Campus / Local'} (${s.transportType || (s.transportOpted ? 'Bus' : 'None')})
-• Total Van Fee: ₹${(s.transportFee || 0).toLocaleString('en-IN')}
-• Paid Amount: ₹${(s.vanPaid || 0).toLocaleString('en-IN')}
-• *Pending Van Due: ₹${(s.vanDue || 0).toLocaleString('en-IN')}*
+${vanEngSection}
 
 ----------------------------------------
 💰 *TOTAL CONSOLIDATED SUMMARY:*
 • Net Annual Payable: ₹${s.netPayable.toLocaleString('en-IN')}
 • Total Paid to Date: ₹${s.totalPaid.toLocaleString('en-IN')}
 ⚠️ *TOTAL BALANCE DUE: ₹${s.balanceDue.toLocaleString('en-IN')}*
+
+========================================
+🇮🇳 *தமிழ் வடிவம் (TAMIL VERSION)*:
 ----------------------------------------
-Kindly clear the pending fees at the school accounts counter or via UPI (GPay/PhonePe).
-For payment assistance, please call: 9789277169 / 9445987169.
-Thank you!
-- Accounts Office, Senthilvel Vidyalaya School`;
+அன்புள்ள பெற்றோருக்கு வணக்கம்! மாணவர்/மாணவி: *${s.name}* (வகுப்பு: *${s.grade}*, எண்: *${s.rollNo}*),
+
+2026-2027 கல்வியாண்டிற்கான கட்டண விபரம்:
+
+📚 *பள்ளி கல்விக்கட்டணம்:*
+• மொத்த பள்ளி கட்டணம்: ₹${(s.netSchoolPayable || 0).toLocaleString('en-IN')}
+• செலுத்திய தொகை: ₹${(s.schoolPaid || 0).toLocaleString('en-IN')}
+• *செலுத்த வேண்டிய பள்ளி நிலுவை: ₹${(s.schoolDue || 0).toLocaleString('en-IN')}*
+
+${vanTamSection}
+
+💰 *ஒட்டுமொத்த கட்டண விபரம்:*
+• ஆண்டு மொத்த கட்டணம்: ₹${s.netPayable.toLocaleString('en-IN')}
+• இதுவரை செலுத்திய மொத்த தொகை: ₹${s.totalPaid.toLocaleString('en-IN')}
+⚠️ *மொத்த நிலுவைத் தொகை: ₹${s.balanceDue.toLocaleString('en-IN')}*
+----------------------------------------
+நிலுவையில் உள்ள கட்டணத்தை பள்ளி அலுவலகத்தில் ரொக்கமாகவோ அல்லது UPI (GPay/PhonePe) மூலமாகவோ செலுத்துமாறு கேட்டுக்கொள்கிறோம்.
+தொடர்புக்கு: 9789277169 / 9445987169.
+நன்றி!
+- கணக்கு அலுவலகம், செந்தில்வேல் வித்யாலயா பள்ளி`;
 }
 
 function sendSingleWhatsAppReminder(studentId) {
@@ -1702,3 +1828,305 @@ function copyWaTemplateText() {
     showToast("Could not copy text", true);
   });
 }
+
+// ==========================================
+// 8. DEDICATED VAN / TRANSPORTATION FEES PAGE
+// ==========================================
+
+function formatShortDate(dateStr) {
+  if (!dateStr) return '';
+  const parts = String(dateStr).split('-');
+  if (parts.length === 3) {
+    const day = parseInt(parts[2], 10);
+    const month = parseInt(parts[1], 10);
+    return `${day}/${month}`;
+  }
+  return dateStr;
+}
+
+function updateDashboardVanStats() {
+  const vanStudents = allStudents.filter(s => s.transportOpted);
+  const totalVanStudents = vanStudents.length;
+  const totalVanExpected = vanStudents.reduce((sum, s) => {
+    const rate = Number(s.transportMonthlyFee || 0);
+    return sum + (s.transportFee || (rate * 11));
+  }, 0);
+  const totalVanCollected = vanStudents.reduce((sum, s) => sum + Number(s.vanPaid || 0), 0);
+  const totalVanDue = Math.max(0, totalVanExpected - totalVanCollected);
+  const pct = totalVanExpected > 0 ? ((totalVanCollected / totalVanExpected) * 100).toFixed(1) : 0;
+
+  const elStudents = document.getElementById('dashVanStudents');
+  if (elStudents) elStudents.innerText = totalVanStudents;
+  const elExpected = document.getElementById('dashVanExpected');
+  if (elExpected) elExpected.innerText = `₹${totalVanExpected.toLocaleString('en-IN')}`;
+  const elCollected = document.getElementById('dashVanCollected');
+  if (elCollected) elCollected.innerText = `₹${totalVanCollected.toLocaleString('en-IN')}`;
+  const elDue = document.getElementById('dashVanDue');
+  if (elDue) elDue.innerText = `₹${totalVanDue.toLocaleString('en-IN')}`;
+  const elPct = document.getElementById('dashVanPercent');
+  if (elPct) elPct.innerText = `${pct}% collected (${allReceipts.filter(r => r.feeCategories && r.feeCategories.includes('Transport / Van Fees')).length} receipts)`;
+}
+
+function renderVanFeesTab() {
+  const vanStudents = allStudents.filter(s => s.transportOpted);
+  const totalVanStudents = vanStudents.length;
+  const totalVanExpected = vanStudents.reduce((sum, s) => {
+    const rate = Number(s.transportMonthlyFee || 0);
+    return sum + (s.transportFee || (rate * 11));
+  }, 0);
+  const totalVanCollected = vanStudents.reduce((sum, s) => sum + Number(s.vanPaid || 0), 0);
+  const totalVanDue = Math.max(0, totalVanExpected - totalVanCollected);
+
+  // 1. Update KPI Cards
+  const elTotalStudents = document.getElementById('vanTotalStudents');
+  if (elTotalStudents) elTotalStudents.innerText = totalVanStudents;
+  const elTotalExpected = document.getElementById('vanTotalExpected');
+  if (elTotalExpected) elTotalExpected.innerText = `₹${totalVanExpected.toLocaleString('en-IN')}`;
+  const elTotalCollected = document.getElementById('vanTotalCollected');
+  if (elTotalCollected) elTotalCollected.innerText = `₹${totalVanCollected.toLocaleString('en-IN')}`;
+  const elTotalDue = document.getElementById('vanTotalDue');
+  if (elTotalDue) elTotalDue.innerText = `₹${totalVanDue.toLocaleString('en-IN')}`;
+
+  const vanReceipts = allReceipts.filter(r => r.feeCategories && r.feeCategories.includes('Transport / Van Fees'));
+  const elPaidSub = document.getElementById('vanPaidSubText');
+  if (elPaidSub) elPaidSub.innerText = `${vanReceipts.length} receipts recorded`;
+
+  // 2. Render Month-by-Month Register
+  renderVanRegisterTable(vanStudents);
+
+  // 3. Render Grade Breakdown
+  renderVanGradeStats(vanStudents);
+
+  // 4. Render Recent Van Receipts
+  renderVanRecentReceipts(vanReceipts);
+
+  initIcons();
+}
+
+function renderVanRegisterTable(students) {
+  const tbody = document.getElementById('vanRegisterBody');
+  if (!tbody) return;
+  tbody.innerHTML = '';
+
+  if (students.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="20" style="text-align:center; padding:32px; color:#64748b;">No van student records found matching the criteria.</td></tr>`;
+    return;
+  }
+
+  students.forEach(s => {
+    const van = getStudentVanMonthDetails(s);
+    const tr = document.createElement('tr');
+
+    let monthCellsHtml = '';
+    VAN_MONTHS_LIST.forEach(month => {
+      const pmt = van.monthPaymentMap[month];
+      if (pmt) {
+        monthCellsHtml += `
+          <td style="text-align:center; padding:6px 4px;">
+            <span class="van-paid-pill" title="${month} Paid ₹${pmt.amount} on ${pmt.date} (${pmt.receiptNo})">
+              ₹${pmt.amount}
+              <span class="van-date-sub">${formatShortDate(pmt.date)}</span>
+            </span>
+          </td>
+        `;
+      } else {
+        monthCellsHtml += `
+          <td style="text-align:center; padding:6px 4px;">
+            <span class="van-due-pill" title="${month} Van Fee Pending">-</span>
+          </td>
+        `;
+      }
+    });
+
+    tr.innerHTML = `
+      <td>
+        <strong style="color:#1e3a8a;">${s.rollNo}</strong>
+      </td>
+      <td>
+        <div style="font-weight:700; color:#0f172a;">${s.name}</div>
+        <div style="font-size:0.72rem; color:#64748b;">${s.boardingArea || 'School Van Route'}</div>
+      </td>
+      <td>
+        <span class="grade-pill">${s.grade}</span> Sec ${s.section || 'A'}
+      </td>
+      <td style="font-weight:700; color:#0f172a;">
+        ₹${van.monthlyRate}
+      </td>
+      <td style="font-weight:600; color:#475569;">
+        ₹${van.annualVanFee.toLocaleString('en-IN')}
+      </td>
+      ${monthCellsHtml}
+      <td style="text-align:center;">
+        <div class="van-status-pill">
+          <span class="paid-badge">${van.paidCount} / 11 Paid</span>
+          ${van.remainingCount > 0 ? `<span class="due-badge">${van.remainingCount} Due</span>` : `<span style="font-size:0.7rem; color:#16a34a; font-weight:700;">Completed</span>`}
+        </div>
+      </td>
+      <td style="color:#059669; font-weight:700;">
+        ₹${van.vanPaid.toLocaleString('en-IN')}
+      </td>
+      <td style="color:#ef4444; font-weight:800;">
+        ₹${van.vanDue.toLocaleString('en-IN')}
+      </td>
+      <td style="text-align:center;">
+        <div style="display:flex; gap:4px; justify-content:center;">
+          <button class="btn btn-outline btn-sm" onclick="openVanFeeCollectModal('${s.id}')" title="Collect Next Van Month" style="padding:4px 8px; font-size:0.78rem;">
+            <i data-lucide="credit-card" style="width:13px; height:13px; display:inline;"></i> Collect
+          </button>
+          <button class="btn btn-outline btn-sm" style="color:#22c55e; border-color:#86efac; padding:4px 6px;" onclick="sendSingleWhatsAppReminder('${s.id}')" title="Send WhatsApp Status">
+            <i data-lucide="message-circle" style="width:13px; height:13px;"></i>
+          </button>
+        </div>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+function filterVanRegister() {
+  const query = (document.getElementById('vanSearchInput')?.value || '').toLowerCase().trim();
+  const selectedGrade = document.getElementById('vanFilterGrade')?.value || 'All';
+  const selectedStatus = document.getElementById('vanFilterStatus')?.value || 'All';
+
+  let filtered = allStudents.filter(s => s.transportOpted);
+
+  if (selectedGrade !== 'All') {
+    filtered = filtered.filter(s => s.grade.toLowerCase() === selectedGrade.toLowerCase());
+  }
+
+  if (selectedStatus !== 'All') {
+    filtered = filtered.filter(s => {
+      const van = getStudentVanMonthDetails(s);
+      if (selectedStatus === 'Paid') return van.remainingCount === 0;
+      if (selectedStatus === 'Partial') return van.paidCount > 0 && van.remainingCount > 0;
+      if (selectedStatus === 'Unpaid') return van.paidCount === 0;
+      return true;
+    });
+  }
+
+  if (query) {
+    filtered = filtered.filter(s => 
+      (s.name && s.name.toLowerCase().includes(query)) ||
+      (s.rollNo && String(s.rollNo).toLowerCase().includes(query)) ||
+      (s.boardingArea && s.boardingArea.toLowerCase().includes(query)) ||
+      (s.contact && String(s.contact).includes(query))
+    );
+  }
+
+  renderVanRegisterTable(filtered);
+  initIcons();
+}
+
+function filterVanByGrade(grade) {
+  const sel = document.getElementById('vanFilterGrade');
+  if (sel) sel.value = grade;
+  filterVanRegister();
+  const table = document.getElementById('vanRegisterTable');
+  if (table) table.scrollIntoView({ behavior: 'smooth' });
+}
+
+function renderVanGradeStats(vanStudents) {
+  const tbody = document.getElementById('vanGradeStatsBody');
+  if (!tbody) return;
+  tbody.innerHTML = '';
+
+  const grades = ['UKG', '1st Std', '2nd Std', '3rd Std', '4th Std', '5th Std', '6th Std', '7th Std', '8th Std'];
+
+  grades.forEach(g => {
+    const totalInGrade = allStudents.filter(s => s.grade === g).length;
+    const vanInGrade = vanStudents.filter(s => s.grade === g);
+    if (vanInGrade.length === 0) return;
+
+    const rates = vanInGrade.map(s => Number(s.transportMonthlyFee || 0)).filter(r => r > 0);
+    const minRate = rates.length > 0 ? Math.min(...rates) : 0;
+    const maxRate = rates.length > 0 ? Math.max(...rates) : 0;
+    const rateDisplay = minRate === maxRate ? `₹${minRate}/mo` : `₹${minRate} – ₹${maxRate}/mo`;
+
+    const expected = vanInGrade.reduce((sum, s) => {
+      const rate = Number(s.transportMonthlyFee || 0);
+      return sum + (s.transportFee || (rate * 11));
+    }, 0);
+    const collected = vanInGrade.reduce((sum, s) => sum + Number(s.vanPaid || 0), 0);
+    const due = Math.max(0, expected - collected);
+    const ratePct = expected > 0 ? ((collected / expected) * 100).toFixed(1) : 0;
+
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><strong>${g}</strong></td>
+      <td>${totalInGrade}</td>
+      <td><span class="badge" style="background:#dbeafe; color:#1d4ed8; font-weight:700;">${vanInGrade.length} (${((vanInGrade.length/totalInGrade)*100).toFixed(0)}%)</span></td>
+      <td style="font-weight:600; color:#475569;">${rateDisplay}</td>
+      <td><strong>₹${expected.toLocaleString('en-IN')}</strong></td>
+      <td style="color:#059669; font-weight:700;">₹${collected.toLocaleString('en-IN')}</td>
+      <td style="color:#ef4444; font-weight:700;">₹${due.toLocaleString('en-IN')}</td>
+      <td>
+        <div style="display:flex; align-items:center; gap:8px;">
+          <div style="flex:1; background:#e2e8f0; border-radius:4px; height:8px; overflow:hidden;">
+            <div style="background:#10b981; height:100%; width:${ratePct}%;"></div>
+          </div>
+          <span style="font-size:0.8rem; font-weight:700; color:#0f172a;">${ratePct}%</span>
+        </div>
+      </td>
+      <td>
+        <button class="btn btn-outline btn-sm" onclick="filterVanByGrade('${g}')">View Class</button>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+function renderVanRecentReceipts(vanReceipts) {
+  const tbody = document.getElementById('vanRecentPayments');
+  if (!tbody) return;
+  tbody.innerHTML = '';
+
+  const recents = vanReceipts.slice(0, 15);
+  if (recents.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:20px; color:#64748b;">No van payments recorded yet.</td></tr>`;
+    return;
+  }
+
+  recents.forEach(p => {
+    const tr = document.createElement('tr');
+    const feeMonth = p.transportMonth || p.term || 'Van Fee';
+    tr.innerHTML = `
+      <td><strong style="color:#1e3a8a;">${p.receiptNo}</strong></td>
+      <td><strong>${p.studentName}</strong></td>
+      <td><span class="grade-pill">${p.grade}</span></td>
+      <td><span class="badge" style="background:#dcfce7; color:#15803d; font-weight:700;">${feeMonth}</span></td>
+      <td>${p.date}</td>
+      <td style="font-weight:800; color:#10b981;">₹${Number(p.amount).toLocaleString('en-IN')}</td>
+      <td>
+        <button class="btn btn-outline btn-sm" onclick="viewReceipt('${p.receiptNo}')" style="padding:3px 8px;">
+          <i data-lucide="printer" style="width:13px; height:13px; display:inline;"></i> Receipt
+        </button>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+function openVanFeeCollectModal(studentId) {
+  switchTab('collect');
+  const sel = document.getElementById('collectStudentSelect');
+  if (sel && studentId) {
+    sel.value = studentId;
+    sel.dispatchEvent(new Event('change'));
+  }
+  const termSel = document.getElementById('collectTerm');
+  if (termSel) {
+    termSel.value = 'Monthly Transport Fee';
+  }
+  if (studentId) {
+    const s = allStudents.find(st => st.id === studentId);
+    if (s && s.transportMonthlyFee) {
+      const amtInp = document.getElementById('collectAmount');
+      if (amtInp) amtInp.value = s.transportMonthlyFee;
+    }
+  }
+}
+
+function printVanRegister() {
+  window.print();
+}
+

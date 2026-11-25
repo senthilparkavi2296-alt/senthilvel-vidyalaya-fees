@@ -33,6 +33,10 @@
         <i data-lucide="layout-dashboard"></i>
         <span>Dashboard</span>
       </a>
+      <a class="nav-link" data-tab="vanfees">
+        <i data-lucide="bus"></i>
+        <span>Van Fees Register</span>
+      </a>
       <a class="nav-link" data-tab="students">
         <i data-lucide="users"></i>
         <span>Students Directory</span>
@@ -132,6 +136,63 @@
           </div>
         </div>
 
+        <!-- Dedicated Van Fees Section in Dashboard -->
+        <div class="card" style="margin-bottom: 24px; border-left: 4px solid #2563eb; background: linear-gradient(180deg, #eff6ff 0%, #ffffff 100%);">
+          <div class="card-header" style="flex-wrap: wrap; gap: 12px; border-bottom: 1px solid #dbeafe;">
+            <div>
+              <div style="display:flex; align-items:center; gap:8px;">
+                <span style="background:#2563eb; color:white; width:32px; height:32px; border-radius:8px; display:flex; align-items:center; justify-content:center; box-shadow:0 2px 6px rgba(37,99,235,0.3);">
+                  <i data-lucide="bus" style="width:18px; height:18px;"></i>
+                </span>
+                <h3 class="card-title" style="color:#1e3a8a; font-size:1.05rem;">Van / Transportation Fees Collection Summary</h3>
+                <span class="badge" style="background:#2563eb; color:#fff; font-size:0.75rem;">150 Active Students</span>
+              </div>
+              <p style="font-size:0.83rem; color:#3b82f6; margin-top:4px;">
+                Official monthly van fee collection tracking across UKG to 8th Standard school van routes
+              </p>
+            </div>
+            <div style="display:flex; gap:10px;">
+              <button class="btn btn-primary btn-sm" onclick="switchTab('vanfees')" style="background:#1d4ed8; font-weight:700;">
+                <i data-lucide="bus"></i> Open Van Fees Register Page &rarr;
+              </button>
+            </div>
+          </div>
+          <div class="stats-grid" style="padding: 18px 20px 14px; margin-bottom: 0; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));">
+            <div class="stat-card" style="border: 1px solid #bfdbfe; background:white;">
+              <div class="stat-info">
+                <span class="stat-label">Van Enrolled Students</span>
+                <div class="stat-val" style="color:#1e3a8a;" id="dashVanStudents">150</div>
+                <div class="stat-sub">Across 9 class levels</div>
+              </div>
+              <div class="stat-icon blue"><i data-lucide="users"></i></div>
+            </div>
+            <div class="stat-card" style="border: 1px solid #e2e8f0; background:white;">
+              <div class="stat-info">
+                <span class="stat-label">Annual Van Expected</span>
+                <div class="stat-val" style="color:#0f172a;" id="dashVanExpected">₹12,71,400</div>
+                <div class="stat-sub">Full year routes</div>
+              </div>
+              <div class="stat-icon purple"><i data-lucide="wallet"></i></div>
+            </div>
+            <div class="stat-card" style="border: 1px solid #bbf7d0; background:white;">
+              <div class="stat-info">
+                <span class="stat-label">Van Fees Collected</span>
+                <div class="stat-val" style="color:#10b981;" id="dashVanCollected">₹4,99,850</div>
+                <div class="stat-sub" id="dashVanPercent" style="color:#059669; font-weight:600;">619 receipts recorded</div>
+              </div>
+              <div class="stat-icon green"><i data-lucide="check-circle-2"></i></div>
+            </div>
+            <div class="stat-card" style="border: 1px solid #fecaca; background:white;">
+              <div class="stat-info">
+                <span class="stat-label">Van Outstanding Due</span>
+                <div class="stat-val" style="color:#ef4444;" id="dashVanDue">₹7,71,550</div>
+                <div class="stat-sub" style="color:#dc2626;">Pending installments</div>
+              </div>
+              <div class="stat-icon amber"><i data-lucide="alert-circle"></i></div>
+            </div>
+          </div>
+        </div>
+
         <!-- Grade-wise Overview Table -->
         <div class="card">
           <div class="card-header">
@@ -178,6 +239,186 @@
                 </tr>
               </thead>
               <tbody id="dashRecentPayments">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB: VAN FEES REGISTER PORTAL -->
+      <section id="vanfees" class="tab-pane">
+        <!-- Top Van Metric Cards -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-info">
+              <span class="stat-label">Total Van Enrolled</span>
+              <div class="stat-val" style="color:#1e3a8a;" id="vanTotalStudents">150</div>
+              <div class="stat-sub">UKG to 8th Standard routes</div>
+            </div>
+            <div class="stat-icon blue"><i data-lucide="bus"></i></div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-info">
+              <span class="stat-label">Total Van Expected</span>
+              <div class="stat-val" id="vanTotalExpected">₹12,71,400</div>
+              <div class="stat-sub">10-month academic routes</div>
+            </div>
+            <div class="stat-icon purple"><i data-lucide="wallet"></i></div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-info">
+              <span class="stat-label">Van Fees Collected</span>
+              <div class="stat-val" style="color: #10b981;" id="vanTotalCollected">₹4,99,850</div>
+              <div class="stat-sub" id="vanPaidSubText" style="color:#059669; font-weight:600;">619 receipts recorded</div>
+            </div>
+            <div class="stat-icon green"><i data-lucide="check-circle-2"></i></div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-info">
+              <span class="stat-label">Van Outstanding Due</span>
+              <div class="stat-val" style="color: #ef4444;" id="vanTotalDue">₹7,71,550</div>
+              <div class="stat-sub" style="color:#dc2626;">Pending installments</div>
+            </div>
+            <div class="stat-icon amber"><i data-lucide="alert-circle"></i></div>
+          </div>
+        </div>
+
+        <!-- Filter & Search Toolbar -->
+        <div class="toolbar-row">
+          <div class="filters-group">
+            <div class="search-box">
+              <i data-lucide="search"></i>
+              <input type="text" id="vanSearchInput" placeholder="Search by name, roll no, route...">
+            </div>
+
+            <select id="vanFilterGrade" class="select-ctrl">
+              <option value="All">All Grades (UKG - 8th)</option>
+              <option value="UKG">UKG (A &amp; B)</option>
+              <option value="1st Std">1st Std</option>
+              <option value="2nd Std">2nd Std</option>
+              <option value="3rd Std">3rd Std</option>
+              <option value="4th Std">4th Std</option>
+              <option value="5th Std">5th Std</option>
+              <option value="6th Std">6th Std</option>
+              <option value="7th Std">7th Std</option>
+              <option value="8th Std">8th Std</option>
+            </select>
+
+            <select id="vanFilterStatus" class="select-ctrl">
+              <option value="All">All Payment Status</option>
+              <option value="Paid">Fully Paid</option>
+              <option value="Partial">Partial Dues</option>
+              <option value="Unpaid">Unpaid</option>
+            </select>
+          </div>
+
+          <div style="display:flex; gap:10px; flex-wrap:wrap;">
+            <button class="btn btn-outline btn-sm" onclick="printVanRegister()">
+              <i data-lucide="printer"></i> Print Van Register
+            </button>
+            <button class="btn btn-primary btn-sm" onclick="openVanFeeCollectModal()">
+              <i data-lucide="credit-card"></i> Collect Van Fee
+            </button>
+          </div>
+        </div>
+
+        <!-- Month-by-Month Van Register Table (Notebook Style) -->
+        <div class="card">
+          <div class="card-header" style="flex-wrap: wrap; gap: 10px;">
+            <div>
+              <h3 class="card-title">Official Month-by-Month Student Van Register</h3>
+              <p style="font-size:0.8rem; color:#64748b;">Individual monthly fee breakdown extracted directly from official physical van registers</p>
+            </div>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span class="badge" style="background:#dcfce7; color:#15803d; font-size:0.75rem;">● Green = Paid (with Date)</span>
+              <span class="badge" style="background:#f1f5f9; color:#64748b; font-size:0.75rem;">○ Dash = Due</span>
+            </div>
+          </div>
+          <div class="table-responsive">
+            <table class="custom-table" id="vanRegisterTable" style="font-size:0.86rem;">
+              <thead>
+                <tr>
+                  <th style="min-width:60px;">Roll</th>
+                  <th style="min-width:140px;">Student Name</th>
+                  <th style="min-width:90px;">Class</th>
+                  <th style="min-width:85px;">Rate/mo</th>
+                  <th style="min-width:95px;">Annual (11 Mo)</th>
+                  <th style="min-width:65px; text-align:center;">Jun</th>
+                  <th style="min-width:65px; text-align:center;">Jul</th>
+                  <th style="min-width:65px; text-align:center;">Aug</th>
+                  <th style="min-width:65px; text-align:center;">Sep</th>
+                  <th style="min-width:65px; text-align:center;">Oct</th>
+                  <th style="min-width:65px; text-align:center;">Nov</th>
+                  <th style="min-width:65px; text-align:center;">Dec</th>
+                  <th style="min-width:65px; text-align:center;">Jan</th>
+                  <th style="min-width:65px; text-align:center;">Feb</th>
+                  <th style="min-width:65px; text-align:center;">Mar</th>
+                  <th style="min-width:65px; text-align:center;">Apr</th>
+                  <th style="min-width:125px; text-align:center;">11-Month Status</th>
+                  <th style="min-width:95px; color:#10b981;">Total Paid</th>
+                  <th style="min-width:95px; color:#ef4444;">Balance Due</th>
+                  <th style="min-width:110px; text-align:center;">Action</th>
+                </tr>
+              </thead>
+              <tbody id="vanRegisterBody">
+                <!-- Dynamically populated via renderVanFeesTab() -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Grade-wise Van Collection Breakdown Table -->
+        <div class="card" style="margin-top:24px;">
+          <div class="card-header">
+            <h3 class="card-title">Class-Wise Van Fees Collection Breakdown</h3>
+            <span class="badge" style="background:#e0f2fe; color:#0369a1;">Route Analysis</span>
+          </div>
+          <div class="table-responsive">
+            <table class="custom-table" id="vanGradeStatsTable">
+              <thead>
+                <tr>
+                  <th>Class / Grade</th>
+                  <th>Total Enrolled</th>
+                  <th>Van Users</th>
+                  <th>Monthly Rate</th>
+                  <th>Annual Expected (₹)</th>
+                  <th>Collected (₹)</th>
+                  <th>Due (₹)</th>
+                  <th>Collection Rate</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="vanGradeStatsBody">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Recent Van Fee Payment Receipts -->
+        <div class="card" style="margin-top:24px;">
+          <div class="card-header">
+            <h3 class="card-title">Latest Van Fee Receipts</h3>
+            <span class="badge" style="background:#fef3c7; color:#92400e;">619 Recorded Receipts</span>
+          </div>
+          <div class="table-responsive">
+            <table class="custom-table">
+              <thead>
+                <tr>
+                  <th>Receipt No</th>
+                  <th>Student Name</th>
+                  <th>Class</th>
+                  <th>Fee Month</th>
+                  <th>Payment Date</th>
+                  <th>Amount Paid</th>
+                  <th>Receipt</th>
+                </tr>
+              </thead>
+              <tbody id="vanRecentPayments">
                 <!-- Dynamically populated -->
               </tbody>
             </table>
@@ -490,7 +731,10 @@
               <h3 class="card-title">Place-Wise Transportation Fee Structure (School Bus / Van Routes)</h3>
               <p style="font-size:0.82rem; color:#64748b;">Set monthly and yearly transportation fees for each bus boarding place. Students belonging to the same place automatically receive these standard fees.</p>
             </div>
-            <div style="display:flex; gap:10px;">
+            <div style="display:flex; gap:10px; flex-wrap:wrap;">
+              <button class="btn btn-outline btn-sm" onclick="switchTab('vanfees')" style="border-color:#2563eb; color:#1d4ed8; font-weight:600;">
+                <i data-lucide="bus"></i> Open Student Van Register &rarr;
+              </button>
               <button class="btn btn-outline btn-sm" onclick="addNewTransportArea()">
                 <i data-lucide="plus-circle"></i> Add Route Area
               </button>
