@@ -588,73 +588,83 @@ app.get('/api/whatsapp/due-reminders', (req, res) => {
 
     if (s.transportOpted) {
       vanEngSection = 
-`🚌 *VAN / TRANSPORTATION FEES (11-MONTH ACADEMIC YEAR):*
-• Monthly Rate: ₹${monthlyRate}/month
-• Total Annual Van Fee: ₹${annualVanFee.toLocaleString('en-IN')} (11 Months)
-• *Months Paid (${paidMonths.length}/11):* ${engPaidMonthsStr}
-• *Van Paid Amount:* ₹${vanPaid.toLocaleString('en-IN')}
-• *Remaining Due Months (${remainingMonths.length}/11):* ${engRemMonthsStr}
-• *Pending Van Due: ₹${vanDue.toLocaleString('en-IN')}*`;
+`*VAN / TRANSPORTATION FEES (11-MONTH ACADEMIC YEAR):*
+* Monthly Rate: ₹${monthlyRate}/month
+* Total Annual Van Fee: ₹${annualVanFee.toLocaleString('en-IN')} (11 Months)
+* Months Paid (${paidMonths.length}/11): ${engPaidMonthsStr}
+* Van Paid Amount: ₹${vanPaid.toLocaleString('en-IN')}
+* Remaining Due Months (${remainingMonths.length}/11): ${engRemMonthsStr}
+* Pending Van Due: ₹${vanDue.toLocaleString('en-IN')}*`;
 
       vanTamSection = 
-`🚌 *பள்ளி வேன் கட்டணம் (11 மாதங்கள்):*
-• மாத கட்டணம்: ₹${monthlyRate}/மாதம்
-• மொத்த ஆண்டு வேன் கட்டணம்: ₹${annualVanFee.toLocaleString('en-IN')} (11 மாதங்கள்)
-• *செலுத்தப்பட்ட மாதங்கள் (${paidMonths.length}/11):* ${tamilPaidMonthsStr}
-• *செலுத்திய வேன் தொகை:* ₹${vanPaid.toLocaleString('en-IN')}
-• *செலுத்த வேண்டிய மீதமுள்ள மாதங்கள் (${remainingMonths.length}/11):* ${tamilRemMonthsStr}
-• *செலுத்த வேண்டிய வேன் நிலுவை: ₹${vanDue.toLocaleString('en-IN')}*`;
+`*பள்ளி வேன் கட்டணம் (11 மாதங்கள்):*
+* மாத கட்டணம்: ₹${monthlyRate}/மாதம்
+* மொத்த ஆண்டு வேன் கட்டணம்: ₹${annualVanFee.toLocaleString('en-IN')} (11 மாதங்கள்)
+* செலுத்தப்பட்ட மாதங்கள் (${paidMonths.length}/11): ${tamilPaidMonthsStr}
+* செலுத்திய வேன் தொகை: ₹${vanPaid.toLocaleString('en-IN')}
+* செலுத்த வேண்டிய மீதமுள்ள மாதங்கள் (${remainingMonths.length}/11): ${tamilRemMonthsStr}
+* செலுத்த வேண்டிய வேன் நிலுவை: ₹${vanDue.toLocaleString('en-IN')}*`;
     } else {
-      vanEngSection = `🚌 *VAN / TRANSPORTATION FEES:* Self Commute (Not Opted)`;
-      vanTamSection = `🚌 *பள்ளி வேன் கட்டணம்:* சொந்தப் பயணம் (தேர்வு செய்யப்படவில்லை)`;
+      vanEngSection = `*VAN / TRANSPORTATION FEES:* Self Commute (Not Opted)`;
+      vanTamSection = `*பள்ளி வேன் கட்டணம்:* சொந்தப் பயணம் (தேர்வு செய்யப்படவில்லை)`;
     }
 
-    const message = 
-`🏫 *${schoolInfo.name.toUpperCase()}*
-📍 Pakkudi, Pudukottai | 📞 9789277169 / 9445987169
+    // Message 1: Clean English Format (No emojis causing question marks)
+    const englishMessage = 
+`*SENTHILVEL VIDYALAYA SCHOOL*
+Pakkudi, Pudukottai | Contact: 9789277169, 9445987169
 ----------------------------------------
-Dear Parent of *${s.name}* (Class: *${s.grade} - Sec ${s.section || 'A'}*, Roll: *${s.rollNo || s.id}*),
+Dear Parent of *${s.name}* (Class: *${s.grade} - Sec ${s.section || 'A'}*, Roll No: *${s.rollNo || s.id}*),
 
 Official Fee Status Update for Academic Year 2026-2027:
 
-📚 *SCHOOL ACADEMIC FEES:*
-• Total School Fee: ₹${(s.netSchoolPayable || 0).toLocaleString('en-IN')}
-• Paid Amount: ₹${(s.schoolPaid || 0).toLocaleString('en-IN')}
-• *Pending School Due: ₹${(s.schoolDue || 0).toLocaleString('en-IN')}*
+*SCHOOL ACADEMIC FEES:*
+* Total School Fee: ₹${(s.netSchoolPayable || 0).toLocaleString('en-IN')}
+* Paid Amount: ₹${(s.schoolPaid || 0).toLocaleString('en-IN')}
+* Pending School Due: ₹${(s.schoolDue || 0).toLocaleString('en-IN')}*
 
 ${vanEngSection}
 
 ----------------------------------------
-💰 *TOTAL CONSOLIDATED SUMMARY:*
-• Net Annual Payable: ₹${s.netPayable.toLocaleString('en-IN')}
-• Total Paid to Date: ₹${s.totalPaid.toLocaleString('en-IN')}
-⚠️ *TOTAL BALANCE DUE: ₹${s.balanceDue.toLocaleString('en-IN')}*
-
-========================================
-🇮🇳 *தமிழ் வடிவம் (TAMIL VERSION)*:
+*TOTAL CONSOLIDATED SUMMARY:*
+* Net Annual Payable: ₹${s.netPayable.toLocaleString('en-IN')}
+* Total Paid to Date: ₹${s.totalPaid.toLocaleString('en-IN')}
+*TOTAL BALANCE DUE: ₹${s.balanceDue.toLocaleString('en-IN')}*
 ----------------------------------------
-அன்புள்ள பெற்றோருக்கு வணக்கம்! மாணவர்/மாணவி: *${s.name}* (வகுப்பு: *${s.grade}*, எண்: *${s.rollNo || s.id}*),
+Please settle the pending fee dues at the school office by Cash or UPI (GPay/PhonePe) at the earliest.
+Contact: 9789277169 / 9445987169.
+Thank you!
+- Accounts Office, Senthilvel Vidyalaya School`;
+
+    // Message 2: Clean Tamil Format (தமிழ் வடிவம்)
+    const tamilMessage = 
+`*செந்தில்வேல் வித்யாலயா பள்ளி (SENTHILVEL VIDYALAYA SCHOOL)*
+பக்குடி, புதுக்கோட்டை | தொடர்பு: 9789277169, 9445987169
+----------------------------------------
+அன்புள்ள பெற்றோருக்கு வணக்கம்! மாணவர்/மாணவி: *${s.name}* (வகுப்பு: *${s.grade} - பிரிவு ${s.section || 'A'}*, எண்: *${s.rollNo || s.id}*),
 
 2026-2027 கல்வியாண்டிற்கான கட்டண விபரம்:
 
-📚 *பள்ளி கல்விக்கட்டணம்:*
-• மொத்த பள்ளி கட்டணம்: ₹${(s.netSchoolPayable || 0).toLocaleString('en-IN')}
-• செலுத்திய தொகை: ₹${(s.schoolPaid || 0).toLocaleString('en-IN')}
-• *செலுத்த வேண்டிய பள்ளி நிலுவை: ₹${(s.schoolDue || 0).toLocaleString('en-IN')}*
+*பள்ளி கல்விக் கட்டணம்:*
+* மொத்த பள்ளி கட்டணம்: ₹${(s.netSchoolPayable || 0).toLocaleString('en-IN')}
+* செலுத்திய தொகை: ₹${(s.schoolPaid || 0).toLocaleString('en-IN')}
+* செலுத்த வேண்டிய பள்ளி நிலுவை: ₹${(s.schoolDue || 0).toLocaleString('en-IN')}*
 
 ${vanTamSection}
 
-💰 *ஒட்டுமொத்த கட்டண விபரம்:*
-• ஆண்டு மொத்த கட்டணம்: ₹${s.netPayable.toLocaleString('en-IN')}
-• இதுவரை செலுத்திய மொத்த தொகை: ₹${s.totalPaid.toLocaleString('en-IN')}
-⚠️ *மொத்த நிலுவைத் தொகை: ₹${s.balanceDue.toLocaleString('en-IN')}*
+----------------------------------------
+*ஒட்டுமொத்த கட்டண விபரம்:*
+* ஆண்டு மொத்த கட்டணம்: ₹${s.netPayable.toLocaleString('en-IN')}
+* இதுவரை செலுத்திய மொத்த தொகை: ₹${s.totalPaid.toLocaleString('en-IN')}
+*மொத்த நிலுவைத் தொகை: ₹${s.balanceDue.toLocaleString('en-IN')}*
 ----------------------------------------
 நிலுவையில் உள்ள கட்டணத்தை பள்ளி அலுவலகத்தில் ரொக்கமாகவோ அல்லது UPI (GPay/PhonePe) மூலமாகவோ செலுத்துமாறு கேட்டுக்கொள்கிறோம்.
 தொடர்புக்கு: 9789277169 / 9445987169.
 நன்றி!
 - கணக்கு அலுவலகம், செந்தில்வேல் வித்யாலயா பள்ளி`;
 
-    const whatsappUrl = phone ? `https://wa.me/${phone}?text=${encodeURIComponent(message)}` : '';
+    const whatsappUrlEnglish = phone ? `https://wa.me/${phone}?text=${encodeURIComponent(englishMessage)}` : '';
+    const whatsappUrlTamil = phone ? `https://wa.me/${phone}?text=${encodeURIComponent(tamilMessage)}` : '';
 
     return {
       studentId: s.id,
@@ -672,8 +682,12 @@ ${vanTamSection}
       balanceDue: s.balanceDue,
       boardingArea: s.boardingArea,
       transportType: s.transportType,
-      message,
-      whatsappUrl
+      message: englishMessage,
+      englishMessage,
+      tamilMessage,
+      whatsappUrl: whatsappUrlEnglish,
+      whatsappUrlEnglish,
+      whatsappUrlTamil
     };
   });
 

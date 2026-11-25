@@ -1505,7 +1505,7 @@ function getStudentVanMonthDetails(student) {
   };
 }
 
-function formatStudentWhatsAppMessage(student) {
+function formatStudentWhatsAppMessages(student) {
   const s = student;
   const schoolName = schoolInfo.name || "Senthilvel Vidyalaya School";
   const schoolAddr = schoolInfo.address || "Pakkudi, Pudukottai";
@@ -1522,70 +1522,158 @@ function formatStudentWhatsAppMessage(student) {
 
   if (s.transportOpted) {
     vanEngSection = 
-`🚌 *VAN / TRANSPORTATION FEES (11-MONTH ACADEMIC YEAR):*
-• Monthly Rate: ₹${van.monthlyRate}/month
-• Total Annual Van Fee: ₹${van.annualVanFee.toLocaleString('en-IN')} (11 Months)
-• *Months Paid (${van.paidCount}/11):* ${engPaidMonthsStr}
-• *Van Paid Amount:* ₹${van.vanPaid.toLocaleString('en-IN')}
-• *Remaining Due Months (${van.remainingCount}/11):* ${engRemMonthsStr}
-• *Pending Van Due: ₹${van.vanDue.toLocaleString('en-IN')}*`;
+`*VAN / TRANSPORTATION FEES (11-MONTH ACADEMIC YEAR):*
+* Monthly Rate: ₹${van.monthlyRate}/month
+* Total Annual Van Fee: ₹${van.annualVanFee.toLocaleString('en-IN')} (11 Months)
+* Months Paid (${van.paidCount}/11): ${engPaidMonthsStr}
+* Van Paid Amount: ₹${van.vanPaid.toLocaleString('en-IN')}
+* Remaining Due Months (${van.remainingCount}/11): ${engRemMonthsStr}
+* Pending Van Due: ₹${van.vanDue.toLocaleString('en-IN')}*`;
 
     vanTamSection = 
-`🚌 *பள்ளி வேன் கட்டணம் (11 மாதங்கள்):*
-• மாத கட்டணம்: ₹${van.monthlyRate}/மாதம்
-• மொத்த ஆண்டு வேன் கட்டணம்: ₹${van.annualVanFee.toLocaleString('en-IN')} (11 மாதங்கள்)
-• *செலுத்தப்பட்ட மாதங்கள் (${van.paidCount}/11):* ${tamilPaidMonthsStr}
-• *செலுத்திய வேன் தொகை:* ₹${van.vanPaid.toLocaleString('en-IN')}
-• *செலுத்த வேண்டிய மீதமுள்ள மாதங்கள் (${van.remainingCount}/11):* ${tamilRemMonthsStr}
-• *செலுத்த வேண்டிய வேன் நிலுவை: ₹${van.vanDue.toLocaleString('en-IN')}*`;
+`*பள்ளி வேன் கட்டணம் (11 மாதங்கள்):*
+* மாத கட்டணம்: ₹${van.monthlyRate}/மாதம்
+* மொத்த ஆண்டு வேன் கட்டணம்: ₹${van.annualVanFee.toLocaleString('en-IN')} (11 மாதங்கள்)
+* செலுத்தப்பட்ட மாதங்கள் (${van.paidCount}/11): ${tamilPaidMonthsStr}
+* செலுத்திய வேன் தொகை: ₹${van.vanPaid.toLocaleString('en-IN')}
+* செலுத்த வேண்டிய மீதமுள்ள மாதங்கள் (${van.remainingCount}/11): ${tamilRemMonthsStr}
+* செலுத்த வேண்டிய வேன் நிலுவை: ₹${van.vanDue.toLocaleString('en-IN')}*`;
   } else {
-    vanEngSection = `🚌 *VAN / TRANSPORTATION FEES:* Self Commute (Not Opted)`;
-    vanTamSection = `🚌 *பள்ளி வேன் கட்டணம்:* சொந்தப் பயணம் (தேர்வு செய்யப்படவில்லை)`;
+    vanEngSection = `*VAN / TRANSPORTATION FEES:* Self Commute (Not Opted)`;
+    vanTamSection = `*பள்ளி வேன் கட்டணம்:* சொந்தப் பயணம் (தேர்வு செய்யப்படவில்லை)`;
   }
 
-  return `🏫 *${schoolName.toUpperCase()}*
-📍 ${schoolAddr} | 📞 ${schoolPhone}
+  // Message 1: Clean English Format (No emojis causing question marks)
+  const engMsg = 
+`*SENTHILVEL VIDYALAYA SCHOOL*
+${schoolAddr} | Contact: ${schoolPhone}
 ----------------------------------------
-Dear Parent of *${s.name}* (Class: *${s.grade} - Sec ${s.section || 'A'}*, Roll No: *${s.rollNo}*),
+Dear Parent of *${s.name}* (Class: *${s.grade} - Sec ${s.section || 'A'}*, Roll No: *${s.rollNo || s.id}*),
 
 Official Fee Status Update for Academic Year 2026-2027:
 
-📚 *SCHOOL ACADEMIC FEES:*
-• Total School Fee: ₹${(s.netSchoolPayable || 0).toLocaleString('en-IN')}
-• Paid Amount: ₹${(s.schoolPaid || 0).toLocaleString('en-IN')}
-• *Pending School Due: ₹${(s.schoolDue || 0).toLocaleString('en-IN')}*
+*SCHOOL ACADEMIC FEES:*
+* Total School Fee: ₹${(s.netSchoolPayable || 0).toLocaleString('en-IN')}
+* Paid Amount: ₹${(s.schoolPaid || 0).toLocaleString('en-IN')}
+* Pending School Due: ₹${(s.schoolDue || 0).toLocaleString('en-IN')}*
 
 ${vanEngSection}
 
 ----------------------------------------
-💰 *TOTAL CONSOLIDATED SUMMARY:*
-• Net Annual Payable: ₹${s.netPayable.toLocaleString('en-IN')}
-• Total Paid to Date: ₹${s.totalPaid.toLocaleString('en-IN')}
-⚠️ *TOTAL BALANCE DUE: ₹${s.balanceDue.toLocaleString('en-IN')}*
-
-========================================
-🇮🇳 *தமிழ் வடிவம் (TAMIL VERSION)*:
+*TOTAL CONSOLIDATED SUMMARY:*
+* Net Annual Payable: ₹${s.netPayable.toLocaleString('en-IN')}
+* Total Paid to Date: ₹${s.totalPaid.toLocaleString('en-IN')}
+*TOTAL BALANCE DUE: ₹${s.balanceDue.toLocaleString('en-IN')}*
 ----------------------------------------
-அன்புள்ள பெற்றோருக்கு வணக்கம்! மாணவர்/மாணவி: *${s.name}* (வகுப்பு: *${s.grade}*, எண்: *${s.rollNo}*),
+Please settle the pending fee dues at the school office by Cash or UPI (GPay/PhonePe) at the earliest.
+Contact: 9789277169 / 9445987169.
+Thank you!
+- Accounts Office, Senthilvel Vidyalaya School`;
+
+  // Message 2: Clean Tamil Format (தமிழ் வடிவம்)
+  const tamMsg = 
+`*செந்தில்வேல் வித்யாலயா பள்ளி (SENTHILVEL VIDYALAYA SCHOOL)*
+பக்குடி, புதுக்கோட்டை | தொடர்பு: 9789277169, 9445987169
+----------------------------------------
+அன்புள்ள பெற்றோருக்கு வணக்கம்! மாணவர்/மாணவி: *${s.name}* (வகுப்பு: *${s.grade} - பிரிவு ${s.section || 'A'}*, எண்: *${s.rollNo || s.id}*),
 
 2026-2027 கல்வியாண்டிற்கான கட்டண விபரம்:
 
-📚 *பள்ளி கல்விக்கட்டணம்:*
-• மொத்த பள்ளி கட்டணம்: ₹${(s.netSchoolPayable || 0).toLocaleString('en-IN')}
-• செலுத்திய தொகை: ₹${(s.schoolPaid || 0).toLocaleString('en-IN')}
-• *செலுத்த வேண்டிய பள்ளி நிலுவை: ₹${(s.schoolDue || 0).toLocaleString('en-IN')}*
+*பள்ளி கல்விக் கட்டணம்:*
+* மொத்த பள்ளி கட்டணம்: ₹${(s.netSchoolPayable || 0).toLocaleString('en-IN')}
+* செலுத்திய தொகை: ₹${(s.schoolPaid || 0).toLocaleString('en-IN')}
+* செலுத்த வேண்டிய பள்ளி நிலுவை: ₹${(s.schoolDue || 0).toLocaleString('en-IN')}*
 
 ${vanTamSection}
 
-💰 *ஒட்டுமொத்த கட்டண விபரம்:*
-• ஆண்டு மொத்த கட்டணம்: ₹${s.netPayable.toLocaleString('en-IN')}
-• இதுவரை செலுத்திய மொத்த தொகை: ₹${s.totalPaid.toLocaleString('en-IN')}
-⚠️ *மொத்த நிலுவைத் தொகை: ₹${s.balanceDue.toLocaleString('en-IN')}*
+----------------------------------------
+*ஒட்டுமொத்த கட்டண விபரம்:*
+* ஆண்டு மொத்த கட்டணம்: ₹${s.netPayable.toLocaleString('en-IN')}
+* இதுவரை செலுத்திய மொத்த தொகை: ₹${s.totalPaid.toLocaleString('en-IN')}
+*மொத்த நிலுவைத் தொகை: ₹${s.balanceDue.toLocaleString('en-IN')}*
 ----------------------------------------
 நிலுவையில் உள்ள கட்டணத்தை பள்ளி அலுவலகத்தில் ரொக்கமாகவோ அல்லது UPI (GPay/PhonePe) மூலமாகவோ செலுத்துமாறு கேட்டுக்கொள்கிறோம்.
 தொடர்புக்கு: 9789277169 / 9445987169.
 நன்றி!
 - கணக்கு அலுவலகம், செந்தில்வேல் வித்யாலயா பள்ளி`;
+
+  return { engMsg, tamMsg };
+}
+
+function formatStudentWhatsAppMessage(student) {
+  const { engMsg } = formatStudentWhatsAppMessages(student);
+  return engMsg;
+}
+
+let activeDualWaSession = null;
+let activeWaPreviewTab = 'eng';
+let samplePreviewMessages = null;
+
+function openDualWaModal(student, phone, engMsg, tamMsg) {
+  activeDualWaSession = {
+    student,
+    phone,
+    engMsg,
+    tamMsg,
+    urlEng: `https://wa.me/${phone}?text=${encodeURIComponent(engMsg)}`,
+    urlTam: `https://wa.me/${phone}?text=${encodeURIComponent(tamMsg)}`
+  };
+
+  const nameEl = document.getElementById('dualWaStudentName');
+  if (nameEl) nameEl.innerText = student.name;
+  const metaEl = document.getElementById('dualWaStudentMeta');
+  if (metaEl) metaEl.innerText = `Class: ${student.grade} (Sec ${student.section || 'A'}) | Roll No: ${student.rollNo || student.id}`;
+  const contactEl = document.getElementById('dualWaContact');
+  if (contactEl) contactEl.innerText = phone;
+  const badgeEl = document.getElementById('dualWaStatusBadge');
+  if (badgeEl) {
+    badgeEl.innerText = (student.balanceDue || 0) > 0 ? `Due: ₹${Number(student.balanceDue || 0).toLocaleString('en-IN')}` : 'Paid';
+    badgeEl.className = (student.balanceDue || 0) > 0 ? 'badge badge-unpaid' : 'badge badge-paid';
+  }
+  const engTextEl = document.getElementById('dualWaEngText');
+  if (engTextEl) engTextEl.innerText = engMsg;
+  const tamTextEl = document.getElementById('dualWaTamText');
+  if (tamTextEl) tamTextEl.innerText = tamMsg;
+
+  const modal = document.getElementById('waDualSendModal');
+  if (modal) {
+    modal.classList.add('open');
+    initIcons();
+  }
+}
+
+function closeDualWaModal() {
+  const modal = document.getElementById('waDualSendModal');
+  if (modal) modal.classList.remove('open');
+}
+
+function openDualWaWindow(lang) {
+  if (!activeDualWaSession) return;
+  const url = lang === 'eng' ? activeDualWaSession.urlEng : activeDualWaSession.urlTam;
+  window.open(url, '_blank');
+  showToast(`WhatsApp ${lang === 'eng' ? 'English' : 'Tamil'} message opened`);
+}
+
+function copyDualWaMsg(lang) {
+  if (!activeDualWaSession) return;
+  const text = lang === 'eng' ? activeDualWaSession.engMsg : activeDualWaSession.tamMsg;
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(() => {
+      showToast(`${lang === 'eng' ? 'English' : 'Tamil'} message copied!`);
+    }).catch(() => {
+      showToast("Could not copy text", true);
+    });
+  }
+}
+
+function triggerSendBothAtOnce() {
+  if (!activeDualWaSession) return;
+  window.open(activeDualWaSession.urlEng, '_blank');
+  window.open(activeDualWaSession.urlTam, '_blank');
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(activeDualWaSession.tamMsg).catch(() => {});
+  }
+  showToast("Both English and Tamil messages opened in WhatsApp!");
 }
 
 function sendSingleWhatsAppReminder(studentId) {
@@ -1602,8 +1690,9 @@ function sendSingleWhatsAppReminder(studentId) {
   }
   const phone = rawPhone.length === 10 ? `91${rawPhone}` : rawPhone;
 
-  const msg = formatStudentWhatsAppMessage(student);
-  const url = `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
+  const { engMsg, tamMsg } = formatStudentWhatsAppMessages(student);
+  const urlEng = `https://wa.me/${phone}?text=${encodeURIComponent(engMsg)}`;
+  const urlTam = `https://wa.me/${phone}?text=${encodeURIComponent(tamMsg)}`;
 
   // Log in backend
   fetch('/api/whatsapp/log', {
@@ -1615,11 +1704,23 @@ function sendSingleWhatsAppReminder(studentId) {
       parentName: student.parentName,
       contact: student.contact,
       amountDue: student.balanceDue,
-      mode: "Single Reminder"
+      mode: "Bilingual (Eng + Tamil Separately)"
     })
   }).catch(() => {});
 
-  window.open(url, '_blank');
+  // 1. Open English Message in WhatsApp
+  window.open(urlEng, '_blank');
+
+  // 2. Open Tamil Message in second tab
+  window.open(urlTam, '_blank');
+
+  // 3. Auto-copy Tamil message so user can instantly paste (Ctrl+V) in WhatsApp
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(tamMsg).catch(() => {});
+  }
+
+  // 4. Open Dual Sender Modal on screen
+  openDualWaModal(student, phone, engMsg, tamMsg);
   showToast(`WhatsApp reminder opened for ${student.parentName || student.name}`);
 }
 
@@ -1642,32 +1743,34 @@ function sendCurrentReceiptWhatsApp() {
   }
   const phone = rawPhone.length === 10 ? `91${rawPhone}` : rawPhone;
 
-  const msg = `🧾 *OFFICIAL FEE PAYMENT RECEIPT*
-🏫 *${schoolName.toUpperCase()}*
-📍 ${schoolAddr} | 📞 ${schoolPhone}
+  const monthLine = p.transportMonth ? `\nFee Month: *${p.transportMonth}*` : '';
+
+  const msg = `*OFFICIAL FEE PAYMENT RECEIPT*
+*${schoolName.toUpperCase()}*
+${schoolAddr} | Contact: ${schoolPhone}
 ----------------------------------------
 Receipt No: *${p.receiptNo}*
 Date: *${p.date}*
 Student Name: *${p.studentName}* (${p.grade} - ${s?.section || 'A'})
 Parent/Guardian: ${s?.parentName || 'Parent'}
 
-✅ *AMOUNT RECEIVED NOW: ₹${Number(p.amount).toLocaleString('en-IN')}*
+*AMOUNT RECEIVED NOW: ₹${Number(p.amount).toLocaleString('en-IN')}*
 Payment Mode: ${p.paymentMethod} (Txn: ${p.transactionId || 'N/A'})
-Term / Component: ${p.term || 'Fee Payment'}
+Term / Component: ${p.term || 'Fee Payment'}${monthLine}
 
 ----------------------------------------
-📊 *UPDATED FEE STATUS & DUES:*
+*UPDATED FEE STATUS & DUES:*
 
-📚 *School Academic Fee:*
-• Paid to Date: ₹${(s?.schoolPaid || 0).toLocaleString('en-IN')}
-• *Pending School Due: ₹${(s?.schoolDue || 0).toLocaleString('en-IN')}*
+*School Academic Fee:*
+* Paid to Date: ₹${(s?.schoolPaid || 0).toLocaleString('en-IN')}
+* Pending School Due: ₹${(s?.schoolDue || 0).toLocaleString('en-IN')}*
 
-🚌 *Van / Transportation Fee:*
-• Route / Stop: ${p.boardingArea || s?.boardingArea || 'Campus / Local'}
-• Paid to Date: ₹${(s?.vanPaid || 0).toLocaleString('en-IN')}
-• *Pending Van Due: ₹${(s?.vanDue || 0).toLocaleString('en-IN')}*
+*Van / Transportation Fee:*
+* Route / Stop: ${p.boardingArea || s?.boardingArea || 'Campus / Local'}
+* Paid to Date: ₹${(s?.vanPaid || 0).toLocaleString('en-IN')}
+* Pending Van Due: ₹${(s?.vanDue || 0).toLocaleString('en-IN')}*
 
-💰 *Remaining Due Balance: ₹${(s?.balanceDue || 0).toLocaleString('en-IN')}*
+*TOTAL REMAINING BALANCE DUE: ₹${(s?.balanceDue || 0).toLocaleString('en-IN')}*
 ----------------------------------------
 Thank you for your payment!
 - Accounts Office, Senthilvel Vidyalaya School`;
@@ -1737,8 +1840,8 @@ function renderBulkWhatsAppTable() {
         </span>
       </td>
       <td>
-        <button class="btn btn-sm" style="background:#25D366; color:#fff; font-weight:600; padding:6px 12px;" onclick="openIndividualWaFromModal(${idx})">
-          <i data-lucide="message-circle" style="width:14px; height:14px; display:inline; margin-right:4px;"></i> Open WhatsApp
+        <button class="btn btn-sm" style="background:#25D366; color:#fff; font-weight:700; padding:6px 12px; font-size:0.8rem;" onclick="openIndividualWaFromModal(${idx})">
+          <i data-lucide="message-circle" style="width:14px; height:14px; display:inline; margin-right:4px;"></i> Send Both (Eng + தமிழ்)
         </button>
       </td>
     `;
@@ -1750,7 +1853,7 @@ function renderBulkWhatsAppTable() {
 
 function openIndividualWaFromModal(idx) {
   const item = waRemindersQueue[idx];
-  if (!item || !item.whatsappUrl) {
+  if (!item || !item.phone) {
     showToast("Invalid contact details", true);
     return;
   }
@@ -1762,6 +1865,34 @@ function openIndividualWaFromModal(idx) {
     badge.className = 'badge badge-paid';
   }
 
+  const student = allStudents.find(s => s.id === item.studentId) || {
+    id: item.studentId,
+    name: item.studentName,
+    grade: item.grade,
+    section: item.section,
+    rollNo: item.studentId,
+    parentName: item.parentName,
+    contact: item.contact,
+    netSchoolPayable: Number(item.schoolPaid || 0) + Number(item.schoolDue || 0),
+    schoolPaid: item.schoolPaid,
+    schoolDue: item.schoolDue,
+    transportOpted: Number(item.vanDue || 0) > 0 || Number(item.vanPaid || 0) > 0,
+    transportFee: Number(item.vanPaid || 0) + Number(item.vanDue || 0),
+    vanPaid: item.vanPaid,
+    vanDue: item.vanDue,
+    netPayable: Number(item.totalPaid || 0) + Number(item.balanceDue || 0),
+    totalPaid: item.totalPaid,
+    balanceDue: item.balanceDue
+  };
+
+  const msgs = formatStudentWhatsAppMessages(student);
+  const engMsg = item.englishMessage || msgs.engMsg;
+  const tamMsg = item.tamilMessage || msgs.tamMsg;
+  const phone = item.phone;
+
+  const urlEng = item.whatsappUrlEnglish || `https://wa.me/${phone}?text=${encodeURIComponent(engMsg)}`;
+  const urlTam = item.whatsappUrlTamil || `https://wa.me/${phone}?text=${encodeURIComponent(tamMsg)}`;
+
   // Log in backend
   fetch('/api/whatsapp/log', {
     method: 'POST',
@@ -1772,11 +1903,21 @@ function openIndividualWaFromModal(idx) {
       parentName: item.parentName,
       contact: item.contact,
       amountDue: item.balanceDue,
-      mode: "Bulk Queue"
+      mode: "Bulk Queue (Eng + Tamil Separately)"
     })
   }).catch(() => {});
 
-  window.open(item.whatsappUrl, '_blank');
+  // Open both messages
+  window.open(urlEng, '_blank');
+  window.open(urlTam, '_blank');
+
+  // Auto-copy Tamil message
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(tamMsg).catch(() => {});
+  }
+
+  // Open Dual Sender Modal
+  openDualWaModal(student, phone, engMsg, tamMsg);
 }
 
 function sendNextWhatsAppInQueue() {
@@ -1794,26 +1935,58 @@ function closeWhatsAppModal() {
 
 function previewWhatsAppMessageTemplate() {
   const sample = allStudents.find(s => s.balanceDue > 0) || allStudents[0] || {
-    name: "Aarav Sharma",
-    grade: "2nd Std",
+    name: "Karthiga",
+    grade: "LKG",
     section: "A",
-    rollNo: "2STD-01",
-    netSchoolPayable: 26000,
-    schoolPaid: 15000,
-    schoolDue: 11000,
-    boardingArea: "Alangudi",
-    transportType: "Monthly",
-    transportFee: 6000,
-    vanPaid: 2400,
-    vanDue: 3600,
-    netPayable: 32000,
-    totalPaid: 17400,
-    balanceDue: 14600
+    rollNo: "LKG-235",
+    netSchoolPayable: 19000,
+    schoolPaid: 0,
+    schoolDue: 19000,
+    transportOpted: false,
+    boardingArea: "Campus",
+    transportType: "Self Commute",
+    transportFee: 0,
+    vanPaid: 0,
+    vanDue: 0,
+    netPayable: 19000,
+    totalPaid: 0,
+    balanceDue: 19000
   };
 
-  const previewText = formatStudentWhatsAppMessage(sample);
-  document.getElementById('waTemplatePreviewText').innerText = previewText;
+  samplePreviewMessages = formatStudentWhatsAppMessages(sample);
+  activeWaPreviewTab = 'eng';
+  renderWaPreviewContent();
   document.getElementById('waTemplateModal').classList.add('open');
+}
+
+function switchWaPreviewTab(tab) {
+  activeWaPreviewTab = tab;
+  renderWaPreviewContent();
+}
+
+function renderWaPreviewContent() {
+  if (!samplePreviewMessages) return;
+  const btnEng = document.getElementById('waTabBtnEng');
+  const btnTam = document.getElementById('waTabBtnTam');
+  const previewEl = document.getElementById('waTemplatePreviewText');
+
+  if (activeWaPreviewTab === 'eng') {
+    if (btnEng) {
+      btnEng.className = 'btn btn-sm btn-primary';
+    }
+    if (btnTam) {
+      btnTam.className = 'btn btn-sm btn-secondary';
+    }
+    if (previewEl) previewEl.innerText = samplePreviewMessages.engMsg;
+  } else {
+    if (btnEng) {
+      btnEng.className = 'btn btn-sm btn-secondary';
+    }
+    if (btnTam) {
+      btnTam.className = 'btn btn-sm btn-primary';
+    }
+    if (previewEl) previewEl.innerText = samplePreviewMessages.tamMsg;
+  }
 }
 
 function closeWaTemplateModal() {
@@ -1821,9 +1994,10 @@ function closeWaTemplateModal() {
 }
 
 function copyWaTemplateText() {
-  const text = document.getElementById('waTemplatePreviewText').innerText;
+  if (!samplePreviewMessages) return;
+  const text = activeWaPreviewTab === 'eng' ? samplePreviewMessages.engMsg : samplePreviewMessages.tamMsg;
   navigator.clipboard.writeText(text).then(() => {
-    showToast("Template text copied to clipboard!");
+    showToast(`Template (${activeWaPreviewTab === 'eng' ? 'English' : 'Tamil'}) copied!`);
   }).catch(() => {
     showToast("Could not copy text", true);
   });

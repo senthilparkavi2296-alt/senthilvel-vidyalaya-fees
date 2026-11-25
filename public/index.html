@@ -1116,21 +1116,108 @@
     </div>
   </div>
 
+  <!-- MODAL: DUAL WHATSAPP SENDER (ENGLISH & TAMIL SEPARATELY) -->
+  <div class="modal-overlay" id="waDualSendModal">
+    <div class="modal-box" style="max-width: 580px;">
+      <div class="modal-header">
+        <h3 style="color:#166534; margin:0; font-size:1.1rem; display:flex; align-items:center; gap:8px;">
+          <i data-lucide="message-circle" style="color:#25D366;"></i>
+          WhatsApp 2-Message Sender (Bilingual)
+        </h3>
+        <button class="close-btn" onclick="closeDualWaModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div style="background:#f0fdf4; border:1px solid #bbf7d0; border-radius:8px; padding:10px 14px; margin-bottom:14px; display:flex; justify-content:space-between; align-items:center;">
+          <div>
+            <strong id="dualWaStudentName" style="color:#166534; font-size:0.95rem;">Student Name</strong>
+            <div id="dualWaStudentMeta" style="font-size:0.8rem; color:#475569;">Class - | Roll No: -</div>
+          </div>
+          <div style="text-align:right;">
+            <div id="dualWaContact" style="font-size:0.85rem; font-weight:700; color:#1e3a8a;">-</div>
+            <span id="dualWaStatusBadge" class="badge badge-unpaid">Pending</span>
+          </div>
+        </div>
+
+        <p style="font-size:0.82rem; color:#475569; margin-bottom:12px; background:#eff6ff; padding:8px 12px; border-radius:6px; border-left:3px solid #3b82f6; line-height:1.4;">
+          Both <strong>English</strong> and <strong>Tamil</strong> messages are sent separately in clean typography without emojis or symbols that cause question marks.
+        </p>
+
+        <div style="display:flex; flex-direction:column; gap:12px;">
+          <!-- Card 1: English Message -->
+          <div style="border:1px solid #cbd5e1; border-radius:8px; padding:12px; background:#ffffff;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+              <strong style="color:#0f172a; font-size:0.88rem; display:flex; align-items:center; gap:6px;">
+                <span style="background:#1e3a8a; color:#fff; border-radius:50%; width:20px; height:20px; display:inline-flex; align-items:center; justify-content:center; font-size:0.75rem;">1</span>
+                Message 1: English Format
+              </strong>
+              <div style="display:flex; gap:6px;">
+                <button class="btn btn-outline btn-sm" onclick="copyDualWaMsg('eng')" style="padding:4px 8px; font-size:0.78rem;">
+                  <i data-lucide="copy" style="width:12px; height:12px;"></i> Copy
+                </button>
+                <button class="btn btn-sm" id="btnDualSendEng" onclick="openDualWaWindow('eng')" style="background:#25D366; color:#fff; font-weight:700; padding:5px 12px; font-size:0.82rem;">
+                  <i data-lucide="send" style="width:12px; height:12px;"></i> Open WhatsApp
+                </button>
+              </div>
+            </div>
+            <pre id="dualWaEngText" style="background:#f8fafc; padding:10px; border-radius:6px; font-family:monospace; font-size:0.74rem; max-height:115px; overflow-y:auto; white-space:pre-wrap; color:#1e293b; border:1px solid #e2e8f0; margin:0;"></pre>
+          </div>
+
+          <!-- Card 2: Tamil Message -->
+          <div style="border:1px solid #cbd5e1; border-radius:8px; padding:12px; background:#ffffff;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+              <strong style="color:#0f172a; font-size:0.88rem; display:flex; align-items:center; gap:6px;">
+                <span style="background:#b45309; color:#fff; border-radius:50%; width:20px; height:20px; display:inline-flex; align-items:center; justify-content:center; font-size:0.75rem;">2</span>
+                Message 2: Tamil Format (தமிழ் வடிவம்)
+              </strong>
+              <div style="display:flex; gap:6px;">
+                <button class="btn btn-outline btn-sm" onclick="copyDualWaMsg('tam')" style="padding:4px 8px; font-size:0.78rem;">
+                  <i data-lucide="copy" style="width:12px; height:12px;"></i> Copy
+                </button>
+                <button class="btn btn-sm" id="btnDualSendTam" onclick="openDualWaWindow('tam')" style="background:#25D366; color:#fff; font-weight:700; padding:5px 12px; font-size:0.82rem;">
+                  <i data-lucide="send" style="width:12px; height:12px;"></i> Open WhatsApp
+                </button>
+              </div>
+            </div>
+            <pre id="dualWaTamText" style="background:#f8fafc; padding:10px; border-radius:6px; font-family:monospace; font-size:0.74rem; max-height:115px; overflow-y:auto; white-space:pre-wrap; color:#1e293b; border:1px solid #e2e8f0; margin:0;"></pre>
+          </div>
+        </div>
+
+        <div style="margin-top:14px; text-align:center;">
+          <button class="btn btn-primary btn-sm" onclick="triggerSendBothAtOnce()" style="background:#15803d; border-color:#15803d; font-weight:700; padding:8px 18px;">
+            <i data-lucide="external-link" style="width:14px; height:14px;"></i> Open Both Messages in WhatsApp At Once
+          </button>
+        </div>
+      </div>
+      <div class="modal-footer" style="display:flex; justify-content:space-between; align-items:center;">
+        <span style="font-size:0.75rem; color:#64748b;">* Tip: Tamil message is automatically copied to your clipboard</span>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="closeDualWaModal()">Close</button>
+      </div>
+    </div>
+  </div>
+
   <!-- MODAL: WHATSAPP TEMPLATE PREVIEW -->
   <div class="modal-overlay" id="waTemplateModal">
-    <div class="modal-box">
+    <div class="modal-box" style="max-width: 650px;">
       <div class="modal-header">
-        <h3>WhatsApp Message Template Preview</h3>
+        <h3 style="color:#166534; margin:0; font-size:1.1rem;">Bilingual WhatsApp Messages Preview</h3>
         <button class="close-btn" onclick="closeWaTemplateModal()">&times;</button>
       </div>
       <div class="modal-body">
-        <p style="font-size:0.85rem; color:#64748b; margin-bottom:12px;">This exact itemized breakdown is generated and sent to each parent separately with their specific school and van fee records:</p>
-        <pre id="waTemplatePreviewText" style="background:#f1f5f9; padding:16px; border-radius:8px; font-family:monospace; font-size:0.82rem; white-space:pre-wrap; color:#0f172a; border:1px solid #cbd5e1;"></pre>
+        <p style="font-size:0.83rem; color:#64748b; margin-bottom:12px;">
+          Both messages are generated separately with clean text formatting without emojis that cause question marks:
+        </p>
+        
+        <div style="display:flex; gap:8px; margin-bottom:10px;">
+          <button class="btn btn-sm btn-primary" id="waTabBtnEng" onclick="switchWaPreviewTab('eng')">Message 1: English Format</button>
+          <button class="btn btn-sm btn-secondary" id="waTabBtnTam" onclick="switchWaPreviewTab('tam')">Message 2: Tamil Format (தமிழ்)</button>
+        </div>
+
+        <pre id="waTemplatePreviewText" style="background:#f8fafc; padding:14px; border-radius:8px; font-family:monospace; font-size:0.78rem; white-space:pre-wrap; color:#0f172a; border:1px solid #cbd5e1; max-height:300px; overflow-y:auto;"></pre>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" onclick="closeWaTemplateModal()">Close</button>
         <button type="button" class="btn btn-outline" onclick="copyWaTemplateText()">
-          <i data-lucide="copy"></i> Copy Text
+          <i data-lucide="copy"></i> Copy Current View
         </button>
       </div>
     </div>
