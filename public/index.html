@@ -295,8 +295,9 @@
               <input type="text" id="vanSearchInput" placeholder="Search by name, roll no, route...">
             </div>
 
-            <select id="vanFilterGrade" class="select-ctrl">
-              <option value="All">All Grades (UKG - 8th)</option>
+            <select id="vanFilterGrade" class="select-ctrl" onchange="filterVanRegister()">
+              <option value="All">All Classes (LKG - 8th Std)</option>
+              <option value="LKG">LKG</option>
               <option value="UKG">UKG (A &amp; B)</option>
               <option value="1st Std">1st Std</option>
               <option value="2nd Std">2nd Std</option>
@@ -330,7 +331,7 @@
         <div class="card">
           <div class="card-header" style="flex-wrap: wrap; gap: 10px;">
             <div>
-              <h3 class="card-title">Official Month-by-Month Student Van Register</h3>
+              <h3 class="card-title">Official Month-by-Month Student Van Register (<span id="vanRegisterCount" style="color:#1d4ed8;">0</span> Students Travelling in Van)</h3>
               <p style="font-size:0.8rem; color:#64748b;">Individual monthly fee breakdown extracted directly from official physical van registers</p>
             </div>
             <div style="display:flex; align-items:center; gap:8px;">

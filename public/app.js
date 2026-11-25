@@ -2018,8 +2018,12 @@ function formatShortDate(dateStr) {
   return dateStr;
 }
 
+function isStudentTravellingInVan(s) {
+  return !!(s.transportOpted || Number(s.transportFee) > 0 || Number(s.transportMonthlyFee) > 0 || Number(s.vanPaid) > 0);
+}
+
 function updateDashboardVanStats() {
-  const vanStudents = allStudents.filter(s => s.transportOpted);
+  const vanStudents = allStudents.filter(isStudentTravellingInVan);
   const totalVanStudents = vanStudents.length;
   const totalVanExpected = vanStudents.reduce((sum, s) => {
     const rate = Number(s.transportMonthlyFee || 0);
@@ -2041,8 +2045,27 @@ function updateDashboardVanStats() {
   if (elPct) elPct.innerText = `${pct}% collected (${allReceipts.filter(r => r.feeCategories && r.feeCategories.includes('Transport / Van Fees')).length} receipts)`;
 }
 
+function populateVanFilterGradeDropdown() {
+  const sel = document.getElementById('vanFilterGrade');
+  if (!sel) return;
+  const currentVal = sel.value || 'All';
+
+  const grades = ['LKG', 'UKG', '1st Std', '2nd Std', '3rd Std', '4th Std', '5th Std', '6th Std', '7th Std', '8th Std'];
+  const vanStudents = allStudents.filter(isStudentTravellingInVan);
+
+  let html = `<option value="All">All Classes (${vanStudents.length} Students)</option>`;
+  grades.forEach(g => {
+    const count = vanStudents.filter(s => s.grade === g).length;
+    html += `<option value="${g}">${g} (${count} Van Students)</option>`;
+  });
+
+  sel.innerHTML = html;
+  sel.value = currentVal;
+}
+
 function renderVanFeesTab() {
-  const vanStudents = allStudents.filter(s => s.transportOpted);
+  populateVanFilterGradeDropdown();
+  const vanStudents = allStudents.filter(isStudentTravellingInVan);
   const totalVanStudents = vanStudents.length;
   const totalVanExpected = vanStudents.reduce((sum, s) => {
     const rate = Number(s.transportMonthlyFee || 0);
@@ -2081,6 +2104,9 @@ function renderVanRegisterTable(students) {
   const tbody = document.getElementById('vanRegisterBody');
   if (!tbody) return;
   tbody.innerHTML = '';
+
+  const elCount = document.getElementById('vanRegisterCount');
+  if (elCount) elCount.innerText = students.length;
 
   if (students.length === 0) {
     tbody.innerHTML = `<tr><td colspan="20" style="text-align:center; padding:32px; color:#64748b;">No van student records found matching the criteria.</td></tr>`;
@@ -2162,7 +2188,7 @@ function filterVanRegister() {
   const selectedGrade = document.getElementById('vanFilterGrade')?.value || 'All';
   const selectedStatus = document.getElementById('vanFilterStatus')?.value || 'All';
 
-  let filtered = allStudents.filter(s => s.transportOpted);
+  let filtered = allStudents.filter(isStudentTravellingInVan);
 
   if (selectedGrade !== 'All') {
     filtered = filtered.filter(s => s.grade.toLowerCase() === selectedGrade.toLowerCase());
@@ -2204,7 +2230,7 @@ function renderVanGradeStats(vanStudents) {
   if (!tbody) return;
   tbody.innerHTML = '';
 
-  const grades = ['UKG', '1st Std', '2nd Std', '3rd Std', '4th Std', '5th Std', '6th Std', '7th Std', '8th Std'];
+  const grades = ['LKG', 'UKG', '1st Std', '2nd Std', '3rd Std', '4th Std', '5th Std', '6th Std', '7th Std', '8th Std'];
 
   grades.forEach(g => {
     const totalInGrade = allStudents.filter(s => s.grade === g).length;
