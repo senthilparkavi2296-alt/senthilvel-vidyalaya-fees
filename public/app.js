@@ -2580,7 +2580,7 @@ function updateClassDuesPrintReport() {
             <th style="width:70px; text-align:right;">School Fee</th>
             <th style="width:70px; text-align:right;">School Paid</th>
             <th style="width:75px; text-align:right; color:#b91c1c;">School Due</th>
-            <th style="width:65px; text-align:right; color:#1e40af;">Van/Mo</th>
+            <th style="width:85px; text-align:right; color:#1e40af; background:#eff6ff;">Per Month Van Fee</th>
             <th style="min-width:125px;">Van Paid Months (Count)</th>
             <th style="min-width:135px;">Van Remaining Months to Pay</th>
             <th style="width:70px; text-align:right; color:#d97706;">Van Due</th>
@@ -2594,7 +2594,7 @@ function updateClassDuesPrintReport() {
         <tfoot>
           <tr>
             <td colspan="14" style="text-align:left; font-weight:700; background:#f8fafc; padding:8px 10px; color:#475569;">
-              Student Summary: ${totalInView} Students Listed (${unpaidCount} Unpaid, ${partialCount} Partially Paid). Total financial sums omitted for teacher copy.
+              Student Summary: ${totalInView} Students Listed (${unpaidCount} Unpaid, ${partialCount} Partially Paid)
             </td>
           </tr>
         </tfoot>
