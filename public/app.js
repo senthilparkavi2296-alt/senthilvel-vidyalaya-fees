@@ -2475,15 +2475,18 @@ function updateClassDuesPrintReport() {
   if (selectedSheetType === 'TeacherCopy') {
     let rowsHtml = '';
     if (students.length === 0) {
-      rowsHtml = `<tr><td colspan="13" style="text-align:center; padding:30px; font-weight:700; color:#10b981;">No student records with dues found. All fees are cleared!</td></tr>`;
+      rowsHtml = `<tr><td colspan="14" style="text-align:center; padding:30px; font-weight:700; color:#10b981;">No student records with dues found. All fees are cleared!</td></tr>`;
     } else {
       students.forEach((s, idx) => {
         const van = getStudentVanMonthDetails(s);
 
+        let vanMonthlyStr = '-';
         let vanPaidStr = '-';
         let vanRemStr = 'Self Commute';
 
         if (s.transportOpted || van.annualVanFee > 0) {
+          vanMonthlyStr = van.monthlyRate > 0 ? `₹${van.monthlyRate.toLocaleString('en-IN')}` : '-';
+
           if (van.paidMonths.length > 0) {
             vanPaidStr = `<strong>${van.paidCount} Mos:</strong> ${van.paidMonths.join(', ')}`;
           } else {
@@ -2515,11 +2518,12 @@ function updateClassDuesPrintReport() {
             <td style="text-align:right;">₹${(s.netSchoolPayable || 0).toLocaleString('en-IN')}</td>
             <td style="text-align:right; color:#059669; font-weight:600;">₹${(s.schoolPaid || 0).toLocaleString('en-IN')}</td>
             <td style="text-align:right; font-weight:700; color:#b91c1c;">₹${(s.schoolDue || 0).toLocaleString('en-IN')}</td>
+            <td style="text-align:right; font-weight:700; color:#1e40af; white-space:nowrap;">${vanMonthlyStr}</td>
             <td style="font-size:0.71rem; line-height:1.25;">${vanPaidStr}</td>
             <td style="font-size:0.71rem; line-height:1.25;">${vanRemStr}</td>
             <td style="text-align:right; font-weight:700; color:#d97706;">₹${(s.vanDue || 0).toLocaleString('en-IN')}</td>
             <td style="text-align:right; font-weight:800; color:#ef4444; font-size:0.83rem;">₹${(s.balanceDue || 0).toLocaleString('en-IN')}</td>
-            <td style="border-right: 1px solid #cbd5e1; min-width:110px;"></td>
+            <td style="border-right: 1px solid #cbd5e1; min-width:105px;"></td>
           </tr>
         `;
       });
@@ -2569,18 +2573,19 @@ function updateClassDuesPrintReport() {
         <thead>
           <tr>
             <th style="width:28px; text-align:center;">#</th>
-            <th style="width:48px; text-align:center;">Roll</th>
-            <th style="min-width:125px;">Student Name</th>
-            <th style="width:65px; text-align:center;">Class</th>
-            <th style="width:95px;">Parent Phone</th>
-            <th style="width:75px; text-align:right;">School Fee</th>
-            <th style="width:75px; text-align:right;">School Paid</th>
-            <th style="width:80px; text-align:right; color:#b91c1c;">School Due</th>
-            <th style="min-width:130px;">Van Paid Months (Count)</th>
-            <th style="min-width:140px;">Van Remaining Months to Pay</th>
-            <th style="width:75px; text-align:right; color:#d97706;">Van Due</th>
-            <th style="width:85px; text-align:right; color:#ef4444;">Total Due</th>
-            <th style="width:115px; text-align:center;">Teacher Remarks &amp; Notes</th>
+            <th style="width:45px; text-align:center;">Roll</th>
+            <th style="min-width:120px;">Student Name</th>
+            <th style="width:60px; text-align:center;">Class</th>
+            <th style="width:90px;">Parent Phone</th>
+            <th style="width:70px; text-align:right;">School Fee</th>
+            <th style="width:70px; text-align:right;">School Paid</th>
+            <th style="width:75px; text-align:right; color:#b91c1c;">School Due</th>
+            <th style="width:65px; text-align:right; color:#1e40af;">Van/Mo</th>
+            <th style="min-width:125px;">Van Paid Months (Count)</th>
+            <th style="min-width:135px;">Van Remaining Months to Pay</th>
+            <th style="width:70px; text-align:right; color:#d97706;">Van Due</th>
+            <th style="width:80px; text-align:right; color:#ef4444;">Total Due</th>
+            <th style="width:110px; text-align:center;">Teacher Remarks &amp; Notes</th>
           </tr>
         </thead>
         <tbody>
@@ -2588,7 +2593,7 @@ function updateClassDuesPrintReport() {
         </tbody>
         <tfoot>
           <tr>
-            <td colspan="13" style="text-align:left; font-weight:700; background:#f8fafc; padding:8px 10px; color:#475569;">
+            <td colspan="14" style="text-align:left; font-weight:700; background:#f8fafc; padding:8px 10px; color:#475569;">
               Student Summary: ${totalInView} Students Listed (${unpaidCount} Unpaid, ${partialCount} Partially Paid). Total financial sums omitted for teacher copy.
             </td>
           </tr>
@@ -2789,6 +2794,7 @@ function exportClassDuesReportCSV() {
       "School Total Fee",
       "School Fee Paid",
       "School Fee Due",
+      "Van Fee Per Month",
       "Van Fees Paid (Count & Months)",
       "Van Remaining Months to Pay",
       "Van Fee Due",
@@ -2798,6 +2804,7 @@ function exportClassDuesReportCSV() {
 
     students.forEach((s, idx) => {
       const van = getStudentVanMonthDetails(s);
+      const vanMonthlyVal = (s.transportOpted || van.annualVanFee > 0) ? (van.monthlyRate || s.transportMonthlyFee || 0) : 0;
       const vanPaidStr = van.paidCount > 0 ? `${van.paidCount} Mos (${van.paidMonths.join('; ')})` : '0 Mos';
       const vanRemStr = s.transportOpted ? (van.remainingCount > 0 ? `${van.remainingCount} Mos Due (${van.remainingMonths.join('; ')})` : 'Nil (Completed)') : 'Self Commute';
 
@@ -2811,6 +2818,7 @@ function exportClassDuesReportCSV() {
         s.netSchoolPayable || 0,
         s.schoolPaid || 0,
         s.schoolDue || 0,
+        vanMonthlyVal,
         vanPaidStr,
         vanRemStr,
         s.vanDue || 0,
