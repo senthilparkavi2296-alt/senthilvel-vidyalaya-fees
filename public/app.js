@@ -2690,3 +2690,175 @@ function exportClassDuesReportCSV() {
   showToast(`Exported ${filename} successfully!`);
 }
 
+function printClassDuesReport() {
+  const reportContent = document.getElementById('printableClassDuesReport');
+  if (!reportContent) return;
+
+  // Use a dedicated invisible iframe to print clean, pure A4 landscape multi-page document
+  let iframe = document.getElementById('printReportIframe');
+  if (iframe) iframe.remove();
+
+  iframe = document.createElement('iframe');
+  iframe.id = 'printReportIframe';
+  iframe.style.position = 'fixed';
+  iframe.style.right = '0';
+  iframe.style.bottom = '0';
+  iframe.style.width = '0';
+  iframe.style.height = '0';
+  iframe.style.border = '0';
+  iframe.style.visibility = 'hidden';
+  document.body.appendChild(iframe);
+
+  const doc = iframe.contentWindow.document;
+  doc.open();
+  doc.write(`
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <title>Fee Dues Statement - Senthilvel Vidyalaya</title>
+        <style>
+          @page {
+            size: A4 landscape;
+            margin: 10mm 8mm 10mm 8mm;
+          }
+          * {
+            box-sizing: border-box;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+          }
+          html, body {
+            margin: 0;
+            padding: 0;
+            background: #ffffff;
+            color: #0f172a;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+            font-size: 11px;
+            line-height: 1.35;
+          }
+          .report-header-print {
+            text-align: center;
+            border-bottom: 2px solid #1e3a8a;
+            padding-bottom: 8px;
+            margin-bottom: 10px;
+          }
+          .report-school-title {
+            font-size: 19px;
+            font-weight: 800;
+            color: #1e3a8a;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin: 0 0 2px 0;
+          }
+          .report-school-sub {
+            font-size: 11.5px;
+            color: #475569;
+            margin: 0 0 4px 0;
+          }
+          .report-doc-title {
+            font-size: 13.5px;
+            font-weight: 700;
+            color: #b91c1c;
+            background-color: #fef2f2 !important;
+            border: 1px solid #fecaca;
+            display: inline-block;
+            padding: 3px 14px;
+            border-radius: 4px;
+            margin-top: 3px;
+          }
+          .report-meta-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+            background-color: #f8fafc !important;
+            border: 1px solid #cbd5e1;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 10.5px;
+            margin-bottom: 12px;
+          }
+          .report-meta-item strong {
+            display: block;
+            font-size: 9.5px;
+            color: #64748b;
+            text-transform: uppercase;
+          }
+          .report-meta-item span {
+            font-size: 12.5px;
+            font-weight: 700;
+            color: #0f172a;
+          }
+          table.report-table-print {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 10px;
+            margin-bottom: 14px;
+            page-break-inside: auto;
+          }
+          table.report-table-print thead {
+            display: table-header-group;
+          }
+          table.report-table-print tfoot {
+            display: table-footer-group;
+          }
+          table.report-table-print tr {
+            page-break-inside: avoid;
+            page-break-after: auto;
+          }
+          table.report-table-print th {
+            background-color: #e2e8f0 !important;
+            color: #0f172a;
+            font-weight: 700;
+            border: 1px solid #94a3b8;
+            padding: 5px 4px;
+            text-align: left;
+          }
+          table.report-table-print td {
+            border: 1px solid #cbd5e1;
+            padding: 4px 4px;
+            vertical-align: middle;
+          }
+          table.report-table-print tr:nth-child(even) td {
+            background-color: #f8fafc;
+          }
+          table.report-table-print tfoot td {
+            background-color: #f1f5f9 !important;
+            font-weight: 800;
+            border-top: 2px solid #0f172a;
+            border-bottom: 2px solid #0f172a;
+            padding: 6px 4px;
+          }
+          .report-signatures {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 26px;
+            padding: 0 16px;
+            page-break-inside: avoid;
+          }
+          .report-sig-block {
+            text-align: center;
+            width: 180px;
+            border-top: 1px dashed #64748b;
+            padding-top: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            color: #334155;
+          }
+        </style>
+      </head>
+      <body>
+        ${reportContent.innerHTML}
+      </body>
+    </html>
+  `);
+  doc.close();
+
+  setTimeout(() => {
+    try {
+      iframe.contentWindow.focus();
+      iframe.contentWindow.print();
+    } catch (e) {
+      window.print();
+    }
+  }, 350);
+}
+

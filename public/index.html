@@ -1303,7 +1303,7 @@
           <button class="btn btn-outline btn-sm" onclick="exportClassDuesReportCSV()" style="font-size:0.82rem; padding:6px 12px; font-weight:600;">
             <i data-lucide="download" style="width:14px; height:14px;"></i> Export Excel / CSV
           </button>
-          <button class="btn btn-primary btn-sm" onclick="window.print()" style="background:#1e3a8a; font-weight:700; font-size:0.85rem; padding:7px 18px; box-shadow:0 2px 6px rgba(30,58,138,0.25);">
+          <button class="btn btn-primary btn-sm" onclick="printClassDuesReport()" style="background:#1e3a8a; font-weight:700; font-size:0.85rem; padding:7px 18px; box-shadow:0 2px 6px rgba(30,58,138,0.25);">
             <i data-lucide="printer" style="width:14px; height:14px;"></i> Print / Save as PDF
           </button>
         </div>
@@ -1320,7 +1320,12 @@
         <span style="font-size:0.8rem; color:#64748b;">
           💡 <strong>Tip for PDF:</strong> In the browser print dialog, choose Destination: <strong>Save as PDF</strong> and Layout: <strong>Landscape</strong>.
         </span>
-        <button type="button" class="btn btn-secondary btn-sm" onclick="closeClassDuesPrintModal()">Close</button>
+        <div style="display:flex; gap:8px;">
+          <button type="button" class="btn btn-secondary btn-sm" onclick="closeClassDuesPrintModal()">Close</button>
+          <button type="button" class="btn btn-primary btn-sm" onclick="printClassDuesReport()" style="background:#1e3a8a; font-weight:700;">
+            <i data-lucide="printer" style="width:14px; height:14px;"></i> Print Now
+          </button>
+        </div>
       </div>
     </div>
   </div>

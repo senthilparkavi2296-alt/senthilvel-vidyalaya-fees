@@ -1336,50 +1336,119 @@ body {
     size: A4 landscape;
     margin: 8mm 8mm 8mm 8mm;
   }
-  body * {
-    visibility: hidden;
-  }
-  .modal-overlay.open, .modal-box, #printableReceipt, #printableReceipt *, #printableClassDuesReport, #printableClassDuesReport * {
-    visibility: visible;
-  }
-  #printableReceipt, #printableClassDuesReport {
-    position: absolute;
-    left: 0;
-    top: 0;
+
+  html, body {
     width: 100% !important;
-    max-width: 100% !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    border: none !important;
-    box-shadow: none !important;
+    height: auto !important;
+    min-height: auto !important;
+    overflow: visible !important;
     background: #ffffff !important;
+    color: #000000 !important;
   }
-  .modal-box {
-    max-width: 100% !important;
-    width: 100% !important;
-    padding: 0 !important;
-    margin: 0 !important;
-    border: none !important;
-    box-shadow: none !important;
-    background: transparent !important;
-  }
-  .modal-header, .modal-footer, .sidebar, .top-header, .no-print, .close-btn {
+
+  /* Hide app navigation, chrome and controls during print */
+  .sidebar, .top-header, .no-print, .close-btn, .modal-header, .modal-footer, #toastBox {
     display: none !important;
   }
-  .report-table-print th {
+
+  /* Reset all modal containers so multi-page table can flow and break cleanly */
+  .modal-overlay,
+  .modal-overlay.open {
+    position: static !important;
+    display: block !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: auto !important;
+    overflow: visible !important;
+    background: transparent !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    inset: auto !important;
+    z-index: auto !important;
+    backdrop-filter: none !important;
+  }
+
+  .modal-box {
+    position: static !important;
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+  }
+
+  .modal-body {
+    position: static !important;
+    display: block !important;
+    width: 100% !important;
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  #printableClassDuesReport {
+    position: static !important;
+    display: block !important;
+    width: 100% !important;
+    height: auto !important;
+    overflow: visible !important;
+    background: transparent !important;
+  }
+
+  #printableReceipt {
+    position: static !important;
+    width: 100% !important;
+    border: none !important;
+    padding: 0 !important;
+  }
+
+  /* Multi-page table pagination rules */
+  table.report-table-print {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    page-break-inside: auto !important;
+  }
+
+  table.report-table-print thead {
+    display: table-header-group !important;
+  }
+
+  table.report-table-print tfoot {
+    display: table-footer-group !important;
+  }
+
+  table.report-table-print tr {
+    page-break-inside: avoid !important;
+    page-break-after: auto !important;
+  }
+
+  table.report-table-print th {
     background: #e2e8f0 !important;
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    border: 1px solid #94a3b8 !important;
   }
-  .report-table-print tr {
-    page-break-inside: avoid;
+
+  table.report-table-print td {
+    border: 1px solid #cbd5e1 !important;
   }
-  .report-doc-title {
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
+
+  .report-signatures {
+    page-break-inside: avoid !important;
+    margin-top: 28px !important;
   }
-  .report-meta-grid {
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
+
+  .report-doc-title, .report-meta-grid {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
   }
 }
