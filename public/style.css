@@ -1212,23 +1212,174 @@ body {
   white-space: nowrap;
 }
 
+/* Class Dues Printable Report Styling */
+#printableClassDuesReport {
+  background: #ffffff;
+  color: #0f172a;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  line-height: 1.35;
+}
+
+.report-header-print {
+  text-align: center;
+  border-bottom: 2px solid #1e3a8a;
+  padding-bottom: 10px;
+  margin-bottom: 12px;
+}
+
+.report-school-title {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #1e3a8a;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 0 0 2px 0;
+}
+
+.report-school-sub {
+  font-size: 0.82rem;
+  color: #475569;
+  margin: 0 0 4px 0;
+}
+
+.report-doc-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #b91c1c;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  display: inline-block;
+  padding: 3px 14px;
+  border-radius: 4px;
+  margin-top: 4px;
+}
+
+.report-meta-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  padding: 10px 12px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  margin-bottom: 14px;
+}
+
+.report-meta-item strong {
+  display: block;
+  font-size: 0.72rem;
+  color: #64748b;
+  text-transform: uppercase;
+}
+
+.report-meta-item span {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.report-table-print {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.76rem;
+  margin-bottom: 16px;
+}
+
+.report-table-print th {
+  background: #f1f5f9;
+  color: #0f172a;
+  font-weight: 700;
+  border: 1px solid #cbd5e1;
+  padding: 6px 5px;
+  text-align: left;
+}
+
+.report-table-print td {
+  border: 1px solid #e2e8f0;
+  padding: 5px 5px;
+  vertical-align: middle;
+}
+
+.report-table-print tr:nth-child(even) td {
+  background: #fafafa;
+}
+
+.report-table-print tfoot td {
+  background: #f1f5f9;
+  font-weight: 800;
+  border-top: 2px solid #0f172a;
+  border-bottom: 2px solid #0f172a;
+  padding: 7px 5px;
+}
+
+.report-signatures {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 32px;
+  padding: 0 16px;
+}
+
+.report-sig-block {
+  text-align: center;
+  width: 190px;
+  border-top: 1px dashed #64748b;
+  padding-top: 6px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #334155;
+}
+
 /* Print Mode */
 @media print {
+  @page {
+    size: A4 landscape;
+    margin: 8mm 8mm 8mm 8mm;
+  }
   body * {
     visibility: hidden;
   }
-  .modal-overlay.open, .modal-box, #printableReceipt, #printableReceipt * {
+  .modal-overlay.open, .modal-box, #printableReceipt, #printableReceipt *, #printableClassDuesReport, #printableClassDuesReport * {
     visibility: visible;
   }
-  #printableReceipt {
+  #printableReceipt, #printableClassDuesReport {
     position: absolute;
     left: 0;
     top: 0;
-    width: 100%;
-    border: none;
-    padding: 0;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
+    background: #ffffff !important;
   }
-  .modal-header, .modal-footer, .sidebar, .top-header {
+  .modal-box {
+    max-width: 100% !important;
+    width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+  }
+  .modal-header, .modal-footer, .sidebar, .top-header, .no-print, .close-btn {
     display: none !important;
+  }
+  .report-table-print th {
+    background: #e2e8f0 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .report-table-print tr {
+    page-break-inside: avoid;
+  }
+  .report-doc-title {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .report-meta-grid {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
   }
 }

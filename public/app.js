@@ -204,7 +204,12 @@ async function fetchStats() {
           </div>
         </td>
         <td>
-          <button class="btn btn-outline btn-sm" onclick="filterByGradeAndGo('${item.grade}')">View Class</button>
+          <div style="display:flex; gap:6px;">
+            <button class="btn btn-outline btn-sm" onclick="filterByGradeAndGo('${item.grade}')">View</button>
+            <button class="btn btn-sm" style="background:#1e3a8a; color:#fff; font-weight:600; padding:4px 8px; font-size:0.75rem;" onclick="openClassDuesPrintModal('${item.grade}')" title="Print Class Dues PDF for ${item.grade}">
+              <i data-lucide="printer" style="width:12px; height:12px; display:inline; margin-right:2px;"></i> Print Dues
+            </button>
+          </div>
         </td>
       `;
       tbody.appendChild(tr);
@@ -849,20 +854,26 @@ function renderRecentDashboardPayments(receipts) {
 }
 
 // 5. Defaulters Report
-function renderDefaulters() {
+function filterDefaultersTable() {
+  const selectedGrade = document.getElementById('defaulterClassFilter')?.value || 'All';
+  const selectedStatus = document.getElementById('defaulterStatusFilter')?.value || 'All';
+  renderDefaulters(selectedGrade, selectedStatus);
+}
+
+function renderDefaulters(gradeFilter = 'All', statusFilter = 'All') {
   const tbody = document.getElementById('defaultersTableBody');
   if (!tbody) return;
   tbody.innerHTML = '';
 
-  const defaulters = allStudents.filter(s => s.balanceDue > 0);
+  const allDefaulters = allStudents.filter(s => s.balanceDue > 0);
 
-  // Update stats on WhatsApp card
+  // Update stats on WhatsApp card from all defaulters across school
   const dueCountElem = document.getElementById('waDueStudentCount');
-  if (dueCountElem) dueCountElem.innerText = defaulters.length;
+  if (dueCountElem) dueCountElem.innerText = allDefaulters.length;
 
-  const totalSchoolDue = defaulters.reduce((acc, s) => acc + (s.schoolDue || 0), 0);
-  const totalVanDue = defaulters.reduce((acc, s) => acc + (s.vanDue || 0), 0);
-  const totalCombinedDue = defaulters.reduce((acc, s) => acc + s.balanceDue, 0);
+  const totalSchoolDue = allDefaulters.reduce((acc, s) => acc + (s.schoolDue || 0), 0);
+  const totalVanDue = allDefaulters.reduce((acc, s) => acc + (s.vanDue || 0), 0);
+  const totalCombinedDue = allDefaulters.reduce((acc, s) => acc + s.balanceDue, 0);
 
   const schoolDueElem = document.getElementById('waTotalSchoolDue');
   if (schoolDueElem) schoolDueElem.innerText = `₹${totalSchoolDue.toLocaleString('en-IN')}`;
@@ -873,12 +884,30 @@ function renderDefaulters() {
   const combinedDueElem = document.getElementById('waTotalCombinedDue');
   if (combinedDueElem) combinedDueElem.innerText = `₹${totalCombinedDue.toLocaleString('en-IN')}`;
 
-  if (defaulters.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding:32px; color:#10b981; font-weight:600;">All students have cleared their fees! No dues pending.</td></tr>`;
+  // Apply filters to table display
+  let filtered = allDefaulters.slice();
+
+  if (gradeFilter !== 'All') {
+    filtered = filtered.filter(s => s.grade.toLowerCase() === gradeFilter.toLowerCase());
+  }
+
+  if (statusFilter === 'Unpaid') {
+    filtered = filtered.filter(s => (s.totalPaid || 0) === 0);
+  } else if (statusFilter === 'Partial') {
+    filtered = filtered.filter(s => (s.totalPaid || 0) > 0);
+  }
+
+  if (filtered.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="10" style="text-align:center; padding:32px; color:#10b981; font-weight:600;">No student records found matching the chosen class &amp; status criteria.</td></tr>`;
     return;
   }
 
-  defaulters.forEach(s => {
+  filtered.forEach(s => {
+    const isUnpaid = (s.totalPaid || 0) === 0;
+    const statusBadge = isUnpaid 
+      ? `<span class="badge badge-unpaid">Unpaid</span>` 
+      : `<span class="badge" style="background:#fef3c7; color:#92400e; font-weight:700;">Partially Paid</span>`;
+
     const tr = document.createElement('tr');
     tr.innerHTML = `
       <td><strong>${s.name}</strong></td>
@@ -886,6 +915,7 @@ function renderDefaulters() {
       <td><span class="grade-pill">${s.grade}</span> Sec ${s.section || 'A'}</td>
       <td>${s.parentName || '-'}</td>
       <td><a href="tel:${s.contact}" style="color:#1e3a8a; text-decoration:none; font-weight:600;">${s.contact || '-'}</a></td>
+      <td>${statusBadge}</td>
       <td style="color:#b91c1c; font-weight:700;">₹${(s.schoolDue || 0).toLocaleString('en-IN')}</td>
       <td style="color:#d97706; font-weight:700;">₹${(s.vanDue || 0).toLocaleString('en-IN')}</td>
       <td style="color:#ef4444; font-weight:800; font-size:1.02rem;">₹${s.balanceDue.toLocaleString('en-IN')}</td>
@@ -2268,7 +2298,12 @@ function renderVanGradeStats(vanStudents) {
         </div>
       </td>
       <td>
-        <button class="btn btn-outline btn-sm" onclick="filterVanByGrade('${g}')">View Class</button>
+        <div style="display:flex; gap:6px;">
+          <button class="btn btn-outline btn-sm" onclick="filterVanByGrade('${g}')">View</button>
+          <button class="btn btn-sm" style="background:#1e3a8a; color:#fff; font-weight:600; padding:4px 8px; font-size:0.75rem;" onclick="openClassDuesPrintModal('${g}', 'VanOnly')" title="Print Class Van Dues PDF for ${g}">
+            <i data-lucide="printer" style="width:12px; height:12px; display:inline; margin-right:2px;"></i> Print Van Dues
+          </button>
+        </div>
       </td>
     `;
     tbody.appendChild(tr);
@@ -2328,5 +2363,330 @@ function openVanFeeCollectModal(studentId) {
 
 function printVanRegister() {
   window.print();
+}
+
+// 8. Class-Wise Dues & Defaulter Printable PDF Reports
+function openClassDuesPrintModal(grade = 'All', feeType = 'Both') {
+  const modal = document.getElementById('classDuesPrintModal');
+  if (!modal) return;
+
+  const selGrade = document.getElementById('printModalGradeSelect');
+  if (selGrade) selGrade.value = grade || 'All';
+
+  const selFee = document.getElementById('printModalFeeTypeSelect');
+  if (selFee) selFee.value = feeType || 'Both';
+
+  const selStatus = document.getElementById('printModalStatusSelect');
+  if (selStatus) selStatus.value = 'DuesOnly';
+
+  updateClassDuesPrintReport();
+  modal.classList.add('open');
+  initIcons();
+}
+
+function closeClassDuesPrintModal() {
+  const modal = document.getElementById('classDuesPrintModal');
+  if (modal) modal.classList.remove('open');
+}
+
+function updateClassDuesPrintReport() {
+  const container = document.getElementById('printableClassDuesReport');
+  if (!container) return;
+
+  const selectedGrade = document.getElementById('printModalGradeSelect')?.value || 'All';
+  const selectedStatus = document.getElementById('printModalStatusSelect')?.value || 'DuesOnly';
+  const selectedFeeType = document.getElementById('printModalFeeTypeSelect')?.value || 'Both';
+
+  const schoolName = (schoolInfo && schoolInfo.name) || "Senthilvel Vidyalaya School";
+  const schoolAddr = (schoolInfo && schoolInfo.address) || "Pakkudi, Pudukottai";
+  const schoolPhone = (schoolInfo && schoolInfo.phone) || "9789277169, 9445987169";
+
+  let students = allStudents.slice();
+
+  // 1. Grade filter
+  if (selectedGrade !== 'All') {
+    students = students.filter(s => s.grade.toLowerCase() === selectedGrade.toLowerCase());
+  }
+
+  // 2. Fee Component filter
+  if (selectedFeeType === 'SchoolOnly') {
+    if (selectedStatus === 'DuesOnly') {
+      students = students.filter(s => (s.schoolDue || 0) > 0);
+    }
+  } else if (selectedFeeType === 'VanOnly') {
+    if (selectedStatus === 'DuesOnly') {
+      students = students.filter(s => (s.vanDue || 0) > 0);
+    } else {
+      students = students.filter(s => s.transportOpted || Number(s.transportFee) > 0);
+    }
+  } else {
+    // Both School & Van
+    if (selectedStatus === 'DuesOnly') {
+      students = students.filter(s => (s.balanceDue || 0) > 0);
+    }
+  }
+
+  // 3. Status filter
+  if (selectedStatus === 'Unpaid') {
+    students = students.filter(s => (s.totalPaid || 0) === 0 && (s.balanceDue || 0) > 0);
+  } else if (selectedStatus === 'Partial') {
+    students = students.filter(s => (s.totalPaid || 0) > 0 && (s.balanceDue || 0) > 0);
+  }
+
+  // Sort students: Grade, then Roll No
+  students.sort((a, b) => {
+    if (a.grade !== b.grade) return a.grade.localeCompare(b.grade);
+    const rA = parseInt(String(a.rollNo).replace(/\D/g, '')) || 0;
+    const rB = parseInt(String(b.rollNo).replace(/\D/g, '')) || 0;
+    return rA - rB;
+  });
+
+  const totalInView = students.length;
+  const unpaidCount = students.filter(s => (s.totalPaid || 0) === 0 && (s.balanceDue || 0) > 0).length;
+  const partialCount = students.filter(s => (s.totalPaid || 0) > 0 && (s.balanceDue || 0) > 0).length;
+  const fullyPaidCount = students.filter(s => (s.balanceDue || 0) === 0).length;
+
+  const totalSchoolDue = students.reduce((sum, s) => sum + Number(s.schoolDue || 0), 0);
+  const totalVanDue = students.reduce((sum, s) => sum + Number(s.vanDue || 0), 0);
+  const totalConsolidatedDue = students.reduce((sum, s) => sum + Number(s.balanceDue || 0), 0);
+
+  const totalSchoolExpected = students.reduce((sum, s) => sum + Number(s.netSchoolPayable || 0), 0);
+  const totalSchoolPaid = students.reduce((sum, s) => sum + Number(s.schoolPaid || 0), 0);
+  const totalVanPaid = students.reduce((sum, s) => sum + Number(s.vanPaid || 0), 0);
+
+  const reportDate = new Date().toLocaleDateString('en-IN', {
+    day: '2-digit', month: 'short', year: 'numeric'
+  });
+
+  let rowsHtml = '';
+  if (students.length === 0) {
+    rowsHtml = `<tr><td colspan="15" style="text-align:center; padding:30px; font-weight:700; color:#10b981;">No student records found matching the chosen criteria. All fees are cleared!</td></tr>`;
+  } else {
+    students.forEach((s, idx) => {
+      const isUnpaid = (s.totalPaid || 0) === 0;
+      const isPaid = (s.balanceDue || 0) === 0;
+      const statusLabel = isPaid 
+        ? '<span style="color:#15803d; font-weight:700;">Fully Paid</span>'
+        : (isUnpaid 
+          ? '<span style="color:#b91c1c; font-weight:700;">Unpaid</span>' 
+          : '<span style="color:#b45309; font-weight:700;">Partially Paid</span>');
+
+      const van = getStudentVanMonthDetails(s);
+      let vanRouteStr = 'Self Commute';
+      let vanRemStr = '-';
+      if (s.transportOpted || van.annualVanFee > 0) {
+        vanRouteStr = `₹${van.monthlyRate}/mo (${s.boardingArea || 'Campus'})`;
+        if (van.remainingMonths.length > 0) {
+          vanRemStr = `${van.remainingMonths.slice(0, 4).join(', ')}${van.remainingMonths.length > 4 ? '... (' + van.remainingMonths.length + ' mos)' : ''}`;
+        } else {
+          vanRemStr = 'Paid (11/11)';
+        }
+      }
+
+      rowsHtml += `
+        <tr>
+          <td style="text-align:center;">${idx + 1}</td>
+          <td style="text-align:center; font-weight:700;">${s.rollNo || '-'}</td>
+          <td><strong>${s.name}</strong></td>
+          <td style="text-align:center;">${s.grade} - ${s.section || 'A'}</td>
+          <td>${s.parentName || '-'}</td>
+          <td>${s.contact || '-'}</td>
+          <td style="text-align:center;">${statusLabel}</td>
+          <td style="text-align:right;">₹${(s.netSchoolPayable || 0).toLocaleString('en-IN')}</td>
+          <td style="text-align:right; color:#059669;">₹${(s.schoolPaid || 0).toLocaleString('en-IN')}</td>
+          <td style="text-align:right; font-weight:700; color:#b91c1c;">₹${(s.schoolDue || 0).toLocaleString('en-IN')}</td>
+          <td style="font-size:0.72rem;">${vanRouteStr}</td>
+          <td style="font-size:0.72rem; color:#475569;">${vanRemStr}</td>
+          <td style="text-align:right; font-weight:700; color:#d97706;">₹${(s.vanDue || 0).toLocaleString('en-IN')}</td>
+          <td style="text-align:right; font-weight:800; color:#ef4444; font-size:0.82rem;">₹${(s.balanceDue || 0).toLocaleString('en-IN')}</td>
+          <td style="border-right: 1px solid #cbd5e1;"></td>
+        </tr>
+      `;
+    });
+  }
+
+  const classTitle = selectedGrade === 'All' ? 'ALL CLASSES (LKG - 8TH STD)' : `CLASS: ${selectedGrade.toUpperCase()}`;
+  const feeTypeTitle = selectedFeeType === 'Both' ? 'SCHOOL ACADEMIC & VAN / TRANSPORTATION FEES' : (selectedFeeType === 'SchoolOnly' ? 'SCHOOL ACADEMIC FEES ONLY' : 'VAN / TRANSPORTATION FEES ONLY');
+  const statusTitle = selectedStatus === 'DuesOnly' ? 'UNPAID & PARTIALLY PAID STUDENTS' : (selectedStatus === 'Unpaid' ? 'UNPAID STUDENTS ONLY' : (selectedStatus === 'Partial' ? 'PARTIALLY PAID STUDENTS ONLY' : 'ALL ENROLLED STUDENTS'));
+
+  container.innerHTML = `
+    <div class="report-header-print">
+      <h2 class="report-school-title">${schoolName}</h2>
+      <p class="report-school-sub">${schoolAddr} | Ph: ${schoolPhone}</p>
+      <div class="report-doc-title">
+        ${classTitle} — FEE DUE &amp; DEFAULTER STATEMENT
+      </div>
+      <div style="font-size:0.78rem; color:#475569; margin-top:4px;">
+        <strong>Component:</strong> ${feeTypeTitle} &nbsp;|&nbsp; <strong>Filter:</strong> ${statusTitle} &nbsp;|&nbsp; <strong>Academic Year:</strong> 2026-2027
+      </div>
+    </div>
+
+    <div class="report-meta-grid">
+      <div class="report-meta-item">
+        <strong>Report Scope</strong>
+        <span>${selectedGrade === 'All' ? 'Whole School' : selectedGrade}</span>
+      </div>
+      <div class="report-meta-item">
+        <strong>Students Listed</strong>
+        <span>${totalInView} Students</span>
+      </div>
+      <div class="report-meta-item">
+        <strong>Pending School Fees</strong>
+        <span style="color:#b91c1c;">₹${totalSchoolDue.toLocaleString('en-IN')}</span>
+      </div>
+      <div class="report-meta-item">
+        <strong>Pending Van Fees</strong>
+        <span style="color:#d97706;">₹${totalVanDue.toLocaleString('en-IN')}</span>
+      </div>
+      <div class="report-meta-item" style="background:#fef2f2; border:1px solid #fecaca; padding:4px 8px; border-radius:4px;">
+        <strong style="color:#991b1b;">TOTAL BALANCE DUE</strong>
+        <span style="color:#ef4444; font-size:1rem;">₹${totalConsolidatedDue.toLocaleString('en-IN')}</span>
+      </div>
+    </div>
+
+    <div style="font-size:0.76rem; color:#475569; margin-bottom:8px; display:flex; justify-content:space-between;">
+      <div>
+        Showing: <strong>${unpaidCount} Unpaid</strong> + <strong>${partialCount} Partially Paid</strong> ${fullyPaidCount > 0 ? '+ ' + fullyPaidCount + ' Fully Paid' : ''}
+      </div>
+      <div>
+        Generated On: <strong>${reportDate}</strong>
+      </div>
+    </div>
+
+    <table class="report-table-print">
+      <thead>
+        <tr>
+          <th style="width:28px; text-align:center;">#</th>
+          <th style="width:50px; text-align:center;">Roll</th>
+          <th style="min-width:125px;">Student Name</th>
+          <th style="width:75px; text-align:center;">Class</th>
+          <th style="min-width:105px;">Parent / Guardian</th>
+          <th style="width:88px;">Contact No</th>
+          <th style="width:80px; text-align:center;">Status</th>
+          <th style="width:75px; text-align:right;">School Fee</th>
+          <th style="width:75px; text-align:right;">School Paid</th>
+          <th style="width:80px; text-align:right; color:#b91c1c;">School Due</th>
+          <th style="width:105px;">Van Route</th>
+          <th style="min-width:110px;">Van Due Mos</th>
+          <th style="width:75px; text-align:right; color:#d97706;">Van Due</th>
+          <th style="width:85px; text-align:right; color:#ef4444;">Total Due</th>
+          <th style="width:100px; text-align:center;">Parent Sign / Remarks</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${rowsHtml}
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="7" style="text-align:right; font-weight:800;">TOTALS (${totalInView} Students):</td>
+          <td style="text-align:right;">₹${totalSchoolExpected.toLocaleString('en-IN')}</td>
+          <td style="text-align:right; color:#059669;">₹${totalSchoolPaid.toLocaleString('en-IN')}</td>
+          <td style="text-align:right; color:#b91c1c; font-weight:800;">₹${totalSchoolDue.toLocaleString('en-IN')}</td>
+          <td colspan="2" style="text-align:right; font-weight:700;">Van Due Total:</td>
+          <td style="text-align:right; color:#d97706; font-weight:800;">₹${totalVanDue.toLocaleString('en-IN')}</td>
+          <td style="text-align:right; color:#ef4444; font-weight:900; font-size:0.88rem;">₹${totalConsolidatedDue.toLocaleString('en-IN')}</td>
+          <td></td>
+        </tr>
+      </tfoot>
+    </table>
+
+    <div class="report-signatures">
+      <div class="report-sig-block">
+        Class Teacher Signature
+      </div>
+      <div class="report-sig-block">
+        Fee / Accounts Incharge
+      </div>
+      <div class="report-sig-block">
+        Principal / Correspondent
+      </div>
+    </div>
+  `;
+}
+
+function exportClassDuesReportCSV() {
+  const selectedGrade = document.getElementById('printModalGradeSelect')?.value || 'All';
+  const selectedStatus = document.getElementById('printModalStatusSelect')?.value || 'DuesOnly';
+  const selectedFeeType = document.getElementById('printModalFeeTypeSelect')?.value || 'Both';
+
+  let students = allStudents.slice();
+  if (selectedGrade !== 'All') {
+    students = students.filter(s => s.grade.toLowerCase() === selectedGrade.toLowerCase());
+  }
+
+  if (selectedFeeType === 'SchoolOnly') {
+    if (selectedStatus === 'DuesOnly') students = students.filter(s => (s.schoolDue || 0) > 0);
+  } else if (selectedFeeType === 'VanOnly') {
+    if (selectedStatus === 'DuesOnly') students = students.filter(s => (s.vanDue || 0) > 0);
+    else students = students.filter(s => s.transportOpted || Number(s.transportFee) > 0);
+  } else {
+    if (selectedStatus === 'DuesOnly') students = students.filter(s => (s.balanceDue || 0) > 0);
+  }
+
+  if (selectedStatus === 'Unpaid') {
+    students = students.filter(s => (s.totalPaid || 0) === 0 && (s.balanceDue || 0) > 0);
+  } else if (selectedStatus === 'Partial') {
+    students = students.filter(s => (s.totalPaid || 0) > 0 && (s.balanceDue || 0) > 0);
+  }
+
+  const csvRows = [];
+  csvRows.push([
+    "S.No",
+    "Roll No",
+    "Student Name",
+    "Class",
+    "Section",
+    "Parent Name",
+    "Contact",
+    "Status",
+    "School Total Fee",
+    "School Paid",
+    "School Due",
+    "Van Opted",
+    "Van Monthly Rate",
+    "Van Paid Months",
+    "Van Remaining Due Months",
+    "Van Total Due",
+    "Consolidated Total Due"
+  ].map(v => `"${v}"`).join(','));
+
+  students.forEach((s, idx) => {
+    const isUnpaid = (s.totalPaid || 0) === 0;
+    const isPaid = (s.balanceDue || 0) === 0;
+    const statusText = isPaid ? 'Fully Paid' : (isUnpaid ? 'Unpaid' : 'Partially Paid');
+    const van = getStudentVanMonthDetails(s);
+
+    csvRows.push([
+      idx + 1,
+      s.rollNo || '',
+      s.name,
+      s.grade,
+      s.section || 'A',
+      s.parentName || '',
+      s.contact || '',
+      statusText,
+      s.netSchoolPayable || 0,
+      s.schoolPaid || 0,
+      s.schoolDue || 0,
+      s.transportOpted ? 'Yes' : 'No',
+      van.monthlyRate || 0,
+      van.paidMonths.join('; '),
+      van.remainingMonths.join('; '),
+      s.vanDue || 0,
+      s.balanceDue || 0
+    ].map(v => `"${String(v).replace(/"/g, '""')}"`).join(','));
+  });
+
+  const blob = new Blob([csvRows.join('\n')], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  const filename = `${selectedGrade === 'All' ? 'All_Classes' : selectedGrade.replace(/\s+/g, '_')}_Fee_Dues_Statement.csv`;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showToast(`Exported ${filename} successfully!`);
 }
 
