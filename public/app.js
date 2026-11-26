@@ -204,10 +204,13 @@ async function fetchStats() {
           </div>
         </td>
         <td>
-          <div style="display:flex; gap:6px;">
-            <button class="btn btn-outline btn-sm" onclick="filterByGradeAndGo('${item.grade}')">View</button>
-            <button class="btn btn-sm" style="background:#1e3a8a; color:#fff; font-weight:600; padding:4px 8px; font-size:0.75rem;" onclick="openClassDuesPrintModal('${item.grade}')" title="Print Class Dues PDF for ${item.grade}">
-              <i data-lucide="printer" style="width:12px; height:12px; display:inline; margin-right:2px;"></i> Print Dues
+          <div style="display:flex; gap:5px; flex-wrap:wrap;">
+            <button class="btn btn-outline btn-sm" onclick="filterByGradeAndGo('${item.grade}')" style="padding:3px 7px;">View</button>
+            <button class="btn btn-sm" style="background:#16a34a; color:#fff; font-weight:700; padding:3px 8px; font-size:0.75rem;" onclick="openClassDuesPrintModal('${item.grade}', 'Both', 'TeacherCopy')" title="Print Class Teacher Follow-up Sheet (No Totals, No Parent Name)">
+              <i data-lucide="clipboard-list" style="width:12px; height:12px; display:inline; margin-right:2px;"></i> Teacher Sheet
+            </button>
+            <button class="btn btn-sm" style="background:#1e3a8a; color:#fff; font-weight:600; padding:3px 8px; font-size:0.75rem;" onclick="openClassDuesPrintModal('${item.grade}', 'Both', 'OfficeCopy')" title="Print Accounts Due Statement">
+              <i data-lucide="printer" style="width:12px; height:12px; display:inline; margin-right:2px;"></i> Office
             </button>
           </div>
         </td>
@@ -2366,7 +2369,7 @@ function printVanRegister() {
 }
 
 // 8. Class-Wise Dues & Defaulter Printable PDF Reports
-function openClassDuesPrintModal(grade = 'All', feeType = 'Both') {
+function openClassDuesPrintModal(grade = 'All', feeType = 'Both', sheetType = 'TeacherCopy') {
   const modal = document.getElementById('classDuesPrintModal');
   if (!modal) return;
 
@@ -2378,6 +2381,9 @@ function openClassDuesPrintModal(grade = 'All', feeType = 'Both') {
 
   const selStatus = document.getElementById('printModalStatusSelect');
   if (selStatus) selStatus.value = 'DuesOnly';
+
+  const selSheet = document.getElementById('printModalSheetType');
+  if (selSheet) selSheet.value = sheetType || 'TeacherCopy';
 
   updateClassDuesPrintReport();
   modal.classList.add('open');
@@ -2393,6 +2399,7 @@ function updateClassDuesPrintReport() {
   const container = document.getElementById('printableClassDuesReport');
   if (!container) return;
 
+  const selectedSheetType = document.getElementById('printModalSheetType')?.value || 'TeacherCopy';
   const selectedGrade = document.getElementById('printModalGradeSelect')?.value || 'All';
   const selectedStatus = document.getElementById('printModalStatusSelect')?.value || 'DuesOnly';
   const selectedFeeType = document.getElementById('printModalFeeTypeSelect')?.value || 'Both';
@@ -2458,6 +2465,149 @@ function updateClassDuesPrintReport() {
     day: '2-digit', month: 'short', year: 'numeric'
   });
 
+  const classTitle = selectedGrade === 'All' ? 'ALL CLASSES (LKG - 8TH STD)' : `CLASS: ${selectedGrade.toUpperCase()}`;
+  const feeTypeTitle = selectedFeeType === 'Both' ? 'School Academic & Van Fees' : (selectedFeeType === 'SchoolOnly' ? 'School Fees Only' : 'Van Fees Only');
+  const statusTitle = selectedStatus === 'DuesOnly' ? 'Unpaid & Partially Paid' : (selectedStatus === 'Unpaid' ? 'Unpaid Only' : (selectedStatus === 'Partial' ? 'Partially Paid Only' : 'All Students'));
+
+  // -------------------------------------------------------------
+  // TYPE A: CLASS TEACHER'S FOLLOW-UP SHEET (NO CLASS TOTALS, NO PARENT NAME)
+  // -------------------------------------------------------------
+  if (selectedSheetType === 'TeacherCopy') {
+    let rowsHtml = '';
+    if (students.length === 0) {
+      rowsHtml = `<tr><td colspan="13" style="text-align:center; padding:30px; font-weight:700; color:#10b981;">No student records with dues found. All fees are cleared!</td></tr>`;
+    } else {
+      students.forEach((s, idx) => {
+        const van = getStudentVanMonthDetails(s);
+
+        let vanPaidStr = '-';
+        let vanRemStr = 'Self Commute';
+
+        if (s.transportOpted || van.annualVanFee > 0) {
+          if (van.paidMonths.length > 0) {
+            vanPaidStr = `<strong>${van.paidCount} Mos:</strong> ${van.paidMonths.join(', ')}`;
+          } else {
+            vanPaidStr = '<span style="color:#b91c1c; font-weight:600;">0 Mos Paid</span>';
+          }
+
+          if (van.remainingMonths.length > 0) {
+            vanRemStr = `<span style="color:#b45309; font-weight:600;">${van.remainingCount} Mos Due:</span> ${van.remainingMonths.join(', ')}`;
+          } else {
+            vanRemStr = '<span style="color:#15803d; font-weight:700;">Completed (11/11)</span>';
+          }
+        }
+
+        const isUnpaid = (s.totalPaid || 0) === 0;
+        const isPaid = (s.balanceDue || 0) === 0;
+        const statusLabel = isPaid 
+          ? '<span style="color:#15803d; font-weight:700;">Fully Paid</span>'
+          : (isUnpaid 
+            ? '<span style="color:#b91c1c; font-weight:700;">Unpaid</span>' 
+            : '<span style="color:#b45309; font-weight:700;">Partially Paid</span>');
+
+        rowsHtml += `
+          <tr>
+            <td style="text-align:center;">${idx + 1}</td>
+            <td style="text-align:center; font-weight:700;">${s.rollNo || '-'}</td>
+            <td><strong>${s.name}</strong></td>
+            <td style="text-align:center;">${s.grade} - ${s.section || 'A'}</td>
+            <td style="font-weight:700; color:#1e3a8a; white-space:nowrap;">${s.contact || '-'}</td>
+            <td style="text-align:right;">₹${(s.netSchoolPayable || 0).toLocaleString('en-IN')}</td>
+            <td style="text-align:right; color:#059669; font-weight:600;">₹${(s.schoolPaid || 0).toLocaleString('en-IN')}</td>
+            <td style="text-align:right; font-weight:700; color:#b91c1c;">₹${(s.schoolDue || 0).toLocaleString('en-IN')}</td>
+            <td style="font-size:0.71rem; line-height:1.25;">${vanPaidStr}</td>
+            <td style="font-size:0.71rem; line-height:1.25;">${vanRemStr}</td>
+            <td style="text-align:right; font-weight:700; color:#d97706;">₹${(s.vanDue || 0).toLocaleString('en-IN')}</td>
+            <td style="text-align:right; font-weight:800; color:#ef4444; font-size:0.83rem;">₹${(s.balanceDue || 0).toLocaleString('en-IN')}</td>
+            <td style="border-right: 1px solid #cbd5e1; min-width:110px;"></td>
+          </tr>
+        `;
+      });
+    }
+
+    container.innerHTML = `
+      <div class="report-header-print">
+        <h2 class="report-school-title">${schoolName}</h2>
+        <p class="report-school-sub">${schoolAddr} | Ph: ${schoolPhone}</p>
+        <div class="report-doc-title" style="background:#f0fdf4; color:#15803d; border-color:#bbf7d0;">
+          ${classTitle} — CLASS TEACHER'S FEE FOLLOW-UP STATEMENT
+        </div>
+        <div style="font-size:0.78rem; color:#475569; margin-top:4px;">
+          <strong>Academic Year:</strong> 2026-2027 &nbsp;|&nbsp; <strong>Date:</strong> ${reportDate} &nbsp;|&nbsp; <strong>Scope:</strong> ${statusTitle} (${feeTypeTitle})
+        </div>
+      </div>
+
+      <div class="report-meta-grid" style="grid-template-columns: repeat(4, 1fr); background:#f0fdf4; border-color:#bbf7d0;">
+        <div class="report-meta-item">
+          <strong>Class / Section</strong>
+          <span>${selectedGrade === 'All' ? 'All Classes' : selectedGrade}</span>
+        </div>
+        <div class="report-meta-item">
+          <strong>Total Students Listed</strong>
+          <span>${totalInView} Students</span>
+        </div>
+        <div class="report-meta-item">
+          <strong>Unpaid Students</strong>
+          <span style="color:#b91c1c;">${unpaidCount} Students</span>
+        </div>
+        <div class="report-meta-item">
+          <strong>Partially Paid Students</strong>
+          <span style="color:#b45309;">${partialCount} Students</span>
+        </div>
+      </div>
+
+      <div style="font-size:0.75rem; color:#475569; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;">
+        <div style="font-style:italic;">
+          * Note for Class Teacher: Contact parents via phone numbers below to follow up on pending dues. Record call date and remarks in the right column.
+        </div>
+        <div>
+          Date: <strong>${reportDate}</strong>
+        </div>
+      </div>
+
+      <table class="report-table-print">
+        <thead>
+          <tr>
+            <th style="width:28px; text-align:center;">#</th>
+            <th style="width:48px; text-align:center;">Roll</th>
+            <th style="min-width:125px;">Student Name</th>
+            <th style="width:65px; text-align:center;">Class</th>
+            <th style="width:95px;">Parent Phone</th>
+            <th style="width:75px; text-align:right;">School Fee</th>
+            <th style="width:75px; text-align:right;">School Paid</th>
+            <th style="width:80px; text-align:right; color:#b91c1c;">School Due</th>
+            <th style="min-width:130px;">Van Paid Months (Count)</th>
+            <th style="min-width:140px;">Van Remaining Months to Pay</th>
+            <th style="width:75px; text-align:right; color:#d97706;">Van Due</th>
+            <th style="width:85px; text-align:right; color:#ef4444;">Total Due</th>
+            <th style="width:115px; text-align:center;">Teacher Remarks &amp; Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${rowsHtml}
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="13" style="text-align:left; font-weight:700; background:#f8fafc; padding:8px 10px; color:#475569;">
+              Student Summary: ${totalInView} Students Listed (${unpaidCount} Unpaid, ${partialCount} Partially Paid). Total financial sums omitted for teacher copy.
+            </td>
+          </tr>
+        </tfoot>
+      </table>
+
+      <div class="report-signatures" style="margin-top:28px;">
+        <div class="report-sig-block" style="width:260px; text-align:left; border-top:1px dashed #64748b; padding-top:6px;">
+          Class Teacher Name: _______________________<br>
+          Class Teacher Signature: ____________________ &nbsp; Date: ________
+        </div>
+      </div>
+    `;
+    return;
+  }
+
+  // -------------------------------------------------------------
+  // TYPE B: OFFICIAL AUDIT / ACCOUNTS STATEMENT (WITH TOTALS & PARENT NAMES)
+  // -------------------------------------------------------------
   let rowsHtml = '';
   if (students.length === 0) {
     rowsHtml = `<tr><td colspan="15" style="text-align:center; padding:30px; font-weight:700; color:#10b981;">No student records found matching the chosen criteria. All fees are cleared!</td></tr>`;
@@ -2505,16 +2655,12 @@ function updateClassDuesPrintReport() {
     });
   }
 
-  const classTitle = selectedGrade === 'All' ? 'ALL CLASSES (LKG - 8TH STD)' : `CLASS: ${selectedGrade.toUpperCase()}`;
-  const feeTypeTitle = selectedFeeType === 'Both' ? 'SCHOOL ACADEMIC & VAN / TRANSPORTATION FEES' : (selectedFeeType === 'SchoolOnly' ? 'SCHOOL ACADEMIC FEES ONLY' : 'VAN / TRANSPORTATION FEES ONLY');
-  const statusTitle = selectedStatus === 'DuesOnly' ? 'UNPAID & PARTIALLY PAID STUDENTS' : (selectedStatus === 'Unpaid' ? 'UNPAID STUDENTS ONLY' : (selectedStatus === 'Partial' ? 'PARTIALLY PAID STUDENTS ONLY' : 'ALL ENROLLED STUDENTS'));
-
   container.innerHTML = `
     <div class="report-header-print">
       <h2 class="report-school-title">${schoolName}</h2>
       <p class="report-school-sub">${schoolAddr} | Ph: ${schoolPhone}</p>
       <div class="report-doc-title">
-        ${classTitle} — FEE DUE &amp; DEFAULTER STATEMENT
+        ${classTitle} — OFFICIAL FEE DUE &amp; DEFAULTER STATEMENT
       </div>
       <div style="font-size:0.78rem; color:#475569; margin-top:4px;">
         <strong>Component:</strong> ${feeTypeTitle} &nbsp;|&nbsp; <strong>Filter:</strong> ${statusTitle} &nbsp;|&nbsp; <strong>Academic Year:</strong> 2026-2027
@@ -2605,6 +2751,7 @@ function updateClassDuesPrintReport() {
 }
 
 function exportClassDuesReportCSV() {
+  const selectedSheetType = document.getElementById('printModalSheetType')?.value || 'TeacherCopy';
   const selectedGrade = document.getElementById('printModalGradeSelect')?.value || 'All';
   const selectedStatus = document.getElementById('printModalStatusSelect')?.value || 'DuesOnly';
   const selectedFeeType = document.getElementById('printModalFeeTypeSelect')?.value || 'Both';
@@ -2630,58 +2777,102 @@ function exportClassDuesReportCSV() {
   }
 
   const csvRows = [];
-  csvRows.push([
-    "S.No",
-    "Roll No",
-    "Student Name",
-    "Class",
-    "Section",
-    "Parent Name",
-    "Contact",
-    "Status",
-    "School Total Fee",
-    "School Paid",
-    "School Due",
-    "Van Opted",
-    "Van Monthly Rate",
-    "Van Paid Months",
-    "Van Remaining Due Months",
-    "Van Total Due",
-    "Consolidated Total Due"
-  ].map(v => `"${v}"`).join(','));
 
-  students.forEach((s, idx) => {
-    const isUnpaid = (s.totalPaid || 0) === 0;
-    const isPaid = (s.balanceDue || 0) === 0;
-    const statusText = isPaid ? 'Fully Paid' : (isUnpaid ? 'Unpaid' : 'Partially Paid');
-    const van = getStudentVanMonthDetails(s);
-
+  if (selectedSheetType === 'TeacherCopy') {
     csvRows.push([
-      idx + 1,
-      s.rollNo || '',
-      s.name,
-      s.grade,
-      s.section || 'A',
-      s.parentName || '',
-      s.contact || '',
-      statusText,
-      s.netSchoolPayable || 0,
-      s.schoolPaid || 0,
-      s.schoolDue || 0,
-      s.transportOpted ? 'Yes' : 'No',
-      van.monthlyRate || 0,
-      van.paidMonths.join('; '),
-      van.remainingMonths.join('; '),
-      s.vanDue || 0,
-      s.balanceDue || 0
-    ].map(v => `"${String(v).replace(/"/g, '""')}"`).join(','));
-  });
+      "S.No",
+      "Roll No",
+      "Student Name",
+      "Class",
+      "Section",
+      "Parent Phone Number",
+      "School Total Fee",
+      "School Fee Paid",
+      "School Fee Due",
+      "Van Fees Paid (Count & Months)",
+      "Van Remaining Months to Pay",
+      "Van Fee Due",
+      "Total Balance Due",
+      "Teacher Remarks"
+    ].map(v => `"${v}"`).join(','));
+
+    students.forEach((s, idx) => {
+      const van = getStudentVanMonthDetails(s);
+      const vanPaidStr = van.paidCount > 0 ? `${van.paidCount} Mos (${van.paidMonths.join('; ')})` : '0 Mos';
+      const vanRemStr = s.transportOpted ? (van.remainingCount > 0 ? `${van.remainingCount} Mos Due (${van.remainingMonths.join('; ')})` : 'Nil (Completed)') : 'Self Commute';
+
+      csvRows.push([
+        idx + 1,
+        s.rollNo || '',
+        s.name,
+        s.grade,
+        s.section || 'A',
+        s.contact || '',
+        s.netSchoolPayable || 0,
+        s.schoolPaid || 0,
+        s.schoolDue || 0,
+        vanPaidStr,
+        vanRemStr,
+        s.vanDue || 0,
+        s.balanceDue || 0,
+        ''
+      ].map(v => `"${String(v).replace(/"/g, '""')}"`).join(','));
+    });
+  } else {
+    csvRows.push([
+      "S.No",
+      "Roll No",
+      "Student Name",
+      "Class",
+      "Section",
+      "Parent Name",
+      "Contact",
+      "Status",
+      "School Total Fee",
+      "School Paid",
+      "School Due",
+      "Van Opted",
+      "Van Monthly Rate",
+      "Van Paid Months",
+      "Van Remaining Due Months",
+      "Van Total Due",
+      "Consolidated Total Due"
+    ].map(v => `"${v}"`).join(','));
+
+    students.forEach((s, idx) => {
+      const isUnpaid = (s.totalPaid || 0) === 0;
+      const isPaid = (s.balanceDue || 0) === 0;
+      const statusText = isPaid ? 'Fully Paid' : (isUnpaid ? 'Unpaid' : 'Partially Paid');
+      const van = getStudentVanMonthDetails(s);
+
+      csvRows.push([
+        idx + 1,
+        s.rollNo || '',
+        s.name,
+        s.grade,
+        s.section || 'A',
+        s.parentName || '',
+        s.contact || '',
+        statusText,
+        s.netSchoolPayable || 0,
+        s.schoolPaid || 0,
+        s.schoolDue || 0,
+        s.transportOpted ? 'Yes' : 'No',
+        van.monthlyRate || 0,
+        van.paidMonths.join('; '),
+        van.remainingMonths.join('; '),
+        s.vanDue || 0,
+        s.balanceDue || 0
+      ].map(v => `"${String(v).replace(/"/g, '""')}"`).join(','));
+    });
+  }
 
   const blob = new Blob([csvRows.join('\n')], { type: 'text/csv;charset=utf-8;' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  const filename = `${selectedGrade === 'All' ? 'All_Classes' : selectedGrade.replace(/\s+/g, '_')}_Fee_Dues_Statement.csv`;
+  const sheetName = selectedSheetType === 'TeacherCopy' ? 'Teacher_Followup_Sheet' : 'Office_Statement';
+  const filename = `${selectedGrade === 'All' ? 'All_Classes' : selectedGrade.replace(/\s+/g, '_')}_${sheetName}.csv`;
   a.download = filename;
   document.body.appendChild(a);
   a.click();
