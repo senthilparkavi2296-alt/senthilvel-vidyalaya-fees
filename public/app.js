@@ -307,14 +307,17 @@ function renderStudentsTable(students) {
           : `<span style="color:#94a3b8; font-size:0.8rem;">Self Commute</span>`}
       </td>
       <td><strong>₹${s.netPayable.toLocaleString('en-IN')}</strong></td>
-      <td>
-        <div style="display:flex; align-items:center; gap:5px;">
+      <td id="dirPaidCell-${s.id}">
+        <div id="dirPaidView-${s.id}" onclick="startInlinePaidEdit('${s.id}')" title="Click to edit Paid amount directly" style="display:inline-flex; align-items:center; gap:5px; cursor:pointer; padding:2px 6px; border-radius:4px; border:1px dashed transparent; transition:border-color 0.15s;" onmouseover="this.style.borderColor='#86efac'; this.style.background='#f0fdf4';" onmouseout="this.style.borderColor='transparent'; this.style.background='transparent';">
           <strong style="color:#059669; font-size:0.92rem;">₹${s.totalPaid.toLocaleString('en-IN')}</strong>
-          <button class="btn btn-outline btn-sm" onclick="openChangePaidModal('${s.id}')" title="Change/Adjust Paid Amount for ${s.name}" style="padding:1px 5px; font-size:0.68rem; color:#15803d; border-color:#86efac; border-radius:4px; line-height:1.2;">
-            <i data-lucide="edit-3" style="width:11px; height:11px;"></i> Edit
-          </button>
+          <i data-lucide="edit-3" style="width:12px; height:12px; color:#16a34a;"></i>
         </div>
-        ${s.hasCustomPaid ? `<span style="font-size:0.68rem; color:#b45309; font-weight:600; display:block;">(Directly Adjusted)</span>` : ''}
+        <div id="dirPaidEdit-${s.id}" style="display:none; align-items:center; gap:4px;">
+          <input type="number" id="dirPaidInput-${s.id}" value="${s.totalPaid}" min="0" style="width:88px; padding:3px 6px; font-size:0.85rem; font-weight:700; color:#15803d; border:1.5px solid #16a34a; border-radius:4px; text-align:right;" onkeydown="if(event.key==='Enter'){event.preventDefault();saveInlinePaidEdit('${s.id}');}else if(event.key==='Escape'){cancelInlinePaidEdit('${s.id}');}">
+          <button type="button" class="btn btn-sm" onclick="saveInlinePaidEdit('${s.id}')" title="Save" style="background:#16a34a; color:#fff; padding:3px 7px; font-size:0.75rem; font-weight:700;">✓</button>
+          <button type="button" class="btn btn-sm" onclick="cancelInlinePaidEdit('${s.id}')" title="Cancel" style="background:#94a3b8; color:#fff; padding:3px 7px; font-size:0.75rem;">✕</button>
+        </div>
+        ${s.hasCustomPaid ? `<span style="font-size:0.68rem; color:#b45309; font-weight:600; display:block;">(Adjusted)</span>` : ''}
       </td>
       <td style="color:#ef4444; font-weight:700;">₹${s.balanceDue.toLocaleString('en-IN')}</td>
       <td><span class="badge ${badgeClass}">${s.status}</span></td>
@@ -1331,6 +1334,71 @@ async function deleteStudent(id) {
     } catch (err) {
       showToast("Error deleting student", true);
     }
+  }
+}
+
+// -------------------------------------------------------------
+// Direct Inline Paid Amount Edit in Student Directory
+// -------------------------------------------------------------
+function startInlinePaidEdit(studentId) {
+  const viewEl = document.getElementById(`dirPaidView-${studentId}`);
+  const editEl = document.getElementById(`dirPaidEdit-${studentId}`);
+  const inputEl = document.getElementById(`dirPaidInput-${studentId}`);
+  if (!viewEl || !editEl) return;
+  viewEl.style.display = 'none';
+  editEl.style.display = 'inline-flex';
+  if (inputEl) {
+    inputEl.focus();
+    inputEl.select();
+  }
+}
+
+function cancelInlinePaidEdit(studentId) {
+  const viewEl = document.getElementById(`dirPaidView-${studentId}`);
+  const editEl = document.getElementById(`dirPaidEdit-${studentId}`);
+  if (viewEl && editEl) {
+    viewEl.style.display = 'inline-flex';
+    editEl.style.display = 'none';
+  }
+}
+
+async function saveInlinePaidEdit(studentId) {
+  const inputEl = document.getElementById(`dirPaidInput-${studentId}`);
+  const student = allStudents.find(s => s.id === studentId);
+  if (!inputEl || !student) return;
+
+  const valStr = inputEl.value.trim();
+  const val = Number(valStr);
+  if (valStr !== '' && (isNaN(val) || val < 0)) {
+    showToast("Please enter a valid non-negative amount", true);
+    return;
+  }
+
+  const ledgerSum = Number(student.paymentSum !== undefined ? student.paymentSum : 0);
+  const customPaidAmount = (valStr === '' || val === ledgerSum) ? null : val;
+
+  try {
+    const res = await fetch(`/api/students/${studentId}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ customPaidAmount })
+    });
+
+    if (res.ok) {
+      showToast(`Paid amount for ${student.name} updated to ₹${(customPaidAmount !== null ? customPaidAmount : ledgerSum).toLocaleString('en-IN')}`);
+      await loadAllData();
+      // Re-apply active filters if any
+      if (typeof filterStudents === 'function') {
+        filterStudents();
+      } else {
+        renderStudentsTable(allStudents);
+      }
+    } else {
+      const err = await res.json();
+      showToast(err.error || "Failed to update paid amount", true);
+    }
+  } catch (err) {
+    showToast("Network error updating paid amount", true);
   }
 }
 
