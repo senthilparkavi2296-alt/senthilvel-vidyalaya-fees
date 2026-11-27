@@ -112,6 +112,7 @@ function switchTab(tabId) {
   const titles = {
     'dashboard': 'Fees Management Dashboard',
     'vanfees': 'School Van & Transportation Fees Register (11-Month Tracking)',
+    'schoolfees': 'School Fees Register — Class-Wise Academic Fee Ledger',
     'students': 'Students & Fees Ledger Directory',
     'collect': 'Collect Student Fees',
     'transactions': 'Fee Payment History & Official Receipts',
@@ -125,6 +126,10 @@ function switchTab(tabId) {
 
   if (tabId === 'vanfees') {
     renderVanFeesTab();
+  }
+
+  if (tabId === 'schoolfees') {
+    renderSchoolFeesTab();
   }
 
   initIcons();
@@ -1550,6 +1555,220 @@ function showToast(message, isError = false) {
   setTimeout(() => {
     toast.classList.remove('show');
   }, 3500);
+}
+
+// =========================================================================
+// SCHOOL FEES REGISTER — Class-wise academic fee ledger (school fees only)
+// =========================================================================
+
+const GRADE_ORDER = ['LKG', 'UKG', '1st Std', '2nd Std', '3rd Std', '4th Std', '5th Std', '6th Std', '7th Std', '8th Std'];
+
+function renderSchoolFeesTab() {
+  const container = document.getElementById('sfClassAccordions');
+  const summaryBar = document.getElementById('sfSummaryBar');
+  if (!container) return;
+
+  const selectedGrade = document.getElementById('sfFilterGrade')?.value || 'All';
+  const selectedStatus = document.getElementById('sfFilterStatus')?.value || 'All';
+  const searchTerm = (document.getElementById('sfSearchInput')?.value || '').trim().toLowerCase();
+
+  // Filter students
+  let students = [...allStudents];
+  if (selectedGrade !== 'All') {
+    students = students.filter(s => s.grade === selectedGrade);
+  }
+  if (selectedStatus !== 'All') {
+    // Status based on school fees only
+    if (selectedStatus === 'Paid') {
+      students = students.filter(s => (s.schoolDue || 0) === 0 && (s.netSchoolPayable || 0) > 0);
+    } else if (selectedStatus === 'Partial') {
+      students = students.filter(s => (s.schoolPaid || 0) > 0 && (s.schoolDue || 0) > 0);
+    } else if (selectedStatus === 'Unpaid') {
+      students = students.filter(s => (s.schoolPaid || 0) === 0 && (s.netSchoolPayable || 0) > 0);
+    }
+  }
+  if (searchTerm) {
+    students = students.filter(s =>
+      (s.name || '').toLowerCase().includes(searchTerm) ||
+      (s.rollNo || '').toLowerCase().includes(searchTerm) ||
+      (s.contact || '').toLowerCase().includes(searchTerm)
+    );
+  }
+
+  // Group by grade
+  const gradeGroups = {};
+  GRADE_ORDER.forEach(g => { gradeGroups[g] = []; });
+  students.forEach(s => {
+    if (!gradeGroups[s.grade]) gradeGroups[s.grade] = [];
+    gradeGroups[s.grade].push(s);
+  });
+
+  // Overall totals
+  let grandTotalFee = 0, grandTotalPaid = 0, grandTotalDue = 0;
+  let grandStudentCount = 0, grandPaidCount = 0, grandPartialCount = 0, grandUnpaidCount = 0;
+
+  students.forEach(s => {
+    grandTotalFee += Number(s.netSchoolPayable || 0);
+    grandTotalPaid += Number(s.schoolPaid || 0);
+    grandTotalDue += Number(s.schoolDue || 0);
+    grandStudentCount++;
+    if ((s.schoolDue || 0) === 0 && (s.netSchoolPayable || 0) > 0) grandPaidCount++;
+    else if ((s.schoolPaid || 0) > 0 && (s.schoolDue || 0) > 0) grandPartialCount++;
+    else if ((s.schoolPaid || 0) === 0 && (s.netSchoolPayable || 0) > 0) grandUnpaidCount++;
+  });
+
+  // Summary bar
+  if (summaryBar) {
+    summaryBar.innerHTML = `
+      <div class="metric-card" style="flex:1; min-width:160px;">
+        <div class="metric-value" style="color:#1e3a8a;">${grandStudentCount}</div>
+        <div class="metric-label">Total Students</div>
+      </div>
+      <div class="metric-card" style="flex:1; min-width:160px;">
+        <div class="metric-value" style="color:#0f172a;">₹${grandTotalFee.toLocaleString('en-IN')}</div>
+        <div class="metric-label">Total School Fees Expected</div>
+      </div>
+      <div class="metric-card" style="flex:1; min-width:160px;">
+        <div class="metric-value" style="color:#059669;">₹${grandTotalPaid.toLocaleString('en-IN')}</div>
+        <div class="metric-label">School Fees Collected</div>
+      </div>
+      <div class="metric-card" style="flex:1; min-width:160px;">
+        <div class="metric-value" style="color:#ef4444;">₹${grandTotalDue.toLocaleString('en-IN')}</div>
+        <div class="metric-label">School Fees Pending</div>
+      </div>
+      <div class="metric-card" style="flex:1; min-width:200px;">
+        <div class="metric-label" style="margin-bottom:4px;">
+          <span style="color:#15803d; font-weight:700;">${grandPaidCount} Paid</span> &nbsp;|&nbsp;
+          <span style="color:#b45309; font-weight:700;">${grandPartialCount} Partial</span> &nbsp;|&nbsp;
+          <span style="color:#b91c1c; font-weight:700;">${grandUnpaidCount} Unpaid</span>
+        </div>
+      </div>
+    `;
+  }
+
+  // Build class-wise accordion cards
+  let html = '';
+  GRADE_ORDER.forEach(grade => {
+    const gradeStudents = gradeGroups[grade] || [];
+    if (selectedGrade !== 'All' && grade !== selectedGrade) return;
+    if (gradeStudents.length === 0 && selectedGrade === 'All') return;
+
+    let classFee = 0, classPaid = 0, classDue = 0;
+    let cPaid = 0, cPartial = 0, cUnpaid = 0;
+    gradeStudents.forEach(s => {
+      classFee += Number(s.netSchoolPayable || 0);
+      classPaid += Number(s.schoolPaid || 0);
+      classDue += Number(s.schoolDue || 0);
+      if ((s.schoolDue || 0) === 0 && (s.netSchoolPayable || 0) > 0) cPaid++;
+      else if ((s.schoolPaid || 0) > 0 && (s.schoolDue || 0) > 0) cPartial++;
+      else if ((s.schoolPaid || 0) === 0 && (s.netSchoolPayable || 0) > 0) cUnpaid++;
+    });
+
+    const collPct = classFee > 0 ? Math.round((classPaid / classFee) * 100) : 0;
+    const isOpen = selectedGrade !== 'All' || GRADE_ORDER.indexOf(grade) < 3;
+
+    let rowsHtml = '';
+    if (gradeStudents.length === 0) {
+      rowsHtml = `<tr><td colspan="8" style="text-align:center; padding:24px; color:#94a3b8;">No students found</td></tr>`;
+    } else {
+      gradeStudents.forEach((s, idx) => {
+        const sPaid = Number(s.schoolPaid || 0);
+        const sDue = Number(s.schoolDue || 0);
+        const sFee = Number(s.netSchoolPayable || 0);
+        let statusBadge = '';
+        if (sDue === 0 && sFee > 0) statusBadge = '<span class="badge badge-paid">Paid</span>';
+        else if (sPaid > 0 && sDue > 0) statusBadge = '<span class="badge badge-partial">Partial</span>';
+        else statusBadge = '<span class="badge badge-unpaid">Unpaid</span>';
+
+        const hasCustom = s.hasCustomFee || (s.customSchoolFee !== undefined && s.customSchoolFee !== null && s.customSchoolFee !== '');
+        const feeNote = hasCustom ? '<span style="font-size:0.68rem;color:#b45309;display:block;">(Custom)</span>' : '';
+
+        rowsHtml += `
+          <tr>
+            <td style="text-align:center; color:#64748b;">${idx + 1}</td>
+            <td style="font-weight:700; color:#1e3a8a;">${s.rollNo || '-'}</td>
+            <td><strong>${s.name}</strong></td>
+            <td style="color:#64748b;">${s.contact || '-'}</td>
+            <td style="text-align:right;">₹${sFee.toLocaleString('en-IN')}${feeNote}</td>
+            <td style="text-align:right; color:#059669; font-weight:600;">₹${sPaid.toLocaleString('en-IN')}</td>
+            <td style="text-align:right; color:#ef4444; font-weight:700;">₹${sDue.toLocaleString('en-IN')}</td>
+            <td style="text-align:center;">${statusBadge}</td>
+          </tr>
+        `;
+      });
+    }
+
+    html += `
+      <div class="card" style="margin-bottom:12px;">
+        <div class="card-header" style="cursor:pointer; user-select:none;" onclick="this.parentElement.classList.toggle('sf-collapsed')">
+          <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+            <span class="grade-pill" style="font-size:0.9rem; padding:4px 12px;">${grade}</span>
+            <strong style="font-size:0.9rem;">${gradeStudents.length} Students</strong>
+            <span style="font-size:0.78rem; color:#475569;">
+              Fee: ₹${classFee.toLocaleString('en-IN')} &nbsp;|&nbsp;
+              <span style="color:#059669;">Collected: ₹${classPaid.toLocaleString('en-IN')}</span> &nbsp;|&nbsp;
+              <span style="color:#ef4444;">Pending: ₹${classDue.toLocaleString('en-IN')}</span> &nbsp;|&nbsp;
+              ${collPct}% collected
+            </span>
+            <span style="font-size:0.72rem; margin-left:auto;">
+              <span style="color:#15803d;">${cPaid} Paid</span> /
+              <span style="color:#b45309;">${cPartial} Partial</span> /
+              <span style="color:#b91c1c;">${cUnpaid} Unpaid</span>
+            </span>
+          </div>
+        </div>
+        <div class="sf-accordion-body" ${!isOpen ? 'style="display:none;"' : ''}>
+          <div class="table-responsive">
+            <table class="custom-table">
+              <thead>
+                <tr>
+                  <th style="width:35px; text-align:center;">#</th>
+                  <th style="width:65px;">Roll No</th>
+                  <th style="min-width:140px;">Student Name</th>
+                  <th style="width:110px;">Phone</th>
+                  <th style="width:100px; text-align:right;">School Fee</th>
+                  <th style="width:100px; text-align:right;">Paid</th>
+                  <th style="width:100px; text-align:right;">Due</th>
+                  <th style="width:85px; text-align:center;">Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${rowsHtml}
+              </tbody>
+              <tfoot>
+                <tr style="background:#f0fdf4; font-weight:700;">
+                  <td colspan="4" style="color:#15803d; padding:6px 10px;">
+                    ${grade} — Class Total (${gradeStudents.length} Students)
+                  </td>
+                  <td style="text-align:right; color:#0f172a;">₹${classFee.toLocaleString('en-IN')}</td>
+                  <td style="text-align:right; color:#059669;">₹${classPaid.toLocaleString('en-IN')}</td>
+                  <td style="text-align:right; color:#ef4444;">₹${classDue.toLocaleString('en-IN')}</td>
+                  <td></td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+      </div>
+    `;
+  });
+
+  if (!html) {
+    html = '<div class="card" style="padding:40px; text-align:center; color:#94a3b8;">No students found matching the selected filters.</div>';
+  }
+
+  container.innerHTML = html;
+  initIcons();
+
+  // Toggle accordion on click
+  container.querySelectorAll('.card-header').forEach(header => {
+    header.addEventListener('click', () => {
+      const body = header.nextElementSibling;
+      if (body && body.classList.contains('sf-accordion-body')) {
+        body.style.display = body.style.display === 'none' ? '' : 'none';
+      }
+    });
+  });
 }
 
 // 7. Automated WhatsApp Due Reminders System

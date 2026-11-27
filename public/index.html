@@ -10,7 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <!-- Lucide icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
-  <link rel="stylesheet" href="style.css?v=2.2">
+  <link rel="stylesheet" href="style.css?v=2.3">
 </head>
 <body>
 
@@ -36,6 +36,10 @@
       <a class="nav-link" data-tab="vanfees">
         <i data-lucide="bus"></i>
         <span>Van Fees Register</span>
+      </a>
+      <a class="nav-link" data-tab="schoolfees">
+        <i data-lucide="book-open"></i>
+        <span>School Fees Register</span>
       </a>
       <a class="nav-link" data-tab="students">
         <i data-lucide="users"></i>
@@ -425,6 +429,51 @@
             </table>
           </div>
         </div>
+      </section>
+
+      <!-- TAB: SCHOOL FEES REGISTER (class-wise, school fees only) -->
+      <section id="schoolfees" class="tab-pane">
+
+        <!-- Toolbar -->
+        <div class="toolbar-row">
+          <div class="filters-group">
+            <div class="search-box">
+              <i data-lucide="search"></i>
+              <input type="text" id="sfSearchInput" placeholder="Search by student name or roll no…" oninput="renderSchoolFeesTab()">
+            </div>
+            <select id="sfFilterGrade" class="select-ctrl" onchange="renderSchoolFeesTab()">
+              <option value="All">All Classes (LKG – 8th)</option>
+              <option value="LKG">LKG</option>
+              <option value="UKG">UKG</option>
+              <option value="1st Std">1st Std</option>
+              <option value="2nd Std">2nd Std</option>
+              <option value="3rd Std">3rd Std</option>
+              <option value="4th Std">4th Std</option>
+              <option value="5th Std">5th Std</option>
+              <option value="6th Std">6th Std</option>
+              <option value="7th Std">7th Std</option>
+              <option value="8th Std">8th Std</option>
+            </select>
+            <select id="sfFilterStatus" class="select-ctrl" onchange="renderSchoolFeesTab()">
+              <option value="All">All Statuses</option>
+              <option value="Paid">Fully Paid</option>
+              <option value="Partial">Partially Paid</option>
+              <option value="Unpaid">Unpaid</option>
+            </select>
+          </div>
+          <div style="display:flex; gap:8px; align-items:center;">
+            <button class="btn btn-outline btn-sm" onclick="renderSchoolFeesTab()" title="Refresh">
+              <i data-lucide="refresh-cw" style="width:14px;height:14px;"></i> Refresh
+            </button>
+          </div>
+        </div>
+
+        <!-- Summary bar -->
+        <div id="sfSummaryBar" style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom:14px;"></div>
+
+        <!-- Class-wise accordions -->
+        <div id="sfClassAccordions"></div>
+
       </section>
 
       <!-- TAB 2: STUDENTS DIRECTORY -->
@@ -1360,6 +1409,6 @@
     <span id="toastMsg">Operation successful</span>
   </div>
 
-  <script src="app.js?v=2.2"></script>
+  <script src="app.js?v=2.3"></script>
 </body>
 </html>
