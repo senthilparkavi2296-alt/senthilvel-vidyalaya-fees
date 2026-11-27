@@ -1653,15 +1653,23 @@ function renderSchoolFeesTab() {
     if (selectedGrade !== 'All' && grade !== selectedGrade) return;
     if (gradeStudents.length === 0 && selectedGrade === 'All') return;
 
-    let classFee = 0, classPaid = 0, classDue = 0;
+    let classGrossFee = 0, classConcession = 0, classFee = 0, classPaid = 0, classDue = 0;
     let cPaid = 0, cPartial = 0, cUnpaid = 0;
     gradeStudents.forEach(s => {
-      classFee += Number(s.netSchoolPayable || 0);
-      classPaid += Number(s.schoolPaid || 0);
-      classDue += Number(s.schoolDue || 0);
-      if ((s.schoolDue || 0) === 0 && (s.netSchoolPayable || 0) > 0) cPaid++;
-      else if ((s.schoolPaid || 0) > 0 && (s.schoolDue || 0) > 0) cPartial++;
-      else if ((s.schoolPaid || 0) === 0 && (s.netSchoolPayable || 0) > 0) cUnpaid++;
+      const gross = Number(s.baseTotal || 0);
+      const conc = Number(s.concession || 0);
+      const net = Number(s.netSchoolPayable || 0);
+      const paid = Number(s.schoolPaid || 0);
+      const due = Number(s.schoolDue || 0);
+
+      classGrossFee += gross;
+      classConcession += conc;
+      classFee += net;
+      classPaid += paid;
+      classDue += due;
+      if (due === 0 && net > 0) cPaid++;
+      else if (paid > 0 && due > 0) cPartial++;
+      else if (paid === 0 && net > 0) cUnpaid++;
     });
 
     const collPct = classFee > 0 ? Math.round((classPaid / classFee) * 100) : 0;
@@ -1669,47 +1677,88 @@ function renderSchoolFeesTab() {
 
     let rowsHtml = '';
     if (gradeStudents.length === 0) {
-      rowsHtml = `<tr><td colspan="9" style="text-align:center; padding:24px; color:#94a3b8;">No students found</td></tr>`;
+      rowsHtml = `<tr><td colspan="12" style="text-align:center; padding:24px; color:#94a3b8;">No students found</td></tr>`;
     } else {
       gradeStudents.forEach((s, idx) => {
+        const sGross = Number(s.baseTotal || 0);
+        const sConc = Number(s.concession || 0);
+        const sNet = Number(s.netSchoolPayable || 0);
         const sPaid = Number(s.schoolPaid || 0);
         const sDue = Number(s.schoolDue || 0);
-        const sFee = Number(s.netSchoolPayable || 0);
         let statusBadge = '';
-        if (sDue === 0 && sFee > 0) statusBadge = '<span class="badge badge-paid">Paid</span>';
+        if (sDue === 0 && sNet > 0) statusBadge = '<span class="badge badge-paid">Paid</span>';
         else if (sPaid > 0 && sDue > 0) statusBadge = '<span class="badge badge-partial">Partial</span>';
         else statusBadge = '<span class="badge badge-unpaid">Unpaid</span>';
 
         const hasCustom = s.hasCustomFee || (s.customSchoolFee !== undefined && s.customSchoolFee !== null && s.customSchoolFee !== '');
         const classFeeRef = Number(s.classBaseTotal || 0);
         const feeNote = hasCustom
-          ? `<span style="font-size:0.68rem;color:#b45309;display:block;">(Custom — Class: ₹${classFeeRef.toLocaleString('en-IN')})</span>`
+          ? `<span style="font-size:0.68rem;color:#b45309;display:block;">(Custom Override)</span>`
           : '';
 
         rowsHtml += `
-          <tr id="sfRow-${s.id}">
+          <!-- Normal View Row -->
+          <tr id="sfViewRow-${s.id}">
             <td style="text-align:center; color:#64748b;">${idx + 1}</td>
             <td style="font-weight:700; color:#1e3a8a;">${s.rollNo || '-'}</td>
             <td><strong>${s.name}</strong></td>
-            <td style="color:#64748b;">${s.contact || '-'}</td>
-            <td style="text-align:right;" id="sfFeeCell-${s.id}">
-              <span id="sfFeeDisplay-${s.id}">₹${sFee.toLocaleString('en-IN')}${feeNote}</span>
-              <div id="sfFeeEdit-${s.id}" style="display:none;">
-                <input type="number" id="sfFeeInput-${s.id}" value="${sFee}" min="0" style="width:90px; padding:3px 6px; font-size:0.82rem; border:1.5px solid #f59e0b; border-radius:5px; text-align:right;" />
-                <div style="display:flex; gap:4px; margin-top:3px; justify-content:flex-end;">
-                  <button class="btn btn-sm" style="background:#16a34a; color:#fff; padding:2px 8px; font-size:0.72rem;" onclick="saveStudentSchoolFee('${s.id}')">Save</button>
-                  <button class="btn btn-sm" style="background:#94a3b8; color:#fff; padding:2px 8px; font-size:0.72rem;" onclick="cancelEditSchoolFee('${s.id}')">Cancel</button>
-                </div>
-                <div style="font-size:0.65rem; color:#78716c; margin-top:2px;">Class: ₹${classFeeRef.toLocaleString('en-IN')} | Leave 0 to reset</div>
-              </div>
-            </td>
+            <td style="color:#475569;">${s.parentName || '-'}</td>
+            <td style="color:#1e3a8a; font-weight:600; white-space:nowrap;">${s.contact || '-'}</td>
+            <td style="text-align:right;">₹${sGross.toLocaleString('en-IN')}${feeNote}</td>
+            <td style="text-align:right; color:#78716c;">${sConc > 0 ? '₹' + sConc.toLocaleString('en-IN') : '-'}</td>
+            <td style="text-align:right; font-weight:700;">₹${sNet.toLocaleString('en-IN')}</td>
             <td style="text-align:right; color:#059669; font-weight:600;">₹${sPaid.toLocaleString('en-IN')}</td>
             <td style="text-align:right; color:#ef4444; font-weight:700;">₹${sDue.toLocaleString('en-IN')}</td>
             <td style="text-align:center;">${statusBadge}</td>
             <td style="text-align:center;">
-              <button class="btn btn-outline btn-sm" onclick="toggleEditSchoolFee('${s.id}')" title="Edit School Fee" style="padding:2px 8px;">
-                <i data-lucide="edit-3" style="width:13px; height:13px;"></i>
-              </button>
+              <div style="display:flex; gap:4px; justify-content:center;">
+                <button class="btn btn-outline btn-sm" onclick="toggleEditStudentRow('${s.id}')" title="Edit All Details & Fee in Table" style="padding:3px 7px; font-size:0.75rem; font-weight:600; color:#2563eb; border-color:#93c5fd;">
+                  <i data-lucide="edit-2" style="width:12px; height:12px; margin-right:3px;"></i>Edit
+                </button>
+                <button class="btn btn-outline btn-sm" onclick="editStudent('${s.id}')" title="Full Profile & Transport Modal" style="padding:3px 6px; font-size:0.75rem;">
+                  <i data-lucide="sliders" style="width:12px; height:12px;"></i>
+                </button>
+                <button class="btn btn-outline btn-sm" onclick="quickCollect('${s.id}')" title="Collect Fees" style="padding:3px 6px; font-size:0.75rem; color:#16a34a; border-color:#86efac;">
+                  <i data-lucide="credit-card" style="width:12px; height:12px;"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+
+          <!-- Inline Edit Form Row (Hidden until Edit is clicked) -->
+          <tr id="sfEditRow-${s.id}" style="display:none; background:#fffbeb; border-left:3px solid #f59e0b;">
+            <td style="text-align:center; font-weight:700; color:#b45309;">${idx + 1}</td>
+            <td>
+              <input type="text" id="sfEditRoll-${s.id}" value="${s.rollNo || ''}" class="form-control" style="padding:3px 6px; font-size:0.8rem; font-weight:700; width:75px;" placeholder="Roll No">
+            </td>
+            <td>
+              <input type="text" id="sfEditName-${s.id}" value="${s.name || ''}" class="form-control" style="padding:3px 6px; font-size:0.8rem; font-weight:700; min-width:130px;" placeholder="Student Name" required>
+            </td>
+            <td>
+              <input type="text" id="sfEditParent-${s.id}" value="${s.parentName || ''}" class="form-control" style="padding:3px 6px; font-size:0.8rem; width:115px;" placeholder="Parent Name">
+            </td>
+            <td>
+              <input type="tel" id="sfEditPhone-${s.id}" value="${s.contact || ''}" class="form-control" style="padding:3px 6px; font-size:0.8rem; width:105px;" placeholder="Phone">
+            </td>
+            <td>
+              <input type="number" id="sfEditFee-${s.id}" value="${hasCustom ? s.customSchoolFee : sGross}" class="form-control" style="padding:3px 6px; font-size:0.8rem; text-align:right; width:95px; border-color:#f59e0b;" placeholder="Fee" title="Leave blank or class fee to reset to standard (₹${classFeeRef})">
+              <div style="font-size:0.65rem; color:#78716c; text-align:right;">Std: ₹${classFeeRef.toLocaleString('en-IN')}</div>
+            </td>
+            <td>
+              <input type="number" id="sfEditConcession-${s.id}" value="${sConc}" class="form-control" style="padding:3px 6px; font-size:0.8rem; text-align:right; width:80px;" placeholder="Concession">
+            </td>
+            <td colspan="4" style="font-size:0.75rem; color:#64748b; vertical-align:middle;">
+              Editing details for <strong>${s.name}</strong> (${s.grade})
+            </td>
+            <td style="text-align:center; white-space:nowrap; vertical-align:middle;">
+              <div style="display:flex; gap:4px; justify-content:center;">
+                <button class="btn btn-sm" style="background:#16a34a; color:#fff; font-weight:700; padding:4px 8px; font-size:0.75rem;" onclick="saveStudentAllDetails('${s.id}')">
+                  <i data-lucide="check" style="width:12px; height:12px; margin-right:2px;"></i>Save
+                </button>
+                <button class="btn btn-sm" style="background:#64748b; color:#fff; padding:4px 8px; font-size:0.75rem;" onclick="cancelEditStudentRow('${s.id}')">
+                  Cancel
+                </button>
+              </div>
             </td>
           </tr>
         `;
@@ -1723,7 +1772,8 @@ function renderSchoolFeesTab() {
             <span class="grade-pill" style="font-size:0.9rem; padding:4px 12px;">${grade}</span>
             <strong style="font-size:0.9rem;">${gradeStudents.length} Students</strong>
             <span style="font-size:0.78rem; color:#475569;">
-              Fee: ₹${classFee.toLocaleString('en-IN')} &nbsp;|&nbsp;
+              Gross Fee: ₹${classGrossFee.toLocaleString('en-IN')} &nbsp;|&nbsp;
+              Net Fee: ₹${classFee.toLocaleString('en-IN')} &nbsp;|&nbsp;
               <span style="color:#059669;">Collected: ₹${classPaid.toLocaleString('en-IN')}</span> &nbsp;|&nbsp;
               <span style="color:#ef4444;">Pending: ₹${classDue.toLocaleString('en-IN')}</span> &nbsp;|&nbsp;
               ${collPct}% collected
@@ -1740,15 +1790,18 @@ function renderSchoolFeesTab() {
             <table class="custom-table">
               <thead>
                 <tr>
-                  <th style="width:35px; text-align:center;">#</th>
-                  <th style="width:65px;">Roll No</th>
-                  <th style="min-width:140px;">Student Name</th>
-                  <th style="width:110px;">Phone</th>
-                  <th style="width:120px; text-align:right;">School Fee</th>
-                  <th style="width:100px; text-align:right;">Paid</th>
-                  <th style="width:100px; text-align:right;">Due</th>
-                  <th style="width:85px; text-align:center;">Status</th>
-                  <th style="width:75px; text-align:center;">Action</th>
+                  <th style="width:30px; text-align:center;">#</th>
+                  <th style="width:75px;">Roll No</th>
+                  <th style="min-width:130px;">Student Name</th>
+                  <th style="min-width:110px;">Parent Name</th>
+                  <th style="width:100px;">Phone</th>
+                  <th style="width:105px; text-align:right;">School Fee</th>
+                  <th style="width:85px; text-align:right;">Concession</th>
+                  <th style="width:95px; text-align:right;">Net Payable</th>
+                  <th style="width:85px; text-align:right;">Paid</th>
+                  <th style="width:85px; text-align:right;">Due</th>
+                  <th style="width:75px; text-align:center;">Status</th>
+                  <th style="width:130px; text-align:center;">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -1756,10 +1809,12 @@ function renderSchoolFeesTab() {
               </tbody>
               <tfoot>
                 <tr style="background:#f0fdf4; font-weight:700;">
-                  <td colspan="4" style="color:#15803d; padding:6px 10px;">
+                  <td colspan="5" style="color:#15803d; padding:6px 10px;">
                     ${grade} — Class Total (${gradeStudents.length} Students)
                   </td>
-                  <td style="text-align:right; color:#0f172a;">₹${classFee.toLocaleString('en-IN')}</td>
+                  <td style="text-align:right; color:#0f172a;">₹${classGrossFee.toLocaleString('en-IN')}</td>
+                  <td style="text-align:right; color:#78716c;">₹${classConcession.toLocaleString('en-IN')}</td>
+                  <td style="text-align:right; color:#1e3a8a;">₹${classFee.toLocaleString('en-IN')}</td>
                   <td style="text-align:right; color:#059669;">₹${classPaid.toLocaleString('en-IN')}</td>
                   <td style="text-align:right; color:#ef4444;">₹${classDue.toLocaleString('en-IN')}</td>
                   <td colspan="2"></td>
@@ -1791,57 +1846,78 @@ function renderSchoolFeesTab() {
   });
 }
 
-function toggleEditSchoolFee(studentId) {
-  const displayEl = document.getElementById(`sfFeeDisplay-${studentId}`);
-  const editEl = document.getElementById(`sfFeeEdit-${studentId}`);
-  if (!displayEl || !editEl) return;
-  const isEditing = editEl.style.display !== 'none';
+// Toggle full inline edit row for a student in School Fees Register
+function toggleEditStudentRow(studentId) {
+  const viewRow = document.getElementById(`sfViewRow-${studentId}`);
+  const editRow = document.getElementById(`sfEditRow-${studentId}`);
+  if (!viewRow || !editRow) return;
+
+  const isEditing = editRow.style.display !== 'none';
   if (isEditing) {
-    cancelEditSchoolFee(studentId);
+    cancelEditStudentRow(studentId);
   } else {
-    displayEl.style.display = 'none';
-    editEl.style.display = 'block';
-    const input = document.getElementById(`sfFeeInput-${studentId}`);
-    if (input) {
-      input.focus();
-      input.select();
+    viewRow.style.display = 'none';
+    editRow.style.display = '';
+    initIcons();
+    const nameInput = document.getElementById(`sfEditName-${studentId}`);
+    if (nameInput) {
+      nameInput.focus();
+      nameInput.select();
     }
   }
 }
 
-function cancelEditSchoolFee(studentId) {
-  const displayEl = document.getElementById(`sfFeeDisplay-${studentId}`);
-  const editEl = document.getElementById(`sfFeeEdit-${studentId}`);
-  if (displayEl && editEl) {
-    displayEl.style.display = '';
-    editEl.style.display = 'none';
+function cancelEditStudentRow(studentId) {
+  const viewRow = document.getElementById(`sfViewRow-${studentId}`);
+  const editRow = document.getElementById(`sfEditRow-${studentId}`);
+  if (viewRow && editRow) {
+    viewRow.style.display = '';
+    editRow.style.display = 'none';
   }
 }
 
-async function saveStudentSchoolFee(studentId) {
-  const input = document.getElementById(`sfFeeInput-${studentId}`);
-  if (!input) return;
+// Save all edited columns for a single student
+async function saveStudentAllDetails(studentId) {
   const student = allStudents.find(s => s.id === studentId);
   if (!student) return;
 
-  const valStr = input.value.trim();
-  const val = Number(valStr);
+  const rollInput = document.getElementById(`sfEditRoll-${studentId}`);
+  const nameInput = document.getElementById(`sfEditName-${studentId}`);
+  const parentInput = document.getElementById(`sfEditParent-${studentId}`);
+  const phoneInput = document.getElementById(`sfEditPhone-${studentId}`);
+  const feeInput = document.getElementById(`sfEditFee-${studentId}`);
+  const concInput = document.getElementById(`sfEditConcession-${studentId}`);
 
-  // If user enters 0 or clears or enters exact class base total, check if resetting
-  const classFee = Number(student.classBaseTotal || student.feeStructure?.totalFee || 0);
-  
-  let newCustomFee = null;
-  if (valStr === '' || val <= 0 || val === classFee) {
-    newCustomFee = null; // Revert to class standard fee
-  } else {
-    newCustomFee = val;
+  if (!nameInput || !nameInput.value.trim()) {
+    showToast("Student Name cannot be empty", true);
+    return;
   }
 
-  try {
-    const payload = {
-      customSchoolFee: newCustomFee
-    };
+  const name = nameInput.value.trim();
+  const rollNo = rollInput ? rollInput.value.trim() : (student.rollNo || '');
+  const parentName = parentInput ? parentInput.value.trim() : (student.parentName || '');
+  const contact = phoneInput ? phoneInput.value.trim() : (student.contact || '');
+  const concession = concInput ? Number(concInput.value || 0) : Number(student.concession || 0);
 
+  const feeValStr = feeInput ? feeInput.value.trim() : '';
+  const feeVal = Number(feeValStr);
+  const classFee = Number(student.classBaseTotal || student.feeStructure?.totalFee || 0);
+
+  let customSchoolFee = null;
+  if (feeValStr !== '' && feeVal > 0 && feeVal !== classFee) {
+    customSchoolFee = feeVal;
+  }
+
+  const payload = {
+    name: name,
+    rollNo: rollNo,
+    parentName: parentName,
+    contact: contact,
+    concession: concession,
+    customSchoolFee: customSchoolFee
+  };
+
+  try {
     const res = await fetch(`/api/students/${studentId}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
@@ -1849,19 +1925,29 @@ async function saveStudentSchoolFee(studentId) {
     });
 
     if (res.ok) {
-      const updatedStudent = await res.json();
-      showToast(newCustomFee ? `School fee for ${student.name} updated to ₹${newCustomFee.toLocaleString('en-IN')}` : `School fee for ${student.name} reset to class standard (₹${classFee.toLocaleString('en-IN')})`);
-      
-      // Reload all data across all pages & re-render everything
+      showToast(`Student details for ${name} updated successfully!`);
       await loadAllData();
       renderSchoolFeesTab();
     } else {
       const err = await res.json();
-      showToast(err.error || "Failed to update school fee", true);
+      showToast(err.error || "Failed to update student details", true);
     }
   } catch (err) {
-    showToast("Network error updating school fee", true);
+    showToast("Network error updating student details", true);
   }
+}
+
+// Backward compatibility alias
+function toggleEditSchoolFee(studentId) {
+  toggleEditStudentRow(studentId);
+}
+
+function cancelEditSchoolFee(studentId) {
+  cancelEditStudentRow(studentId);
+}
+
+async function saveStudentSchoolFee(studentId) {
+  await saveStudentAllDetails(studentId);
 }
 
 // 7. Automated WhatsApp Due Reminders System
