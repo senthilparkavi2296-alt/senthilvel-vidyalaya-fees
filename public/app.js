@@ -1669,7 +1669,7 @@ function renderSchoolFeesTab() {
 
     let rowsHtml = '';
     if (gradeStudents.length === 0) {
-      rowsHtml = `<tr><td colspan="8" style="text-align:center; padding:24px; color:#94a3b8;">No students found</td></tr>`;
+      rowsHtml = `<tr><td colspan="9" style="text-align:center; padding:24px; color:#94a3b8;">No students found</td></tr>`;
     } else {
       gradeStudents.forEach((s, idx) => {
         const sPaid = Number(s.schoolPaid || 0);
@@ -1681,18 +1681,36 @@ function renderSchoolFeesTab() {
         else statusBadge = '<span class="badge badge-unpaid">Unpaid</span>';
 
         const hasCustom = s.hasCustomFee || (s.customSchoolFee !== undefined && s.customSchoolFee !== null && s.customSchoolFee !== '');
-        const feeNote = hasCustom ? '<span style="font-size:0.68rem;color:#b45309;display:block;">(Custom)</span>' : '';
+        const classFeeRef = Number(s.classBaseTotal || 0);
+        const feeNote = hasCustom
+          ? `<span style="font-size:0.68rem;color:#b45309;display:block;">(Custom — Class: ₹${classFeeRef.toLocaleString('en-IN')})</span>`
+          : '';
 
         rowsHtml += `
-          <tr>
+          <tr id="sfRow-${s.id}">
             <td style="text-align:center; color:#64748b;">${idx + 1}</td>
             <td style="font-weight:700; color:#1e3a8a;">${s.rollNo || '-'}</td>
             <td><strong>${s.name}</strong></td>
             <td style="color:#64748b;">${s.contact || '-'}</td>
-            <td style="text-align:right;">₹${sFee.toLocaleString('en-IN')}${feeNote}</td>
+            <td style="text-align:right;" id="sfFeeCell-${s.id}">
+              <span id="sfFeeDisplay-${s.id}">₹${sFee.toLocaleString('en-IN')}${feeNote}</span>
+              <div id="sfFeeEdit-${s.id}" style="display:none;">
+                <input type="number" id="sfFeeInput-${s.id}" value="${sFee}" min="0" style="width:90px; padding:3px 6px; font-size:0.82rem; border:1.5px solid #f59e0b; border-radius:5px; text-align:right;" />
+                <div style="display:flex; gap:4px; margin-top:3px; justify-content:flex-end;">
+                  <button class="btn btn-sm" style="background:#16a34a; color:#fff; padding:2px 8px; font-size:0.72rem;" onclick="saveStudentSchoolFee('${s.id}')">Save</button>
+                  <button class="btn btn-sm" style="background:#94a3b8; color:#fff; padding:2px 8px; font-size:0.72rem;" onclick="cancelEditSchoolFee('${s.id}')">Cancel</button>
+                </div>
+                <div style="font-size:0.65rem; color:#78716c; margin-top:2px;">Class: ₹${classFeeRef.toLocaleString('en-IN')} | Leave 0 to reset</div>
+              </div>
+            </td>
             <td style="text-align:right; color:#059669; font-weight:600;">₹${sPaid.toLocaleString('en-IN')}</td>
             <td style="text-align:right; color:#ef4444; font-weight:700;">₹${sDue.toLocaleString('en-IN')}</td>
             <td style="text-align:center;">${statusBadge}</td>
+            <td style="text-align:center;">
+              <button class="btn btn-outline btn-sm" onclick="toggleEditSchoolFee('${s.id}')" title="Edit School Fee" style="padding:2px 8px;">
+                <i data-lucide="edit-3" style="width:13px; height:13px;"></i>
+              </button>
+            </td>
           </tr>
         `;
       });
@@ -1726,10 +1744,11 @@ function renderSchoolFeesTab() {
                   <th style="width:65px;">Roll No</th>
                   <th style="min-width:140px;">Student Name</th>
                   <th style="width:110px;">Phone</th>
-                  <th style="width:100px; text-align:right;">School Fee</th>
+                  <th style="width:120px; text-align:right;">School Fee</th>
                   <th style="width:100px; text-align:right;">Paid</th>
                   <th style="width:100px; text-align:right;">Due</th>
                   <th style="width:85px; text-align:center;">Status</th>
+                  <th style="width:75px; text-align:center;">Action</th>
                 </tr>
               </thead>
               <tbody>
@@ -1743,7 +1762,7 @@ function renderSchoolFeesTab() {
                   <td style="text-align:right; color:#0f172a;">₹${classFee.toLocaleString('en-IN')}</td>
                   <td style="text-align:right; color:#059669;">₹${classPaid.toLocaleString('en-IN')}</td>
                   <td style="text-align:right; color:#ef4444;">₹${classDue.toLocaleString('en-IN')}</td>
-                  <td></td>
+                  <td colspan="2"></td>
                 </tr>
               </tfoot>
             </table>
@@ -1760,15 +1779,89 @@ function renderSchoolFeesTab() {
   container.innerHTML = html;
   initIcons();
 
-  // Toggle accordion on click
+  // Toggle accordion on click (only when clicking the header itself, not buttons/inputs inside)
   container.querySelectorAll('.card-header').forEach(header => {
-    header.addEventListener('click', () => {
+    header.addEventListener('click', (e) => {
+      if (e.target.closest('button') || e.target.closest('input')) return;
       const body = header.nextElementSibling;
       if (body && body.classList.contains('sf-accordion-body')) {
         body.style.display = body.style.display === 'none' ? '' : 'none';
       }
     });
   });
+}
+
+function toggleEditSchoolFee(studentId) {
+  const displayEl = document.getElementById(`sfFeeDisplay-${studentId}`);
+  const editEl = document.getElementById(`sfFeeEdit-${studentId}`);
+  if (!displayEl || !editEl) return;
+  const isEditing = editEl.style.display !== 'none';
+  if (isEditing) {
+    cancelEditSchoolFee(studentId);
+  } else {
+    displayEl.style.display = 'none';
+    editEl.style.display = 'block';
+    const input = document.getElementById(`sfFeeInput-${studentId}`);
+    if (input) {
+      input.focus();
+      input.select();
+    }
+  }
+}
+
+function cancelEditSchoolFee(studentId) {
+  const displayEl = document.getElementById(`sfFeeDisplay-${studentId}`);
+  const editEl = document.getElementById(`sfFeeEdit-${studentId}`);
+  if (displayEl && editEl) {
+    displayEl.style.display = '';
+    editEl.style.display = 'none';
+  }
+}
+
+async function saveStudentSchoolFee(studentId) {
+  const input = document.getElementById(`sfFeeInput-${studentId}`);
+  if (!input) return;
+  const student = allStudents.find(s => s.id === studentId);
+  if (!student) return;
+
+  const valStr = input.value.trim();
+  const val = Number(valStr);
+
+  // If user enters 0 or clears or enters exact class base total, check if resetting
+  const classFee = Number(student.classBaseTotal || student.feeStructure?.totalFee || 0);
+  
+  let newCustomFee = null;
+  if (valStr === '' || val <= 0 || val === classFee) {
+    newCustomFee = null; // Revert to class standard fee
+  } else {
+    newCustomFee = val;
+  }
+
+  try {
+    const payload = {
+      customSchoolFee: newCustomFee
+    };
+
+    const res = await fetch(`/api/students/${studentId}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+
+    if (res.ok) {
+      const updatedStudent = await res.json();
+      showToast(newCustomFee ? `School fee for ${student.name} updated to ₹${newCustomFee.toLocaleString('en-IN')}` : `School fee for ${student.name} reset to class standard (₹${classFee.toLocaleString('en-IN')})`);
+      
+      // Reload all data across all pages & re-render everything
+      await loadAllData();
+      renderSchoolFeesTab();
+    } else {
+      const err = await res.json();
+      showToast(err.error || "Failed to update school fee", true);
+    }
+  } catch (err) {
+    showToast("Network error updating school fee", true);
+  }
 }
 
 // 7. Automated WhatsApp Due Reminders System
