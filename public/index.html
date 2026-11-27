@@ -10,7 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <!-- Lucide icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
-  <link rel="stylesheet" href="style.css?v=2.5">
+  <link rel="stylesheet" href="style.css?v=2.6">
 </head>
 <body>
 
@@ -1403,12 +1403,105 @@
     </div>
   </div>
 
+  <!-- MODAL: QUICK SCHOOL FEE PAYMENT ENTRY -->
+  <div class="modal-overlay" id="schoolFeePayModal">
+    <div class="modal-box" style="max-width: 540px; width: 100%;">
+      <div class="modal-header" style="background:#f0fdf4; border-bottom:1.5px solid #86efac;">
+        <h3 style="color:#15803d; margin:0; font-size:1.15rem; display:flex; align-items:center; gap:8px;">
+          <i data-lucide="credit-card" style="color:#16a34a;"></i>
+          Record School Fee Payment
+        </h3>
+        <button class="close-btn" onclick="closeSchoolFeePayModal()">&times;</button>
+      </div>
+
+      <form id="schoolFeePayForm" onsubmit="handleSchoolFeePaySubmit(event)">
+        <input type="hidden" id="sfPayStudentId">
+        
+        <div class="modal-body" style="padding:18px;">
+          <!-- Student summary card -->
+          <div id="sfPayStudentCard" style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:12px 14px; margin-bottom:16px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+              <div>
+                <strong id="sfPayStudentName" style="font-size:1rem; color:#0f172a;">Student Name</strong>
+                <span id="sfPayStudentGrade" class="grade-pill" style="margin-left:8px; font-size:0.75rem;">Class</span>
+              </div>
+              <div id="sfPayStudentRoll" style="font-size:0.85rem; font-weight:700; color:#1e3a8a;">Roll No</div>
+            </div>
+            <div style="display:flex; gap:16px; font-size:0.8rem; color:#475569; flex-wrap:wrap; margin-top:8px; padding-top:8px; border-top:1px dashed #cbd5e1;">
+              <div>School Fee: <strong id="sfPayTotalFee" style="color:#0f172a;">₹0</strong></div>
+              <div>Already Paid: <strong id="sfPayAlreadyPaid" style="color:#059669;">₹0</strong></div>
+              <div>Pending Due: <strong id="sfPayPendingDue" style="color:#ef4444; font-size:0.9rem;">₹0</strong></div>
+            </div>
+          </div>
+
+          <div class="form-grid" style="grid-template-columns: 1fr 1fr; gap:12px;">
+            <div class="form-group">
+              <label style="font-weight:700; color:#0f172a;">Payment Amount (₹) *</label>
+              <input type="number" id="sfPayAmount" class="form-control" required min="1" placeholder="Enter amount" style="font-size:1.05rem; font-weight:700; color:#15803d; border-color:#86efac;">
+            </div>
+
+            <div class="form-group">
+              <label style="font-weight:700; color:#0f172a;">Payment Date *</label>
+              <input type="date" id="sfPayDate" class="form-control" required>
+            </div>
+
+            <div class="form-group">
+              <label style="font-weight:700; color:#0f172a;">Payment Mode *</label>
+              <select id="sfPayMode" class="form-control">
+                <option value="Cash">Cash</option>
+                <option value="UPI / GPay / PhonePe">UPI / GPay / PhonePe</option>
+                <option value="Bank Transfer">Bank Transfer / NEFT</option>
+                <option value="Cheque">Cheque</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label style="font-weight:700; color:#0f172a;">Term / Installment</label>
+              <select id="sfPayTerm" class="form-control">
+                <option value="Term 1">Term 1</option>
+                <option value="Term 2">Term 2</option>
+                <option value="Term 3">Term 3</option>
+                <option value="Annual Full Payment">Annual Full Payment</option>
+                <option value="Special Installment">Special Installment</option>
+              </select>
+            </div>
+
+            <div class="form-group" style="grid-column: span 2;">
+              <label>Transaction / Reference ID (Optional)</label>
+              <input type="text" id="sfPayRef" class="form-control" placeholder="e.g. UPI Ref / Cheque No">
+            </div>
+
+            <div class="form-group" style="grid-column: span 2;">
+              <label>Remarks / Notes (Optional)</label>
+              <input type="text" id="sfPayRemarks" class="form-control" placeholder="e.g. School academic fee installment">
+            </div>
+          </div>
+
+          <div style="margin-top:10px; display:flex; align-items:center; gap:8px;">
+            <input type="checkbox" id="sfPayOpenReceipt" checked style="width:16px; height:16px; cursor:pointer;">
+            <label for="sfPayOpenReceipt" style="font-size:0.82rem; color:#475569; cursor:pointer; margin:0;">
+              Automatically open official printable receipt after recording payment
+            </label>
+          </div>
+        </div>
+
+        <div class="modal-footer" style="background:#f8fafc; border-top:1px solid #e2e8f0; display:flex; justify-content:space-between;">
+          <button type="button" class="btn btn-secondary btn-sm" onclick="closeSchoolFeePayModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary btn-sm" style="background:#15803d; border-color:#15803d; font-weight:700; padding:7px 16px;">
+            <i data-lucide="check-circle" style="width:14px; height:14px; margin-right:4px;"></i> Save Payment Entry
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <!-- Notification Toast -->
   <div class="toast" id="toastBox">
     <i data-lucide="check-circle" style="color:#10b981;"></i>
     <span id="toastMsg">Operation successful</span>
   </div>
 
-  <script src="app.js?v=2.5"></script>
+  <script src="app.js?v=2.6"></script>
 </body>
 </html>

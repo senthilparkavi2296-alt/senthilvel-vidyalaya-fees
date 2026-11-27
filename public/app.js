@@ -1712,14 +1712,14 @@ function renderSchoolFeesTab() {
             <td style="text-align:center;">${statusBadge}</td>
             <td style="text-align:center;">
               <div style="display:flex; gap:4px; justify-content:center;">
+                <button class="btn btn-sm" onclick="openSchoolFeePayModal('${s.id}')" title="Record Payment for ${s.name}" style="background:#15803d; color:#fff; font-weight:700; padding:3px 8px; font-size:0.75rem;">
+                  <i data-lucide="plus-circle" style="width:12px; height:12px; margin-right:3px;"></i>+ Pay
+                </button>
                 <button class="btn btn-outline btn-sm" onclick="toggleEditStudentRow('${s.id}')" title="Edit All Details & Fee in Table" style="padding:3px 7px; font-size:0.75rem; font-weight:600; color:#2563eb; border-color:#93c5fd;">
                   <i data-lucide="edit-2" style="width:12px; height:12px; margin-right:3px;"></i>Edit
                 </button>
                 <button class="btn btn-outline btn-sm" onclick="editStudent('${s.id}')" title="Full Profile & Transport Modal" style="padding:3px 6px; font-size:0.75rem;">
                   <i data-lucide="sliders" style="width:12px; height:12px;"></i>
-                </button>
-                <button class="btn btn-outline btn-sm" onclick="quickCollect('${s.id}')" title="Collect Fees" style="padding:3px 6px; font-size:0.75rem; color:#16a34a; border-color:#86efac;">
-                  <i data-lucide="credit-card" style="width:12px; height:12px;"></i>
                 </button>
               </div>
             </td>
@@ -1747,8 +1747,11 @@ function renderSchoolFeesTab() {
             <td>
               <input type="number" id="sfEditConcession-${s.id}" value="${sConc}" class="form-control" style="padding:3px 6px; font-size:0.8rem; text-align:right; width:80px;" placeholder="Concession">
             </td>
-            <td colspan="4" style="font-size:0.75rem; color:#64748b; vertical-align:middle;">
-              Editing details for <strong>${s.name}</strong> (${s.grade})
+            <td colspan="4" style="vertical-align:middle; background:#f0fdf4; border:1px dashed #86efac; border-radius:4px; padding:4px 8px;">
+              <div style="display:flex; align-items:center; gap:6px;">
+                <label style="font-size:0.75rem; font-weight:700; color:#15803d; margin:0; white-space:nowrap;">+ Record Payment (₹):</label>
+                <input type="number" id="sfEditAddPayment-${s.id}" min="0" placeholder="Optional amount" class="form-control" style="padding:3px 6px; font-size:0.8rem; width:110px; border-color:#86efac; color:#15803d; font-weight:700;">
+              </div>
             </td>
             <td style="text-align:center; white-space:nowrap; vertical-align:middle;">
               <div style="display:flex; gap:4px; justify-content:center;">
@@ -1917,6 +1920,9 @@ async function saveStudentAllDetails(studentId) {
     customSchoolFee: customSchoolFee
   };
 
+  const addPayInput = document.getElementById(`sfEditAddPayment-${studentId}`);
+  const addPayAmount = addPayInput ? Number(addPayInput.value || 0) : 0;
+
   try {
     const res = await fetch(`/api/students/${studentId}`, {
       method: 'PUT',
@@ -1925,7 +1931,40 @@ async function saveStudentAllDetails(studentId) {
     });
 
     if (res.ok) {
-      showToast(`Student details for ${name} updated successfully!`);
+      // If user also entered an inline payment amount, record it now!
+      if (addPayAmount > 0) {
+        const today = new Date().toISOString().split('T')[0];
+        const payPayload = {
+          studentId: student.id,
+          amount: addPayAmount,
+          date: today,
+          term: 'Term 1',
+          paymentMethod: 'Cash',
+          transactionId: '',
+          remarks: 'Inline Payment Entry via School Fees Register',
+          feeCategories: ['School Academic Fees'],
+          receivedBy: 'School Accounts Office',
+          boardingArea: 'None (Self Commute)',
+          transportPaymentMode: 'None',
+          transportFee: 0,
+          transportAmount: 0
+        };
+
+        const payRes = await fetch('/api/payments', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payPayload)
+        });
+
+        if (payRes.ok) {
+          showToast(`Saved details and recorded payment of ₹${addPayAmount.toLocaleString('en-IN')} for ${name}!`);
+        } else {
+          showToast(`Student updated, but payment entry failed`, true);
+        }
+      } else {
+        showToast(`Student details for ${name} updated successfully!`);
+      }
+
       await loadAllData();
       renderSchoolFeesTab();
     } else {
@@ -1934,6 +1973,115 @@ async function saveStudentAllDetails(studentId) {
     }
   } catch (err) {
     showToast("Network error updating student details", true);
+  }
+}
+
+// -------------------------------------------------------------
+// School Fee Payment Entry Modal (For Individual Students in School Fees Register)
+// -------------------------------------------------------------
+function openSchoolFeePayModal(studentId) {
+  const student = allStudents.find(s => s.id === studentId);
+  if (!student) return;
+
+  document.getElementById('sfPayStudentId').value = student.id;
+  document.getElementById('sfPayStudentName').innerText = student.name;
+  document.getElementById('sfPayStudentGrade').innerText = `${student.grade} - ${student.section || 'A'}`;
+  document.getElementById('sfPayStudentRoll').innerText = `Roll: ${student.rollNo || '-'}`;
+
+  const netSchool = Number(student.netSchoolPayable || 0);
+  const paidSchool = Number(student.schoolPaid || 0);
+  const dueSchool = Number(student.schoolDue || 0);
+
+  document.getElementById('sfPayTotalFee').innerText = `₹${netSchool.toLocaleString('en-IN')}`;
+  document.getElementById('sfPayAlreadyPaid').innerText = `₹${paidSchool.toLocaleString('en-IN')}`;
+  document.getElementById('sfPayPendingDue').innerText = `₹${dueSchool.toLocaleString('en-IN')}`;
+
+  // Default amount to pending school due if > 0, otherwise empty
+  document.getElementById('sfPayAmount').value = dueSchool > 0 ? dueSchool : '';
+
+  // Default date to today (YYYY-MM-DD)
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('sfPayDate').value = today;
+
+  document.getElementById('sfPayMode').value = 'Cash';
+  document.getElementById('sfPayTerm').value = 'Term 1';
+  document.getElementById('sfPayRef').value = '';
+  document.getElementById('sfPayRemarks').value = 'School Fee Payment';
+
+  document.getElementById('schoolFeePayModal').classList.add('open');
+  initIcons();
+
+  setTimeout(() => {
+    const amtInput = document.getElementById('sfPayAmount');
+    if (amtInput) {
+      amtInput.focus();
+      amtInput.select();
+    }
+  }, 100);
+}
+
+function closeSchoolFeePayModal() {
+  document.getElementById('schoolFeePayModal').classList.remove('open');
+}
+
+async function handleSchoolFeePaySubmit(event) {
+  event.preventDefault();
+  const studentId = document.getElementById('sfPayStudentId').value;
+  const student = allStudents.find(s => s.id === studentId);
+  if (!student) return;
+
+  const amount = Number(document.getElementById('sfPayAmount').value);
+  const date = document.getElementById('sfPayDate').value;
+  const paymentMethod = document.getElementById('sfPayMode').value;
+  const term = document.getElementById('sfPayTerm').value;
+  const transactionId = document.getElementById('sfPayRef').value.trim();
+  const remarks = document.getElementById('sfPayRemarks').value.trim() || 'School Fee Payment';
+  const openReceipt = document.getElementById('sfPayOpenReceipt')?.checked;
+
+  if (!amount || amount <= 0) {
+    showToast("Please enter a valid payment amount", true);
+    return;
+  }
+
+  const payload = {
+    studentId: student.id,
+    amount: amount,
+    date: date,
+    term: term,
+    paymentMethod: paymentMethod,
+    transactionId: transactionId,
+    remarks: remarks,
+    feeCategories: ['School Academic Fees'],
+    receivedBy: 'School Accounts Office',
+    boardingArea: 'None (Self Commute)',
+    transportPaymentMode: 'None',
+    transportFee: 0,
+    transportAmount: 0
+  };
+
+  try {
+    const res = await fetch('/api/payments', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+
+    if (res.ok) {
+      const data = await res.json();
+      showToast(`Payment of ₹${amount.toLocaleString('en-IN')} recorded for ${student.name}!`);
+      closeSchoolFeePayModal();
+      await loadAllData();
+      renderSchoolFeesTab();
+
+      if (openReceipt && data.payment && data.payment.receiptNo) {
+        viewReceipt(data.payment.receiptNo);
+      }
+    } else {
+      const err = await res.json();
+      showToast(err.error || "Failed to record payment", true);
+    }
+  } catch (err) {
+    showToast("Network error submitting payment", true);
   }
 }
 
