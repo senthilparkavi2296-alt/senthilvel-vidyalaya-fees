@@ -590,6 +590,14 @@ body {
   animation: modalScale 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+.modal-box form {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+}
+
 .modal-box.modal-lg {
   max-width: 850px;
 }
@@ -606,6 +614,7 @@ body {
   align-items: center;
   justify-content: space-between;
   background: #f8fafc;
+  flex-shrink: 0;
 }
 
 .modal-header h3 {
@@ -632,6 +641,8 @@ body {
 .modal-body {
   padding: 24px;
   overflow-y: auto;
+  flex: 1 1 auto;
+  min-height: 0;
 }
 
 .modal-footer {
@@ -641,6 +652,7 @@ body {
   justify-content: flex-end;
   gap: 12px;
   background: #f8fafc;
+  flex-shrink: 0;
 }
 
 .form-grid {
