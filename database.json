@@ -3,128 +3,58 @@
     {
       "key": "tuitionFee",
       "name": "Tuition"
-    },
-    {
-      "key": "termFee",
-      "name": "Term"
-    },
-    {
-      "key": "examFee",
-      "name": "Exam"
-    },
-    {
-      "key": "labFee",
-      "name": "Lab"
-    },
-    {
-      "key": "libraryFee",
-      "name": "Library"
-    },
-    {
-      "key": "sportsFee",
-      "name": "Sports"
     }
   ],
   "feeStructures": [
     {
       "grade": "LKG",
-      "tuitionFee": 15000,
-      "termFee": 2000,
-      "examFee": 1000,
-      "labFee": 0,
-      "libraryFee": 500,
-      "sportsFee": 500,
+      "tuitionFee": 19000,
       "totalFee": 19000
     },
     {
       "grade": "UKG",
-      "tuitionFee": 15000,
-      "termFee": 2000,
-      "examFee": 1000,
-      "labFee": 0,
-      "libraryFee": 500,
-      "sportsFee": 500,
+      "tuitionFee": 19000,
       "totalFee": 19000
     },
     {
       "grade": "1st Std",
-      "tuitionFee": 15000,
-      "termFee": 2500,
-      "examFee": 1500,
-      "labFee": 500,
-      "libraryFee": 500,
-      "sportsFee": 0,
+      "tuitionFee": 20000,
       "totalFee": 20000
     },
     {
       "grade": "2nd Std",
-      "tuitionFee": 15000,
-      "termFee": 2500,
-      "examFee": 1500,
-      "labFee": 500,
-      "libraryFee": 500,
-      "sportsFee": 0,
+      "tuitionFee": 20000,
       "totalFee": 20000
     },
     {
       "grade": "3rd Std",
-      "tuitionFee": 15000,
-      "termFee": 2500,
-      "examFee": 1500,
-      "labFee": 500,
-      "libraryFee": 500,
-      "sportsFee": 0,
+      "tuitionFee": 20000,
       "totalFee": 20000
     },
     {
       "grade": "4th Std",
-      "tuitionFee": 15000,
-      "termFee": 2500,
-      "examFee": 1500,
-      "labFee": 500,
-      "libraryFee": 500,
-      "sportsFee": 0,
+      "tuitionFee": 20000,
       "totalFee": 20000
     },
     {
       "grade": "5th Std",
-      "tuitionFee": 16000,
-      "termFee": 3000,
-      "examFee": 1500,
-      "labFee": 750,
-      "libraryFee": 750,
-      "sportsFee": 0,
-      "totalFee": 22000
+      "tuitionFee": 20000,
+      "totalFee": 20000
     },
     {
       "grade": "6th Std",
-      "tuitionFee": 16000,
-      "termFee": 3000,
-      "examFee": 1500,
-      "labFee": 750,
-      "libraryFee": 750,
-      "sportsFee": 0,
-      "totalFee": 22000
+      "tuitionFee": 21000,
+      "totalFee": 21000
     },
     {
       "grade": "7th Std",
-      "tuitionFee": 16000,
-      "termFee": 3000,
-      "examFee": 1500,
-      "labFee": 750,
-      "libraryFee": 750,
-      "sportsFee": 0,
-      "totalFee": 22000
+      "tuitionFee": 21000,
+      "totalFee": 21000
     },
     {
       "grade": "8th Std",
-      "tuitionFee": 16000,
-      "termFee": 3000,
-      "examFee": 1500,
-      "labFee": 750,
-      "libraryFee": 750,
-      "sportsFee": 0,
-      "totalFee": 22000
+      "tuitionFee": 21000,
+      "totalFee": 21000
     }
   ],
   "students": [
@@ -209,7 +139,7 @@
       "contact": "9751661882",
       "email": "",
       "address": "350, KEELASITHAKUDIPATTI, VILAPATTI, PUDUKKOTTAI - 622 504",
-      "boardingArea": "None (Self Commute)",
+      "boardingArea": "Other / Custom Stop",
       "transportOpted": true,
       "transportType": "Monthly",
       "transportMonthlyFee": 800,
@@ -253,14 +183,15 @@
       "contact": "9360332046",
       "email": "",
       "address": "59, KAMPATTIYAN THERU, VILAPATTI, PUDUKKOTTAI - 622 504",
-      "boardingArea": "Van Route",
+      "boardingArea": "Other / Custom Stop",
       "transportOpted": true,
       "transportType": "Monthly",
       "transportMonthlyFee": 850,
       "transportFee": 9350,
       "concession": 0,
       "academicYear": "2026-2027",
-      "customSchoolFee": 13000
+      "customSchoolFee": 13000,
+      "customPaidAmount": null
     },
     {
       "id": "7",
@@ -388,7 +319,8 @@
       "transportMonthlyFee": 750,
       "transportFee": 8250,
       "concession": 0,
-      "academicYear": "2026-2027"
+      "academicYear": "2026-2027",
+      "customSchoolFee": 13000
     },
     {
       "id": "13",
@@ -5078,6 +5010,29 @@
       "transportOpted": true
     },
     {
+      "receiptNo": "REC-2026-2052",
+      "studentId": "6",
+      "studentName": "KARUNASHAKAR",
+      "grade": "LKG",
+      "date": "2026-11-27",
+      "term": "Monthly Transport Fee",
+      "feeCategories": [
+        "Tuition",
+        "Term",
+        "Transport Fee"
+      ],
+      "amount": 750,
+      "paymentMethod": "UPI / QR Code",
+      "transactionId": "TXN-193723",
+      "remarks": "",
+      "receivedBy": "Accounts Admin",
+      "boardingArea": "Van Route",
+      "transportPaymentMode": "Monthly",
+      "transportMonth": "June",
+      "transportFee": 850,
+      "transportOpted": true
+    },
+    {
       "receiptNo": "REC-2026-2048",
       "studentId": "4",
       "studentName": "JEEVA",
@@ -5267,7 +5222,7 @@
       "transactionId": "VAN-REC-2026-V3015",
       "remarks": "Van fee for October (Paid on 11-27)",
       "receivedBy": "School Transport Office",
-      "boardingArea": "None (Self Commute)",
+      "boardingArea": "Other / Custom Stop",
       "transportPaymentMode": "Monthly",
       "transportMonth": "October 2026",
       "transportFee": 800,
@@ -14675,7 +14630,7 @@
       "transactionId": "VAN-REC-2026-V3013",
       "remarks": "Van fee for August (Paid on 09-09)",
       "receivedBy": "School Transport Office",
-      "boardingArea": "None (Self Commute)",
+      "boardingArea": "Other / Custom Stop",
       "transportPaymentMode": "Monthly",
       "transportMonth": "August 2026",
       "transportFee": 800,
@@ -14696,7 +14651,7 @@
       "transactionId": "VAN-REC-2026-V3014",
       "remarks": "Van fee for September (Paid on 09-09)",
       "receivedBy": "School Transport Office",
-      "boardingArea": "None (Self Commute)",
+      "boardingArea": "Other / Custom Stop",
       "transportPaymentMode": "Monthly",
       "transportMonth": "September 2026",
       "transportFee": 800,
@@ -20849,7 +20804,7 @@
       "transactionId": "VAN-REC-2026-V3016",
       "remarks": "Van fee for June (Paid on 07-29)",
       "receivedBy": "School Transport Office",
-      "boardingArea": "Van Route",
+      "boardingArea": "Other / Custom Stop",
       "transportPaymentMode": "Monthly",
       "transportMonth": "June 2026",
       "transportFee": 850,
@@ -20870,7 +20825,7 @@
       "transactionId": "VAN-REC-2026-V3017",
       "remarks": "Van fee for July (Paid on 07-29)",
       "receivedBy": "School Transport Office",
-      "boardingArea": "Van Route",
+      "boardingArea": "Other / Custom Stop",
       "transportPaymentMode": "Monthly",
       "transportMonth": "July 2026",
       "transportFee": 850,
@@ -24230,7 +24185,7 @@
       "transactionId": "VAN-REC-2026-V3011",
       "remarks": "Van fee for June (Paid on 07-13)",
       "receivedBy": "School Transport Office",
-      "boardingArea": "None (Self Commute)",
+      "boardingArea": "Other / Custom Stop",
       "transportPaymentMode": "Monthly",
       "transportMonth": "June 2026",
       "transportFee": 850,
@@ -24251,7 +24206,7 @@
       "transactionId": "VAN-REC-2026-V3012",
       "remarks": "Van fee for July (Paid on 07-13)",
       "receivedBy": "School Transport Office",
-      "boardingArea": "None (Self Commute)",
+      "boardingArea": "Other / Custom Stop",
       "transportPaymentMode": "Monthly",
       "transportMonth": "July 2026",
       "transportFee": 850,

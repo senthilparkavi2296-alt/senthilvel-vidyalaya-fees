@@ -80,7 +80,7 @@
     "contact": "9751661882",
     "email": "",
     "address": "350, KEELASITHAKUDIPATTI, VILAPATTI, PUDUKKOTTAI - 622 504",
-    "boardingArea": "None (Self Commute)",
+    "boardingArea": "Other / Custom Stop",
     "transportOpted": true,
     "transportType": "Monthly",
     "transportMonthlyFee": 800,
@@ -124,14 +124,15 @@
     "contact": "9360332046",
     "email": "",
     "address": "59, KAMPATTIYAN THERU, VILAPATTI, PUDUKKOTTAI - 622 504",
-    "boardingArea": "Van Route",
+    "boardingArea": "Other / Custom Stop",
     "transportOpted": true,
     "transportType": "Monthly",
     "transportMonthlyFee": 850,
     "transportFee": 9350,
     "concession": 0,
     "academicYear": "2026-2027",
-    "customSchoolFee": 13000
+    "customSchoolFee": 13000,
+    "customPaidAmount": null
   },
   {
     "id": "7",
@@ -259,7 +260,8 @@
     "transportMonthlyFee": 750,
     "transportFee": 8250,
     "concession": 0,
-    "academicYear": "2026-2027"
+    "academicYear": "2026-2027",
+    "customSchoolFee": 13000
   },
   {
     "id": "13",
