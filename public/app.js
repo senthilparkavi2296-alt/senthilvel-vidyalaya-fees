@@ -150,6 +150,7 @@ async function loadAllData() {
     renderDefaulters();
     renderVanFeesTab();
     updateDashboardVanStats();
+    checkAndMaintainLocalVault();
     initIcons();
   } catch (err) {
     console.error("Error loading application data:", err);
@@ -3707,5 +3708,101 @@ async function handleDbRestoreFile(event) {
     }
   };
   reader.readAsText(file);
+}
+
+// -------------------------------------------------------------
+// Client-side Local Vault Protection (Prevents any data loss on redeploys)
+// -------------------------------------------------------------
+function checkAndMaintainLocalVault() {
+  try {
+    const rawVault = localStorage.getItem('sv_db_vault');
+    if (rawVault) {
+      const vault = JSON.parse(rawVault);
+      const vaultPmts = (vault.payments || []).length;
+      const currentPmts = (allReceipts || []).length;
+      
+      // If server has FEWER payments than saved in this browser, offer instant restore!
+      if (vaultPmts > currentPmts) {
+        showVaultRestoreBanner(vaultPmts, currentPmts);
+      } else {
+        saveToLocalVault();
+      }
+    } else {
+      saveToLocalVault();
+    }
+  } catch (e) {
+    console.error("Local vault check error:", e);
+  }
+}
+
+async function saveToLocalVault() {
+  try {
+    const res = await fetch('/api/database/backup');
+    if (res.ok) {
+      const db = await res.json();
+      localStorage.setItem('sv_db_vault', JSON.stringify({
+        timestamp: Date.now(),
+        date: new Date().toISOString(),
+        ...db
+      }));
+    }
+  } catch(e) {}
+}
+
+function showVaultRestoreBanner(vaultCount, serverCount) {
+  let banner = document.getElementById('vaultRestoreBanner');
+  if (!banner) {
+    banner = document.createElement('div');
+    banner.id = 'vaultRestoreBanner';
+    banner.style.cssText = 'background:#fef3c7; border:1.5px solid #f59e0b; color:#92400e; padding:12px 18px; border-radius:8px; margin:12px 24px; display:flex; justify-content:space-between; align-items:center; box-shadow:0 2px 6px rgba(245,158,11,0.15);';
+    const mainWrapper = document.querySelector('.page-container');
+    if (mainWrapper) mainWrapper.prepend(banner);
+  }
+
+  banner.innerHTML = `
+    <div style="display:flex; align-items:center; gap:10px;">
+      <i data-lucide="shield-alert" style="width:22px; height:22px; color:#d97706; flex-shrink:0;"></i>
+      <div>
+        <strong>Saved Session Detected:</strong> Your browser has ${vaultCount} payments stored, while the server currently shows ${serverCount}. Would you like to restore your saved changes?
+      </div>
+    </div>
+    <div style="display:flex; gap:8px;">
+      <button class="btn btn-sm" style="background:#15803d; color:#fff; font-weight:700; padding:6px 14px;" onclick="restoreFromLocalVault()">Restore Saved Changes</button>
+      <button class="btn btn-sm btn-outline" style="color:#78716c;" onclick="dismissVaultBanner()">Dismiss</button>
+    </div>
+  `;
+  initIcons();
+}
+
+async function restoreFromLocalVault() {
+  try {
+    const rawVault = localStorage.getItem('sv_db_vault');
+    if (!rawVault) return;
+    const vault = JSON.parse(rawVault);
+    delete vault.timestamp;
+    delete vault.date;
+
+    const res = await fetch('/api/database/restore', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(vault)
+    });
+
+    if (res.ok) {
+      showToast("All your saved changes have been restored to the server!");
+      dismissVaultBanner();
+      await loadAllData();
+      renderSchoolFeesTab();
+    } else {
+      showToast("Failed to restore from vault", true);
+    }
+  } catch (e) {
+    showToast("Error restoring vault: " + e.message, true);
+  }
+}
+
+function dismissVaultBanner() {
+  const banner = document.getElementById('vaultRestoreBanner');
+  if (banner) banner.remove();
 }
 

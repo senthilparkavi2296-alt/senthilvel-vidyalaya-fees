@@ -147,7 +147,8 @@
       "transportMonthlyFee": 375,
       "transportFee": 4125,
       "concession": 0,
-      "academicYear": "2026-2027"
+      "academicYear": "2026-2027",
+      "customSchoolFee": null
     },
     {
       "id": "2",
@@ -5044,6 +5045,90 @@
     }
   ],
   "payments": [
+    {
+      "receiptNo": "REC-2026-2044",
+      "studentId": "1",
+      "studentName": "ANBUNILAVAN",
+      "grade": "LKG",
+      "date": "2026-11-27",
+      "term": "Term 1",
+      "feeCategories": [
+        "School Academic Fees"
+      ],
+      "amount": 7000,
+      "paymentMethod": "Cash",
+      "transactionId": "TXN-552767",
+      "remarks": "Inline Payment Entry via School Fees Register",
+      "receivedBy": "School Accounts Office",
+      "boardingArea": "None (Self Commute)",
+      "transportPaymentMode": "None",
+      "transportMonth": "",
+      "transportFee": 0,
+      "transportOpted": true
+    },
+    {
+      "receiptNo": "REC-2026-2043",
+      "studentId": "1",
+      "studentName": "ANBUNILAVAN",
+      "grade": "LKG",
+      "date": "2026-11-27",
+      "term": "Term 1",
+      "feeCategories": [
+        "School Academic Fees"
+      ],
+      "amount": 7000,
+      "paymentMethod": "Cash",
+      "transactionId": "TXN-550700",
+      "remarks": "Inline Payment Entry via School Fees Register",
+      "receivedBy": "School Accounts Office",
+      "boardingArea": "None (Self Commute)",
+      "transportPaymentMode": "None",
+      "transportMonth": "",
+      "transportFee": 0,
+      "transportOpted": true
+    },
+    {
+      "receiptNo": "REC-2026-2042",
+      "studentId": "1",
+      "studentName": "ANBUNILAVAN",
+      "grade": "LKG",
+      "date": "2026-11-27",
+      "term": "Term 1",
+      "feeCategories": [
+        "School Academic Fees"
+      ],
+      "amount": 7000,
+      "paymentMethod": "Cash",
+      "transactionId": "TXN-516817",
+      "remarks": "School Fee Payment",
+      "receivedBy": "School Accounts Office",
+      "boardingArea": "None (Self Commute)",
+      "transportPaymentMode": "None",
+      "transportMonth": "",
+      "transportFee": 0,
+      "transportOpted": true
+    },
+    {
+      "receiptNo": "REC-2026-2041",
+      "studentId": "1",
+      "studentName": "ANBUNILAVAN",
+      "grade": "LKG",
+      "date": "2026-11-27",
+      "term": "Term 1",
+      "feeCategories": [
+        "School Academic Fees"
+      ],
+      "amount": 8000,
+      "paymentMethod": "Cash",
+      "transactionId": "TXN-488346",
+      "remarks": "Inline Payment Entry via School Fees Register",
+      "receivedBy": "School Accounts Office",
+      "boardingArea": "None (Self Commute)",
+      "transportPaymentMode": "None",
+      "transportMonth": "",
+      "transportFee": 0,
+      "transportOpted": true
+    },
     {
       "receiptNo": "REC-2026-V2590",
       "studentId": "214",
