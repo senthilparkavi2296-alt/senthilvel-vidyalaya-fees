@@ -23,6 +23,22 @@ for (const [id, fix] of Object.entries(lkgRateFixes)) {
   }
 }
 
+// 1b. Ensure all 27 LKG register students appear in the Van Fees Register
+const all27LkgIds = [
+  '1', '14', '2', 'LKG-04', '3', '4', '6', '7', '8', '9', '10', '12', '13',
+  '11', '15', '16', '20', 'LKG-20', '19', '18', '17',
+  'LKG-25', 'LKG-26', 'LKG-27', 'LKG-29', 'LKG-30', 'LKG-31'
+];
+
+all27LkgIds.forEach(id => {
+  const s = db.students.find(st => st.id === id && st.grade === 'LKG');
+  if (s && !s.transportOpted) {
+    s.transportOpted = true;
+    if (!s.transportMonthlyFee) s.transportMonthlyFee = 0;
+    if (!s.transportFee) s.transportFee = 0;
+  }
+});
+
 // 2. Exact LKG Van Fee entries from the register image
 const lkgVanEntries = [
   // 1. ANBUNILAVAN . R
