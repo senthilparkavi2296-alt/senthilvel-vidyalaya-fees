@@ -127,8 +127,8 @@
     "boardingArea": "Van Route",
     "transportOpted": true,
     "transportType": "Monthly",
-    "transportMonthlyFee": 750,
-    "transportFee": 8250,
+    "transportMonthlyFee": 850,
+    "transportFee": 9350,
     "concession": 0,
     "academicYear": "2026-2027",
     "customSchoolFee": 13000
@@ -149,8 +149,8 @@
     "boardingArea": "Van Route",
     "transportOpted": true,
     "transportType": "Monthly",
-    "transportMonthlyFee": 900,
-    "transportFee": 9900,
+    "transportMonthlyFee": 750,
+    "transportFee": 8250,
     "concession": 0,
     "academicYear": "2026-2027",
     "customSchoolFee": 13000
@@ -171,8 +171,8 @@
     "boardingArea": "Van Route",
     "transportOpted": true,
     "transportType": "Monthly",
-    "transportMonthlyFee": 850,
-    "transportFee": 9350,
+    "transportMonthlyFee": 900,
+    "transportFee": 9900,
     "concession": 0,
     "academicYear": "2026-2027"
   },
@@ -192,8 +192,8 @@
     "boardingArea": "Van Route",
     "transportOpted": true,
     "transportType": "Monthly",
-    "transportMonthlyFee": 900,
-    "transportFee": 9900,
+    "transportMonthlyFee": 850,
+    "transportFee": 9350,
     "concession": 0,
     "academicYear": "2026-2027"
   },
