@@ -486,6 +486,9 @@
               <tbody id="studentsTableBody">
                 <!-- Populated via JS -->
               </tbody>
+              <tfoot id="studentsTableFoot">
+                <!-- Populated via JS: school collected, van collected, total -->
+              </tfoot>
             </table>
           </div>
         </div>
@@ -984,6 +987,15 @@
             <div class="form-group">
               <label>Scholarship / Fee Concession (₹)</label>
               <input type="number" id="mStudentConcession" class="form-control" value="0">
+            </div>
+
+            <div class="form-group" style="border:1.5px dashed #f59e0b; border-radius:7px; padding:10px 12px; background:#fffbeb;">
+              <label style="color:#92400e; font-weight:700;">
+                <i data-lucide="edit-3" style="width:13px;height:13px;margin-right:4px;display:inline;"></i>
+                Override School Fee (₹) &nbsp;<span style="font-size:0.72rem; font-weight:500; color:#b45309;">Leave blank to use class fee structure</span>
+              </label>
+              <input type="number" id="mStudentCustomFee" class="form-control" placeholder="e.g. 15000 — overrides class total fee for this student only" min="0">
+              <div id="mStudentCustomFeeNote" style="font-size:0.72rem; color:#78716c; margin-top:4px;"></div>
             </div>
 
             <div class="form-group full-width">

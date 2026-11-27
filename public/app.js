@@ -241,12 +241,19 @@ async function fetchStudents() {
 
 function renderStudentsTable(students) {
   const tbody = document.getElementById('studentsTableBody');
+  const tfoot = document.getElementById('studentsTableFoot');
   tbody.innerHTML = '';
 
   if (students.length === 0) {
     tbody.innerHTML = `<tr><td colspan="11" style="text-align:center; padding:32px; color:#64748b;">No student records found matching the criteria.</td></tr>`;
+    if (tfoot) tfoot.innerHTML = '';
     return;
   }
+
+  // Compute totals
+  let totalSchoolCollected = 0;
+  let totalVanCollected = 0;
+  let totalCollected = 0;
 
   students.forEach(s => {
     const tr = document.createElement('tr');
@@ -255,6 +262,17 @@ function renderStudentsTable(students) {
     else if (s.status === 'Partial') badgeClass = 'badge-partial';
 
     const hasBus = s.transportOpted && Number(s.transportFee) > 0;
+    const hasCustomFee = s.hasCustomFee || (s.customSchoolFee !== undefined && s.customSchoolFee !== null && s.customSchoolFee !== '');
+    const schoolFeeDisplay = hasCustomFee
+      ? `<span style="color:#b45309; font-weight:700;">₹${Number(s.baseTotal || 0).toLocaleString('en-IN')}</span><span style="font-size:0.68rem; color:#92400e; display:block;">(Custom Override)</span>`
+      : `₹${(s.baseTotal || 0).toLocaleString('en-IN')}`;
+
+    // Track collected amounts
+    const sSchoolPaid = Number(s.schoolPaid || 0);
+    const sVanPaid = Number(s.vanPaid || 0);
+    totalSchoolCollected += sSchoolPaid;
+    totalVanCollected += sVanPaid;
+    totalCollected += Number(s.totalPaid || 0);
 
     tr.innerHTML = `
       <td>
@@ -270,7 +288,7 @@ function renderStudentsTable(students) {
         <div>${s.parentName || '-'}</div>
         <div style="font-size:0.78rem; color:#64748b;">${s.contact || '-'}</div>
       </td>
-      <td>₹${(s.baseTotal || 0).toLocaleString('en-IN')}</td>
+      <td>${schoolFeeDisplay}</td>
       <td>
         ${hasBus 
           ? `<div style="line-height:1.25;">
@@ -305,6 +323,33 @@ function renderStudentsTable(students) {
     `;
     tbody.appendChild(tr);
   });
+
+  // Render footer totals
+  if (tfoot) {
+    tfoot.innerHTML = `
+      <tr style="background:#f0fdf4; border-top:2px solid #16a34a;">
+        <td colspan="7" style="font-weight:700; color:#15803d; padding:8px 12px; font-size:0.85rem;">
+          COLLECTION SUMMARY &nbsp;(${students.length} Students Shown)
+        </td>
+        <td style="font-weight:800; color:#059669; font-size:0.85rem; padding:8px 6px;">
+          ₹${totalCollected.toLocaleString('en-IN')}
+        </td>
+        <td colspan="3" style="font-size:0.78rem; color:#475569; padding:8px 6px;">
+          Total Paid
+        </td>
+      </tr>
+      <tr style="background:#f0fdf4;">
+        <td colspan="4" style="padding:4px 12px 8px; font-size:0.78rem; color:#475569;">
+          School Fees Collected: <strong style="color:#1e3a8a;">₹${totalSchoolCollected.toLocaleString('en-IN')}</strong>
+          &nbsp;&nbsp;|&nbsp;&nbsp;
+          Van Fees Collected: <strong style="color:#92400e;">₹${totalVanCollected.toLocaleString('en-IN')}</strong>
+          &nbsp;&nbsp;|&nbsp;&nbsp;
+          <strong style="color:#059669;">Total: ₹${totalCollected.toLocaleString('en-IN')}</strong>
+        </td>
+        <td colspan="7"></td>
+      </tr>
+    `;
+  }
 
   initIcons();
 }
@@ -1125,7 +1170,12 @@ function setupForms() {
       transportOpted: tOpted,
       transportFee: tFee,
       concession: Number(document.getElementById('mStudentConcession').value || 0),
-      address: document.getElementById('mStudentAddress').value
+      address: document.getElementById('mStudentAddress').value,
+      // Custom fee: empty string means revert to class fee structure
+      customSchoolFee: (() => {
+        const v = document.getElementById('mStudentCustomFee')?.value;
+        return (v === '' || v === null || v === undefined) ? null : Number(v);
+      })()
     };
 
     try {
@@ -1171,6 +1221,10 @@ function openNewStudentModal() {
   if (monthlyInp) monthlyInp.value = "0";
   document.getElementById('mStudentTransportFee').value = "0";
   document.getElementById('mStudentConcession').value = "0";
+  const customFeeInp = document.getElementById('mStudentCustomFee');
+  if (customFeeInp) customFeeInp.value = '';
+  const customFeeNote = document.getElementById('mStudentCustomFeeNote');
+  if (customFeeNote) customFeeNote.innerHTML = '';
   document.getElementById('studentModal').classList.add('open');
 }
 
@@ -1207,6 +1261,20 @@ function editStudent(id) {
   document.getElementById('mStudentTransportFee').value = student.transportFee || 0;
   document.getElementById('mStudentConcession').value = student.concession || 0;
   document.getElementById('mStudentAddress').value = student.address || '';
+
+  // Custom fee override
+  const customFeeInp = document.getElementById('mStudentCustomFee');
+  const customFeeNote = document.getElementById('mStudentCustomFeeNote');
+  if (customFeeInp) {
+    const hasCustom = student.customSchoolFee !== undefined && student.customSchoolFee !== null && student.customSchoolFee !== '';
+    customFeeInp.value = hasCustom ? student.customSchoolFee : '';
+    if (customFeeNote) {
+      const classFee = student.classBaseTotal || student.baseTotal || 0;
+      customFeeNote.innerHTML = hasCustom
+        ? `<span style="color:#b45309; font-weight:600;">Custom fee active: ₹${Number(student.customSchoolFee).toLocaleString('en-IN')}</span> <span style="color:#78716c;">(Class standard: ₹${Number(classFee).toLocaleString('en-IN')})</span>`
+        : `<span style="color:#64748b;">Class standard fee: ₹${Number(classFee).toLocaleString('en-IN')} — enter amount above to override for this student only</span>`;
+    }
+  }
 
   document.getElementById('studentModal').classList.add('open');
 }

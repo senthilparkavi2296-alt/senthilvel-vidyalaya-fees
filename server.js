@@ -103,7 +103,11 @@ function getStudentFeeSummary(student, db) {
     tuitionFee: 0, termFee: 0, examFee: 0, labFee: 0, libraryFee: 0, sportsFee: 0, totalFee: 0
   };
   
-  const baseTotal = structure.totalFee || 0;
+  // Allow per-student custom school fee override; fall back to class fee structure
+  const baseTotal = student.customSchoolFee !== undefined && student.customSchoolFee !== null && student.customSchoolFee !== ''
+    ? Number(student.customSchoolFee)
+    : (structure.totalFee || 0);
+  const classBaseTotal = structure.totalFee || 0; // always expose original class fee
   const transportFee = Number(student.transportFee || 0);
   const concession = Number(student.concession || 0);
   const netSchoolPayable = Math.max(0, baseTotal - concession);
@@ -141,6 +145,8 @@ function getStudentFeeSummary(student, db) {
     ...student,
     feeStructure: structure,
     baseTotal,
+    classBaseTotal,
+    hasCustomFee: (student.customSchoolFee !== undefined && student.customSchoolFee !== null && student.customSchoolFee !== ''),
     grossPayable,
     netPayable,
     netSchoolPayable,
@@ -394,6 +400,10 @@ app.put('/api/students/:id', (req, res) => {
     transportMonthlyFee: req.body.transportMonthlyFee !== undefined ? Number(req.body.transportMonthlyFee) : existing.transportMonthlyFee,
     transportFee: tFee,
     transportOpted: tOpted,
+    // Handle custom school fee: empty string or null means revert to class fee structure
+    customSchoolFee: req.body.customSchoolFee !== undefined
+      ? (req.body.customSchoolFee === '' || req.body.customSchoolFee === null ? null : Number(req.body.customSchoolFee))
+      : existing.customSchoolFee,
     id: existing.id // protect ID
   };
 
