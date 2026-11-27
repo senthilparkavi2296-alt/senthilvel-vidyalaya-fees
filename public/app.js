@@ -281,20 +281,20 @@ function renderStudentsTable(students) {
     totalCollected += Number(s.totalPaid || 0);
 
     tr.innerHTML = `
-      <td>
+      <td ondblclick="startInlineCellEdit(this, '${s.id}', 'rollNo', 'directory')" title="Double-click to edit Roll No" style="cursor:pointer;">
         <div style="font-weight:700; color:#1e3a8a; font-size:0.95rem;">${s.rollNo}</div>
         ${s.cardNo ? `<div style="font-size:0.72rem; color:#64748b;">Card: #${s.cardNo}</div>` : ''}
       </td>
-      <td>
+      <td ondblclick="startInlineCellEdit(this, '${s.id}', 'name', 'directory')" title="Double-click to edit Student Name" style="cursor:pointer;">
         <strong style="color:#0f172a;">${s.name}</strong>
         ${s.nameTamil ? `<div style="font-size:0.75rem; color:#64748b; font-weight:500;">${s.nameTamil}</div>` : ''}
       </td>
       <td><span class="grade-pill">${s.grade}</span> Sec ${s.section || 'A'}</td>
       <td>
-        <div>${s.parentName || '-'}</div>
-        <div style="font-size:0.78rem; color:#64748b;">${s.contact || '-'}</div>
+        <div ondblclick="startInlineCellEdit(this.parentElement, '${s.id}', 'parentName', 'directory')" title="Double-click to edit Parent Name" style="cursor:pointer;">${s.parentName || '-'}</div>
+        <div ondblclick="event.stopPropagation(); startInlineCellEdit(this.parentElement, '${s.id}', 'contact', 'directory')" title="Double-click to edit Phone" style="font-size:0.78rem; color:#64748b; cursor:pointer;">${s.contact || '-'}</div>
       </td>
-      <td>${schoolFeeDisplay}</td>
+      <td ondblclick="startInlineCellEdit(this, '${s.id}', 'schoolFee', 'directory')" title="Double-click to edit School Fee" style="cursor:pointer;">${schoolFeeDisplay}</td>
       <td>
         ${hasBus 
           ? `<div style="line-height:1.25;">
@@ -1403,6 +1403,151 @@ async function saveInlinePaidEdit(studentId) {
 }
 
 // -------------------------------------------------------------
+// Universal Double-Click Inline Cell Editor (School Fees Register & Directory)
+// -------------------------------------------------------------
+function startInlineCellEdit(td, studentId, field, source) {
+  if (!td || td.dataset.editing === 'true') return;
+  const student = allStudents.find(s => s.id === studentId);
+  if (!student) return;
+
+  td.dataset.editing = 'true';
+  td.dataset.origHtml = td.innerHTML;
+
+  let currentVal = '';
+  let inputType = 'text';
+  let width = '110px';
+
+  if (field === 'rollNo') {
+    currentVal = student.rollNo || '';
+    width = '70px';
+  } else if (field === 'name') {
+    currentVal = student.name || '';
+    width = '135px';
+  } else if (field === 'parentName') {
+    currentVal = student.parentName || '';
+    width = '120px';
+  } else if (field === 'contact') {
+    currentVal = student.contact || '';
+    inputType = 'tel';
+    width = '105px';
+  } else if (field === 'schoolFee') {
+    currentVal = (student.customSchoolFee !== undefined && student.customSchoolFee !== null && student.customSchoolFee !== '')
+      ? student.customSchoolFee
+      : (student.baseTotal || 0);
+    inputType = 'number';
+    width = '90px';
+  } else if (field === 'schoolPaid') {
+    currentVal = Number(student.schoolPaid || 0);
+    inputType = 'number';
+    width = '90px';
+  } else if (field === 'totalPaid') {
+    currentVal = Number(student.totalPaid || 0);
+    inputType = 'number';
+    width = '90px';
+  }
+
+  const escapedVal = String(currentVal).replace(/"/g, '&quot;');
+  td.innerHTML = `
+    <div style="display:inline-flex; align-items:center; gap:3px;">
+      <input type="${inputType}" class="inline-cell-input" value="${escapedVal}" ${inputType === 'number' ? 'min="0"' : ''}
+        style="width:${width}; padding:3px 6px; font-size:0.82rem; font-weight:600; border:1.5px solid #2563eb; border-radius:4px; ${inputType === 'number' ? 'text-align:right;' : ''}"
+        onkeydown="if(event.key==='Enter'){event.preventDefault();saveInlineCellEdit(this,'${studentId}','${field}','${source}');}else if(event.key==='Escape'){cancelInlineCellEdit(this);}">
+      <button type="button" class="btn btn-sm" onclick="saveInlineCellEdit(this,'${studentId}','${field}','${source}')" title="Save" style="background:#16a34a; color:#fff; padding:2px 6px; font-size:0.72rem; font-weight:700;">✓</button>
+      <button type="button" class="btn btn-sm" onclick="cancelInlineCellEdit(this)" title="Cancel" style="background:#94a3b8; color:#fff; padding:2px 6px; font-size:0.72rem;">✕</button>
+    </div>
+  `;
+
+  const inp = td.querySelector('.inline-cell-input');
+  if (inp) {
+    inp.focus();
+    inp.select();
+  }
+}
+
+function cancelInlineCellEdit(el) {
+  const td = el.closest('td');
+  if (!td) return;
+  if (td.dataset.origHtml !== undefined) {
+    td.innerHTML = td.dataset.origHtml;
+  }
+  delete td.dataset.editing;
+  delete td.dataset.origHtml;
+}
+
+async function saveInlineCellEdit(el, studentId, field, source) {
+  const td = el.closest('td');
+  const inp = td ? td.querySelector('.inline-cell-input') : null;
+  const student = allStudents.find(s => s.id === studentId);
+  if (!inp || !student) return;
+
+  const valStr = inp.value.trim();
+  const payload = {};
+
+  if (field === 'name') {
+    if (!valStr) {
+      showToast("Student Name cannot be empty", true);
+      return;
+    }
+    payload.name = valStr;
+  } else if (field === 'rollNo' || field === 'parentName' || field === 'contact') {
+    payload[field] = valStr;
+  } else if (field === 'schoolFee') {
+    const num = Number(valStr);
+    if (valStr !== '' && (isNaN(num) || num < 0)) {
+      showToast("Please enter a valid fee amount", true);
+      return;
+    }
+    const classFee = Number(student.classBaseTotal || student.feeStructure?.totalFee || 0);
+    payload.customSchoolFee = (valStr === '' || num === classFee) ? null : num;
+  } else if (field === 'schoolPaid') {
+    const num = Number(valStr);
+    if (valStr !== '' && (isNaN(num) || num < 0)) {
+      showToast("Please enter a valid paid amount", true);
+      return;
+    }
+    const vanPaid = Number(student.vanPaid || 0);
+    const ledgerSum = Number(student.paymentSum !== undefined ? student.paymentSum : 0);
+    const newTotalPaid = num + vanPaid;
+    payload.customPaidAmount = (valStr === '' || newTotalPaid === ledgerSum) ? null : newTotalPaid;
+  } else if (field === 'totalPaid') {
+    const num = Number(valStr);
+    if (valStr !== '' && (isNaN(num) || num < 0)) {
+      showToast("Please enter a valid paid amount", true);
+      return;
+    }
+    const ledgerSum = Number(student.paymentSum !== undefined ? student.paymentSum : 0);
+    payload.customPaidAmount = (valStr === '' || num === ledgerSum) ? null : num;
+  }
+
+  try {
+    const res = await fetch(`/api/students/${studentId}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+
+    if (res.ok) {
+      showToast(`Updated ${student.name} successfully!`);
+      await loadAllData();
+      if (source === 'schoolfees') {
+        renderSchoolFeesTab();
+      } else if (typeof filterStudents === 'function') {
+        filterStudents();
+      } else {
+        renderStudentsTable(allStudents);
+      }
+    } else {
+      const err = await res.json();
+      showToast(err.error || "Failed to update student", true);
+      cancelInlineCellEdit(el);
+    }
+  } catch (err) {
+    showToast("Network error updating student", true);
+    cancelInlineCellEdit(el);
+  }
+}
+
+// -------------------------------------------------------------
 // Change / Adjust Paid Amount Modal in Student Directory
 // -------------------------------------------------------------
 function openChangePaidModal(studentId) {
@@ -1880,12 +2025,12 @@ function renderSchoolFeesTab() {
           <!-- Normal View Row -->
           <tr id="sfViewRow-${s.id}">
             <td style="text-align:center; color:#64748b;">${idx + 1}</td>
-            <td style="font-weight:700; color:#1e3a8a;">${s.rollNo || '-'}</td>
-            <td><strong>${s.name}</strong></td>
-            <td style="color:#475569;">${s.parentName || '-'}</td>
-            <td style="color:#1e3a8a; font-weight:600; white-space:nowrap;">${s.contact || '-'}</td>
-            <td style="text-align:right; font-weight:700;">₹${sFee.toLocaleString('en-IN')}${feeNote}</td>
-            <td style="text-align:right; color:#059669; font-weight:600;">₹${sPaid.toLocaleString('en-IN')}</td>
+            <td ondblclick="startInlineCellEdit(this, '${s.id}', 'rollNo', 'schoolfees')" title="Double-click to edit Roll No" style="font-weight:700; color:#1e3a8a; cursor:pointer;">${s.rollNo || '-'}</td>
+            <td ondblclick="startInlineCellEdit(this, '${s.id}', 'name', 'schoolfees')" title="Double-click to edit Student Name" style="cursor:pointer;"><strong>${s.name}</strong></td>
+            <td ondblclick="startInlineCellEdit(this, '${s.id}', 'parentName', 'schoolfees')" title="Double-click to edit Parent Name" style="color:#475569; cursor:pointer;">${s.parentName || '-'}</td>
+            <td ondblclick="startInlineCellEdit(this, '${s.id}', 'contact', 'schoolfees')" title="Double-click to edit Phone" style="color:#1e3a8a; font-weight:600; white-space:nowrap; cursor:pointer;">${s.contact || '-'}</td>
+            <td ondblclick="startInlineCellEdit(this, '${s.id}', 'schoolFee', 'schoolfees')" title="Double-click to edit School Fee" style="text-align:right; font-weight:700; cursor:pointer;">₹${sFee.toLocaleString('en-IN')}${feeNote}</td>
+            <td ondblclick="startInlineCellEdit(this, '${s.id}', 'schoolPaid', 'schoolfees')" title="Double-click to edit Paid Amount" style="text-align:right; color:#059669; font-weight:600; cursor:pointer;">₹${sPaid.toLocaleString('en-IN')}</td>
             <td style="text-align:right; color:#ef4444; font-weight:700;">₹${sDue.toLocaleString('en-IN')}</td>
             <td style="text-align:center;">${statusBadge}</td>
             <td style="text-align:center;">
