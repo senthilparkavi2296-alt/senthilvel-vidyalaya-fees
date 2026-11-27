@@ -1653,17 +1653,13 @@ function renderSchoolFeesTab() {
     if (selectedGrade !== 'All' && grade !== selectedGrade) return;
     if (gradeStudents.length === 0 && selectedGrade === 'All') return;
 
-    let classGrossFee = 0, classConcession = 0, classFee = 0, classPaid = 0, classDue = 0;
+    let classFee = 0, classPaid = 0, classDue = 0;
     let cPaid = 0, cPartial = 0, cUnpaid = 0;
     gradeStudents.forEach(s => {
-      const gross = Number(s.baseTotal || 0);
-      const conc = Number(s.concession || 0);
       const net = Number(s.netSchoolPayable || 0);
       const paid = Number(s.schoolPaid || 0);
       const due = Number(s.schoolDue || 0);
 
-      classGrossFee += gross;
-      classConcession += conc;
       classFee += net;
       classPaid += paid;
       classDue += due;
@@ -1677,16 +1673,14 @@ function renderSchoolFeesTab() {
 
     let rowsHtml = '';
     if (gradeStudents.length === 0) {
-      rowsHtml = `<tr><td colspan="12" style="text-align:center; padding:24px; color:#94a3b8;">No students found</td></tr>`;
+      rowsHtml = `<tr><td colspan="10" style="text-align:center; padding:24px; color:#94a3b8;">No students found</td></tr>`;
     } else {
       gradeStudents.forEach((s, idx) => {
-        const sGross = Number(s.baseTotal || 0);
-        const sConc = Number(s.concession || 0);
-        const sNet = Number(s.netSchoolPayable || 0);
+        const sFee = Number(s.netSchoolPayable || 0);
         const sPaid = Number(s.schoolPaid || 0);
         const sDue = Number(s.schoolDue || 0);
         let statusBadge = '';
-        if (sDue === 0 && sNet > 0) statusBadge = '<span class="badge badge-paid">Paid</span>';
+        if (sDue === 0 && sFee > 0) statusBadge = '<span class="badge badge-paid">Paid</span>';
         else if (sPaid > 0 && sDue > 0) statusBadge = '<span class="badge badge-partial">Partial</span>';
         else statusBadge = '<span class="badge badge-unpaid">Unpaid</span>';
 
@@ -1704,9 +1698,7 @@ function renderSchoolFeesTab() {
             <td><strong>${s.name}</strong></td>
             <td style="color:#475569;">${s.parentName || '-'}</td>
             <td style="color:#1e3a8a; font-weight:600; white-space:nowrap;">${s.contact || '-'}</td>
-            <td style="text-align:right;">₹${sGross.toLocaleString('en-IN')}${feeNote}</td>
-            <td style="text-align:right; color:#78716c;">${sConc > 0 ? '₹' + sConc.toLocaleString('en-IN') : '-'}</td>
-            <td style="text-align:right; font-weight:700;">₹${sNet.toLocaleString('en-IN')}</td>
+            <td style="text-align:right; font-weight:700;">₹${sFee.toLocaleString('en-IN')}${feeNote}</td>
             <td style="text-align:right; color:#059669; font-weight:600;">₹${sPaid.toLocaleString('en-IN')}</td>
             <td style="text-align:right; color:#ef4444; font-weight:700;">₹${sDue.toLocaleString('en-IN')}</td>
             <td style="text-align:center;">${statusBadge}</td>
@@ -1741,13 +1733,10 @@ function renderSchoolFeesTab() {
               <input type="tel" id="sfEditPhone-${s.id}" value="${s.contact || ''}" class="form-control" style="padding:3px 6px; font-size:0.8rem; width:105px;" placeholder="Phone">
             </td>
             <td>
-              <input type="number" id="sfEditFee-${s.id}" value="${hasCustom ? s.customSchoolFee : sGross}" class="form-control" style="padding:3px 6px; font-size:0.8rem; text-align:right; width:95px; border-color:#f59e0b;" placeholder="Fee" title="Leave blank or class fee to reset to standard (₹${classFeeRef})">
+              <input type="number" id="sfEditFee-${s.id}" value="${hasCustom ? s.customSchoolFee : sFee}" class="form-control" style="padding:3px 6px; font-size:0.8rem; text-align:right; width:95px; border-color:#f59e0b;" placeholder="Fee" title="Leave blank or class fee to reset to standard (₹${classFeeRef})">
               <div style="font-size:0.65rem; color:#78716c; text-align:right;">Std: ₹${classFeeRef.toLocaleString('en-IN')}</div>
             </td>
-            <td>
-              <input type="number" id="sfEditConcession-${s.id}" value="${sConc}" class="form-control" style="padding:3px 6px; font-size:0.8rem; text-align:right; width:80px;" placeholder="Concession">
-            </td>
-            <td colspan="4" style="vertical-align:middle; background:#f0fdf4; border:1px dashed #86efac; border-radius:4px; padding:4px 8px;">
+            <td colspan="3" style="vertical-align:middle; background:#f0fdf4; border:1px dashed #86efac; border-radius:4px; padding:4px 8px;">
               <div style="display:flex; align-items:center; gap:6px;">
                 <label style="font-size:0.75rem; font-weight:700; color:#15803d; margin:0; white-space:nowrap;">+ Record Payment (₹):</label>
                 <input type="number" id="sfEditAddPayment-${s.id}" min="0" placeholder="Optional amount" class="form-control" style="padding:3px 6px; font-size:0.8rem; width:110px; border-color:#86efac; color:#15803d; font-weight:700;">
@@ -1775,8 +1764,7 @@ function renderSchoolFeesTab() {
             <span class="grade-pill" style="font-size:0.9rem; padding:4px 12px;">${grade}</span>
             <strong style="font-size:0.9rem;">${gradeStudents.length} Students</strong>
             <span style="font-size:0.78rem; color:#475569;">
-              Gross Fee: ₹${classGrossFee.toLocaleString('en-IN')} &nbsp;|&nbsp;
-              Net Fee: ₹${classFee.toLocaleString('en-IN')} &nbsp;|&nbsp;
+              Fee: ₹${classFee.toLocaleString('en-IN')} &nbsp;|&nbsp;
               <span style="color:#059669;">Collected: ₹${classPaid.toLocaleString('en-IN')}</span> &nbsp;|&nbsp;
               <span style="color:#ef4444;">Pending: ₹${classDue.toLocaleString('en-IN')}</span> &nbsp;|&nbsp;
               ${collPct}% collected
@@ -1798,11 +1786,9 @@ function renderSchoolFeesTab() {
                   <th style="min-width:130px;">Student Name</th>
                   <th style="min-width:110px;">Parent Name</th>
                   <th style="width:100px;">Phone</th>
-                  <th style="width:105px; text-align:right;">School Fee</th>
-                  <th style="width:85px; text-align:right;">Concession</th>
-                  <th style="width:95px; text-align:right;">Net Payable</th>
-                  <th style="width:85px; text-align:right;">Paid</th>
-                  <th style="width:85px; text-align:right;">Due</th>
+                  <th style="width:110px; text-align:right;">School Fee</th>
+                  <th style="width:90px; text-align:right;">Paid</th>
+                  <th style="width:90px; text-align:right;">Due</th>
                   <th style="width:75px; text-align:center;">Status</th>
                   <th style="width:130px; text-align:center;">Actions</th>
                 </tr>
@@ -1815,9 +1801,7 @@ function renderSchoolFeesTab() {
                   <td colspan="5" style="color:#15803d; padding:6px 10px;">
                     ${grade} — Class Total (${gradeStudents.length} Students)
                   </td>
-                  <td style="text-align:right; color:#0f172a;">₹${classGrossFee.toLocaleString('en-IN')}</td>
-                  <td style="text-align:right; color:#78716c;">₹${classConcession.toLocaleString('en-IN')}</td>
-                  <td style="text-align:right; color:#1e3a8a;">₹${classFee.toLocaleString('en-IN')}</td>
+                  <td style="text-align:right; color:#0f172a;">₹${classFee.toLocaleString('en-IN')}</td>
                   <td style="text-align:right; color:#059669;">₹${classPaid.toLocaleString('en-IN')}</td>
                   <td style="text-align:right; color:#ef4444;">₹${classDue.toLocaleString('en-IN')}</td>
                   <td colspan="2"></td>
