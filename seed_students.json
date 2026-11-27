@@ -18,7 +18,8 @@
     "transportMonthlyFee": 375,
     "transportFee": 4125,
     "concession": 0,
-    "academicYear": "2026-2027"
+    "academicYear": "2026-2027",
+    "customSchoolFee": null
   },
   {
     "id": "2",

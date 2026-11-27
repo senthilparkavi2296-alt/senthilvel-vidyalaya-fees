@@ -123,7 +123,11 @@ function getStudentFeeSummary(student, db) {
   const netPayable = Math.max(0, grossPayable - concession);
 
   const studentPayments = db.payments.filter(p => p.studentId === student.id);
-  const totalPaid = studentPayments.reduce((sum, p) => sum + Number(p.amount || 0), 0);
+  const paymentSum = studentPayments.reduce((sum, p) => sum + Number(p.amount || 0), 0);
+
+  // Allow direct custom/override Paid amount if set
+  const hasCustomPaid = student.customPaidAmount !== undefined && student.customPaidAmount !== null && student.customPaidAmount !== '';
+  const totalPaid = hasCustomPaid ? Number(student.customPaidAmount) : paymentSum;
   const balanceDue = Math.max(0, netPayable - totalPaid);
 
   // Compute school paid vs van paid separately:
@@ -155,6 +159,8 @@ function getStudentFeeSummary(student, db) {
     baseTotal,
     classBaseTotal,
     hasCustomFee: (student.customSchoolFee !== undefined && student.customSchoolFee !== null && student.customSchoolFee !== ''),
+    hasCustomPaid,
+    paymentSum,
     grossPayable,
     netPayable,
     netSchoolPayable,
@@ -412,6 +418,10 @@ app.put('/api/students/:id', (req, res) => {
     customSchoolFee: req.body.customSchoolFee !== undefined
       ? (req.body.customSchoolFee === '' || req.body.customSchoolFee === null ? null : Number(req.body.customSchoolFee))
       : existing.customSchoolFee,
+    // Handle custom paid amount: empty string or null means revert to payment history sum
+    customPaidAmount: req.body.customPaidAmount !== undefined
+      ? (req.body.customPaidAmount === '' || req.body.customPaidAmount === null ? null : Number(req.body.customPaidAmount))
+      : existing.customPaidAmount,
     id: existing.id // protect ID
   };
 

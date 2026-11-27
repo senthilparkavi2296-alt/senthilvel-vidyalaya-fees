@@ -307,7 +307,15 @@ function renderStudentsTable(students) {
           : `<span style="color:#94a3b8; font-size:0.8rem;">Self Commute</span>`}
       </td>
       <td><strong>₹${s.netPayable.toLocaleString('en-IN')}</strong></td>
-      <td style="color:#059669; font-weight:600;">₹${s.totalPaid.toLocaleString('en-IN')}</td>
+      <td>
+        <div style="display:flex; align-items:center; gap:5px;">
+          <strong style="color:#059669; font-size:0.92rem;">₹${s.totalPaid.toLocaleString('en-IN')}</strong>
+          <button class="btn btn-outline btn-sm" onclick="openChangePaidModal('${s.id}')" title="Change/Adjust Paid Amount for ${s.name}" style="padding:1px 5px; font-size:0.68rem; color:#15803d; border-color:#86efac; border-radius:4px; line-height:1.2;">
+            <i data-lucide="edit-3" style="width:11px; height:11px;"></i> Edit
+          </button>
+        </div>
+        ${s.hasCustomPaid ? `<span style="font-size:0.68rem; color:#b45309; font-weight:600; display:block;">(Directly Adjusted)</span>` : ''}
+      </td>
       <td style="color:#ef4444; font-weight:700;">₹${s.balanceDue.toLocaleString('en-IN')}</td>
       <td><span class="badge ${badgeClass}">${s.status}</span></td>
       <td>
@@ -1181,6 +1189,11 @@ function setupForms() {
       customSchoolFee: (() => {
         const v = document.getElementById('mStudentCustomFee')?.value;
         return (v === '' || v === null || v === undefined) ? null : Number(v);
+      })(),
+      // Custom paid amount: empty string means revert to payment ledger sum
+      customPaidAmount: (() => {
+        const v = document.getElementById('mStudentCustomPaid')?.value;
+        return (v === '' || v === null || v === undefined) ? null : Number(v);
       })()
     };
 
@@ -1231,6 +1244,10 @@ function openNewStudentModal() {
   if (customFeeInp) customFeeInp.value = '';
   const customFeeNote = document.getElementById('mStudentCustomFeeNote');
   if (customFeeNote) customFeeNote.innerHTML = '';
+  const customPaidInp = document.getElementById('mStudentCustomPaid');
+  if (customPaidInp) customPaidInp.value = '';
+  const customPaidNote = document.getElementById('mStudentCustomPaidNote');
+  if (customPaidNote) customPaidNote.innerHTML = '';
   document.getElementById('studentModal').classList.add('open');
 }
 
@@ -1282,6 +1299,20 @@ function editStudent(id) {
     }
   }
 
+  // Custom paid amount override
+  const customPaidInp = document.getElementById('mStudentCustomPaid');
+  const customPaidNote = document.getElementById('mStudentCustomPaidNote');
+  if (customPaidInp) {
+    const hasCustomPaid = student.customPaidAmount !== undefined && student.customPaidAmount !== null && student.customPaidAmount !== '';
+    customPaidInp.value = hasCustomPaid ? student.customPaidAmount : '';
+    if (customPaidNote) {
+      const ledgerSum = student.paymentSum !== undefined ? student.paymentSum : (student.totalPaid || 0);
+      customPaidNote.innerHTML = hasCustomPaid
+        ? `<span style="color:#15803d; font-weight:600;">Directly adjusted: ₹${Number(student.customPaidAmount).toLocaleString('en-IN')}</span> <span style="color:#78716c;">(Ledger sum: ₹${Number(ledgerSum).toLocaleString('en-IN')})</span>`
+        : `<span style="color:#64748b;">Ledger history sum: ₹${Number(ledgerSum).toLocaleString('en-IN')} — enter amount above to directly adjust</span>`;
+    }
+  }
+
   document.getElementById('studentModal').classList.add('open');
 }
 
@@ -1300,6 +1331,92 @@ async function deleteStudent(id) {
     } catch (err) {
       showToast("Error deleting student", true);
     }
+  }
+}
+
+// -------------------------------------------------------------
+// Change / Adjust Paid Amount Modal in Student Directory
+// -------------------------------------------------------------
+function openChangePaidModal(studentId) {
+  const student = allStudents.find(s => s.id === studentId);
+  if (!student) return;
+
+  document.getElementById('changePaidStudentId').value = student.id;
+  document.getElementById('changePaidStudentName').innerText = student.name;
+  document.getElementById('changePaidStudentRoll').innerText = `Roll: ${student.rollNo || '-'}`;
+  document.getElementById('changePaidStudentClass').innerText = `${student.grade} - Section ${student.section || 'A'} | Parent: ${student.parentName || '-'}`;
+
+  const netPayable = Number(student.netPayable || 0);
+  const currentPaid = Number(student.totalPaid || 0);
+  const currentDue = Number(student.balanceDue || 0);
+  const ledgerSum = Number(student.paymentSum !== undefined ? student.paymentSum : currentPaid);
+
+  document.getElementById('changePaidNetTotal').innerText = `₹${netPayable.toLocaleString('en-IN')}`;
+  document.getElementById('changePaidCurrentAmt').innerText = `₹${currentPaid.toLocaleString('en-IN')}`;
+  document.getElementById('changePaidCurrentDue').innerText = `₹${currentDue.toLocaleString('en-IN')}`;
+  document.getElementById('changePaidLedgerSum').innerText = `₹${ledgerSum.toLocaleString('en-IN')}`;
+
+  document.getElementById('changePaidInput').value = currentPaid;
+  document.getElementById('changePaidModal').classList.add('open');
+  initIcons();
+
+  setTimeout(() => {
+    const inp = document.getElementById('changePaidInput');
+    if (inp) {
+      inp.focus();
+      inp.select();
+    }
+  }, 100);
+}
+
+function closeChangePaidModal() {
+  document.getElementById('changePaidModal').classList.remove('open');
+}
+
+function resetPaidToLedgerSum() {
+  const studentId = document.getElementById('changePaidStudentId').value;
+  const student = allStudents.find(s => s.id === studentId);
+  if (!student) return;
+  const ledgerSum = Number(student.paymentSum !== undefined ? student.paymentSum : 0);
+  document.getElementById('changePaidInput').value = ledgerSum;
+  showToast(`Reset to ledger transaction sum: ₹${ledgerSum.toLocaleString('en-IN')}`);
+}
+
+async function handleSaveChangePaid(event) {
+  event.preventDefault();
+  const studentId = document.getElementById('changePaidStudentId').value;
+  const student = allStudents.find(s => s.id === studentId);
+  if (!student) return;
+
+  const valStr = document.getElementById('changePaidInput').value.trim();
+  const val = Number(valStr);
+
+  const ledgerSum = Number(student.paymentSum !== undefined ? student.paymentSum : 0);
+  let customPaidAmount = null;
+
+  // If user entered a value different from ledger sum, set customPaidAmount, otherwise revert to null (ledger sum)
+  if (valStr !== '' && val >= 0 && val !== ledgerSum) {
+    customPaidAmount = val;
+  }
+
+  try {
+    const res = await fetch(`/api/students/${studentId}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ customPaidAmount })
+    });
+
+    if (res.ok) {
+      showToast(customPaidAmount !== null ? `Paid amount for ${student.name} updated to ₹${val.toLocaleString('en-IN')}!` : `Paid amount for ${student.name} reset to ledger sum (₹${ledgerSum.toLocaleString('en-IN')})`);
+      closeChangePaidModal();
+      await loadAllData();
+      renderStudentsTable(allStudents);
+    } else {
+      const err = await res.json();
+      showToast(err.error || "Failed to update paid amount", true);
+    }
+  } catch (err) {
+    showToast("Network error updating paid amount", true);
   }
 }
 
