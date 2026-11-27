@@ -551,6 +551,40 @@ app.get('/api/payments/:receiptNo', (req, res) => {
   });
 });
 
+// Update payment entry (e.g., inline van month edit)
+app.put('/api/payments/:id', (req, res) => {
+  const db = loadDatabase();
+  const key = req.params.id;
+  const idx = db.payments.findIndex(p => p.id === key || p.receiptNo === key);
+  if (idx === -1) {
+    return res.status(404).json({ error: "Payment record not found" });
+  }
+  const existing = db.payments[idx];
+  const newAmount = req.body.amount !== undefined ? Number(req.body.amount) : Number(existing.amount);
+  const updated = {
+    ...existing,
+    ...req.body,
+    amount: newAmount,
+    transportFee: req.body.transportFee !== undefined ? Number(req.body.transportFee) : (existing.transportFee ? newAmount : existing.transportFee)
+  };
+  db.payments[idx] = updated;
+  saveDatabase(db);
+  res.json({ success: true, payment: updated });
+});
+
+// Delete payment entry (e.g., clearing a van month)
+app.delete('/api/payments/:id', (req, res) => {
+  const db = loadDatabase();
+  const key = req.params.id;
+  const before = db.payments.length;
+  db.payments = db.payments.filter(p => p.id !== key && p.receiptNo !== key);
+  if (db.payments.length === before) {
+    return res.status(404).json({ error: "Payment record not found" });
+  }
+  saveDatabase(db);
+  res.json({ success: true });
+});
+
 // 5. WhatsApp Automated Fee Reminders & Notification System
 app.get('/api/whatsapp/due-reminders', (req, res) => {
   const db = loadDatabase();

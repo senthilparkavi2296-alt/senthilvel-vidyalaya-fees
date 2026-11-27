@@ -3082,10 +3082,11 @@ function renderVanRegisterTable(students) {
     let monthCellsHtml = '';
     VAN_MONTHS_LIST.forEach(month => {
       const pmt = van.monthPaymentMap[month];
+      const pmtKey = pmt ? (pmt.id || pmt.receiptNo || '') : '';
       if (pmt) {
         monthCellsHtml += `
-          <td style="text-align:center; padding:6px 4px;">
-            <span class="van-paid-pill" title="${month} Paid ₹${pmt.amount} on ${pmt.date} (${pmt.receiptNo})">
+          <td ondblclick="startInlineVanMonthEdit(this, '${s.id}', '${month}', '${pmtKey}')" style="text-align:center; padding:6px 4px; cursor:pointer;" title="${month} Paid ₹${pmt.amount} on ${pmt.date} (${pmt.receiptNo}) — Double-click to edit or clear">
+            <span class="van-paid-pill">
               ₹${pmt.amount}
               <span class="van-date-sub">${formatShortDate(pmt.date)}</span>
             </span>
@@ -3093,8 +3094,8 @@ function renderVanRegisterTable(students) {
         `;
       } else {
         monthCellsHtml += `
-          <td style="text-align:center; padding:6px 4px;">
-            <span class="van-due-pill" title="${month} Van Fee Pending">-</span>
+          <td ondblclick="startInlineVanMonthEdit(this, '${s.id}', '${month}', '')" style="text-align:center; padding:6px 4px; cursor:pointer;" title="${month} Van Fee Pending — Double-click to enter payment">
+            <span class="van-due-pill">-</span>
           </td>
         `;
       }
@@ -3143,6 +3144,130 @@ function renderVanRegisterTable(students) {
     `;
     tbody.appendChild(tr);
   });
+}
+
+// -------------------------------------------------------------
+// Double-Click Inline Van Month Payment Entry in Van Fees Register
+// -------------------------------------------------------------
+function startInlineVanMonthEdit(td, studentId, month, pmtKey) {
+  if (!td || td.dataset.editing === 'true') return;
+  const student = allStudents.find(s => s.id === studentId);
+  if (!student) return;
+
+  td.dataset.editing = 'true';
+  td.dataset.origHtml = td.innerHTML;
+
+  const van = getStudentVanMonthDetails(student);
+  const existingPmt = van.monthPaymentMap[month];
+  const defaultVal = existingPmt ? existingPmt.amount : (van.monthlyRate || '');
+
+  td.innerHTML = `
+    <div style="display:inline-flex; flex-direction:column; align-items:center; gap:3px;">
+      <input type="number" class="inline-van-input" value="${defaultVal}" min="0" placeholder="₹"
+        style="width:68px; padding:2px 4px; font-size:0.78rem; font-weight:700; text-align:right; border:1.5px solid #2563eb; border-radius:4px;"
+        title="${existingPmt ? 'Edit amount or enter 0 / blank to clear' : 'Enter amount for ' + month}"
+        onkeydown="if(event.key==='Enter'){event.preventDefault();saveInlineVanMonthEdit(this,'${studentId}','${month}','${pmtKey}');}else if(event.key==='Escape'){cancelInlineVanMonthEdit(this);}">
+      <div style="display:flex; gap:3px;">
+        <button type="button" class="btn btn-sm" onclick="saveInlineVanMonthEdit(this,'${studentId}','${month}','${pmtKey}')" title="Save" style="background:#16a34a; color:#fff; padding:1px 6px; font-size:0.7rem; font-weight:700;">✓</button>
+        <button type="button" class="btn btn-sm" onclick="cancelInlineVanMonthEdit(this)" title="Cancel" style="background:#94a3b8; color:#fff; padding:1px 6px; font-size:0.7rem;">✕</button>
+      </div>
+    </div>
+  `;
+
+  const inp = td.querySelector('.inline-van-input');
+  if (inp) {
+    inp.focus();
+    inp.select();
+  }
+}
+
+function cancelInlineVanMonthEdit(el) {
+  const td = el.closest('td');
+  if (!td) return;
+  if (td.dataset.origHtml !== undefined) {
+    td.innerHTML = td.dataset.origHtml;
+  }
+  delete td.dataset.editing;
+  delete td.dataset.origHtml;
+}
+
+async function saveInlineVanMonthEdit(el, studentId, month, pmtKey) {
+  const td = el.closest('td');
+  const inp = td ? td.querySelector('.inline-van-input') : null;
+  const student = allStudents.find(s => s.id === studentId);
+  if (!inp || !student) return;
+
+  const valStr = inp.value.trim();
+  const amount = Number(valStr);
+  if (valStr !== '' && (isNaN(amount) || amount < 0)) {
+    showToast("Please enter a valid non-negative amount", true);
+    return;
+  }
+
+  try {
+    let res;
+    if (pmtKey) {
+      if (valStr === '' || amount === 0) {
+        // Delete existing month payment
+        res = await fetch(`/api/payments/${encodeURIComponent(pmtKey)}`, { method: 'DELETE' });
+      } else {
+        // Update existing month payment amount
+        res = await fetch(`/api/payments/${encodeURIComponent(pmtKey)}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ amount, transportFee: amount })
+        });
+      }
+    } else {
+      if (valStr === '' || amount <= 0) {
+        cancelInlineVanMonthEdit(el);
+        return;
+      }
+      // Create new month van payment
+      const today = new Date().toISOString().split('T')[0];
+      res = await fetch('/api/payments', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          studentId: student.id,
+          amount,
+          date: today,
+          term: `Van Fees - ${month} 2026`,
+          paymentMethod: 'Cash',
+          transactionId: '',
+          remarks: `${student.grade} Van Fees for ${month} 2026`,
+          feeCategories: ['Transport / Van Fees'],
+          receivedBy: 'School Accounts Office',
+          boardingArea: student.boardingArea || 'Van Route',
+          transportPaymentMode: 'Monthly',
+          transportMonth: month,
+          transportFee: amount,
+          transportAmount: amount
+        })
+      });
+    }
+
+    if (res.ok) {
+      showToast(
+        (pmtKey && (valStr === '' || amount === 0))
+          ? `Cleared ${month} van fee entry for ${student.name}`
+          : `Saved ${month} van fee (₹${amount.toLocaleString('en-IN')}) for ${student.name}`
+      );
+      await loadAllData();
+      if (typeof filterVanRegister === 'function') {
+        filterVanRegister();
+      } else {
+        renderVanFeesTab();
+      }
+    } else {
+      const err = await res.json();
+      showToast(err.error || "Failed to save van fee entry", true);
+      cancelInlineVanMonthEdit(el);
+    }
+  } catch (err) {
+    showToast("Network error saving van fee entry", true);
+    cancelInlineVanMonthEdit(el);
+  }
 }
 
 function filterVanRegister() {

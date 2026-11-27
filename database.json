@@ -148,7 +148,8 @@
       "transportFee": 4125,
       "concession": 0,
       "academicYear": "2026-2027",
-      "customSchoolFee": null
+      "customSchoolFee": null,
+      "customPaidAmount": 9250
     },
     {
       "id": "2",
@@ -169,7 +170,8 @@
       "transportMonthlyFee": 0,
       "transportFee": 0,
       "concession": 0,
-      "academicYear": "2026-2027"
+      "academicYear": "2026-2027",
+      "customSchoolFee": 13000
     },
     {
       "id": "3",
@@ -184,13 +186,15 @@
       "contact": "7639540178",
       "email": "",
       "address": "3, VALATHADIPATTI, IRUTHIRAPATTI POST, PUDUKKOTTAI - 622 102",
-      "boardingArea": "Van Route",
-      "transportOpted": true,
-      "transportType": "Monthly",
-      "transportMonthlyFee": 800,
-      "transportFee": 8800,
+      "boardingArea": "None (Self Commute)",
+      "transportOpted": false,
+      "transportType": "None",
+      "transportMonthlyFee": 0,
+      "transportFee": 0,
       "concession": 0,
-      "academicYear": "2026-2027"
+      "academicYear": "2026-2027",
+      "customSchoolFee": null,
+      "customPaidAmount": null
     },
     {
       "id": "4",
@@ -205,13 +209,15 @@
       "contact": "9751661882",
       "email": "",
       "address": "350, KEELASITHAKUDIPATTI, VILAPATTI, PUDUKKOTTAI - 622 504",
-      "boardingArea": "Van Route",
+      "boardingArea": "None (Self Commute)",
       "transportOpted": true,
       "transportType": "Monthly",
-      "transportMonthlyFee": 850,
-      "transportFee": 9350,
+      "transportMonthlyFee": 800,
+      "transportFee": 8000,
       "concession": 0,
-      "academicYear": "2026-2027"
+      "academicYear": "2026-2027",
+      "customSchoolFee": 13000,
+      "customPaidAmount": null
     },
     {
       "id": "5",
@@ -253,7 +259,8 @@
       "transportMonthlyFee": 750,
       "transportFee": 8250,
       "concession": 0,
-      "academicYear": "2026-2027"
+      "academicYear": "2026-2027",
+      "customSchoolFee": 13000
     },
     {
       "id": "7",
@@ -265,7 +272,7 @@
       "parentName": "CLAMENT RAJ",
       "fatherName": "CLAMENT RAJ",
       "dob": "01-04-2023",
-      "contact": "",
+      "contact": "8531969603",
       "email": "",
       "address": "509, VITTANILAIIPATTI, RAPOOSAL, PUDUKKOTTAI - 622 102",
       "boardingArea": "Van Route",
@@ -274,7 +281,8 @@
       "transportMonthlyFee": 900,
       "transportFee": 9900,
       "concession": 0,
-      "academicYear": "2026-2027"
+      "academicYear": "2026-2027",
+      "customSchoolFee": 13000
     },
     {
       "id": "8",
@@ -358,7 +366,8 @@
       "transportMonthlyFee": 900,
       "transportFee": 9900,
       "concession": 0,
-      "academicYear": "2026-2027"
+      "academicYear": "2026-2027",
+      "customPaidAmount": 17300
     },
     {
       "id": "12",
@@ -370,7 +379,7 @@
       "parentName": "MATHI",
       "fatherName": "MATHI",
       "dob": "29-01-2023",
-      "contact": "",
+      "contact": "7812875236",
       "email": "",
       "address": "72, MANGALAPATTI, IRUNTHIRAPATTI, ILLUPUR, PUDUKKOTTAI - 622 102",
       "boardingArea": "Van Route",
@@ -526,7 +535,8 @@
       "transportMonthlyFee": 850,
       "transportFee": 9350,
       "concession": 0,
-      "academicYear": "2026-2027"
+      "academicYear": "2026-2027",
+      "customPaidAmount": 24100
     },
     {
       "id": "20",
@@ -568,7 +578,8 @@
       "transportMonthlyFee": 0,
       "transportFee": 0,
       "concession": 0,
-      "academicYear": "2026-2027"
+      "academicYear": "2026-2027",
+      "customSchoolFee": 13000
     },
     {
       "id": "22",
@@ -4822,7 +4833,7 @@
       "parentName": "Parent",
       "fatherName": "Parent",
       "dob": "",
-      "contact": "",
+      "contact": "9159044799",
       "email": "",
       "address": "Pakkudi",
       "boardingArea": "None (Self Commute)",
@@ -4843,7 +4854,7 @@
       "parentName": "Parent",
       "fatherName": "Parent",
       "dob": "",
-      "contact": "",
+      "contact": "7502050750",
       "email": "",
       "address": "Pakkudi",
       "boardingArea": "None (Self Commute)",
@@ -4864,7 +4875,7 @@
       "parentName": "Parent",
       "fatherName": "Parent",
       "dob": "",
-      "contact": "",
+      "contact": "7448334254",
       "email": "",
       "address": "Pakkudi",
       "boardingArea": "None (Self Commute)",
@@ -4885,7 +4896,7 @@
       "parentName": "Parent",
       "fatherName": "Parent",
       "dob": "",
-      "contact": "",
+      "contact": "8838506058",
       "email": "",
       "address": "Pakkudi",
       "boardingArea": "None (Self Commute)",
@@ -4906,7 +4917,7 @@
       "parentName": "Parent",
       "fatherName": "Parent",
       "dob": "",
-      "contact": "",
+      "contact": "9585646895",
       "email": "",
       "address": "Pakkudi",
       "boardingArea": "None (Self Commute)",
@@ -4927,7 +4938,7 @@
       "parentName": "Parent",
       "fatherName": "Parent",
       "dob": "",
-      "contact": "",
+      "contact": "6383618926",
       "email": "",
       "address": "Pakkudi",
       "boardingArea": "None (Self Commute)",
@@ -4948,7 +4959,7 @@
       "parentName": "Parent",
       "fatherName": "Parent",
       "dob": "",
-      "contact": "",
+      "contact": "8072568857",
       "email": "",
       "address": "Pakkudi",
       "boardingArea": "None (Self Commute)",
@@ -5032,7 +5043,7 @@
       "parentName": "Parent",
       "fatherName": "Parent",
       "dob": "",
-      "contact": "",
+      "contact": "9080406542",
       "email": "",
       "address": "Pakkudi",
       "boardingArea": "None (Self Commute)",
@@ -5045,6 +5056,97 @@
     }
   ],
   "payments": [
+    {
+      "receiptNo": "REC-2026-2048",
+      "studentId": "4",
+      "studentName": "JEEVA",
+      "grade": "LKG",
+      "date": "2026-11-27",
+      "term": "Monthly Transport Fee",
+      "feeCategories": [
+        "Tuition",
+        "Term",
+        "Transport Fee"
+      ],
+      "amount": 800,
+      "paymentMethod": "UPI / QR Code",
+      "transactionId": "TXN-634122",
+      "remarks": "",
+      "receivedBy": "Accounts Admin",
+      "boardingArea": "None (Self Commute)",
+      "transportPaymentMode": "Monthly",
+      "transportMonth": "August",
+      "transportFee": 800,
+      "transportOpted": true
+    },
+    {
+      "receiptNo": "REC-2026-2047",
+      "studentId": "4",
+      "studentName": "JEEVA",
+      "grade": "LKG",
+      "date": "2026-11-27",
+      "term": "Monthly Transport Fee",
+      "feeCategories": [
+        "Tuition",
+        "Term",
+        "Transport Fee"
+      ],
+      "amount": 800,
+      "paymentMethod": "UPI / QR Code",
+      "transactionId": "TXN-562575",
+      "remarks": "",
+      "receivedBy": "Accounts Admin",
+      "boardingArea": "None (Self Commute)",
+      "transportPaymentMode": "Monthly",
+      "transportMonth": "October",
+      "transportFee": 800,
+      "transportOpted": true
+    },
+    {
+      "receiptNo": "REC-2026-2046",
+      "studentId": "4",
+      "studentName": "JEEVA",
+      "grade": "LKG",
+      "date": "2026-11-27",
+      "term": "Term 1 (June - Sept)",
+      "feeCategories": [
+        "Tuition",
+        "Term",
+        "Transport Fee"
+      ],
+      "amount": 6300,
+      "paymentMethod": "UPI / QR Code",
+      "transactionId": "TXN-451375",
+      "remarks": "",
+      "receivedBy": "Accounts Admin",
+      "boardingArea": "None (Self Commute)",
+      "transportPaymentMode": "Monthly",
+      "transportMonth": "October",
+      "transportFee": 800,
+      "transportOpted": true
+    },
+    {
+      "receiptNo": "REC-2026-2045",
+      "studentId": "3",
+      "studentName": "HASWANTH",
+      "grade": "LKG",
+      "date": "2026-11-27",
+      "term": "Monthly Transport Fee",
+      "feeCategories": [
+        "Tuition",
+        "Term"
+      ],
+      "amount": 800,
+      "paymentMethod": "UPI / QR Code",
+      "transactionId": "TXN-238697",
+      "remarks": "",
+      "receivedBy": "Accounts Admin",
+      "boardingArea": "Van Route",
+      "transportPaymentMode": "Monthly",
+      "transportMonth": "June",
+      "transportFee": 800,
+      "transportOpted": true
+    },
     {
       "receiptNo": "REC-2026-2044",
       "studentId": "1",
