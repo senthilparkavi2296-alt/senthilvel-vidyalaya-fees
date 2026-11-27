@@ -8,8 +8,16 @@ const PORT = process.env.PORT || 5000;
 const DB_FILE = path.join(__dirname, 'database.json');
 
 app.use(cors());
-app.use(express.json());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.json({ limit: '50mb' }));
+app.use(express.static(path.join(__dirname, 'public'), {
+  setHeaders: (res, filePath) => {
+    if (filePath.endsWith('.html') || filePath.endsWith('.js') || filePath.endsWith('.css')) {
+      res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+      res.setHeader('Pragma', 'no-cache');
+      res.setHeader('Expires', '0');
+    }
+  }
+}));
 
 // Default seed data for Senthilvel Vidyalaya School
 const defaultFeeColumns = [
@@ -735,6 +743,38 @@ app.post('/api/whatsapp/log', (req, res) => {
 app.get('/api/whatsapp/logs', (req, res) => {
   const db = loadDatabase();
   res.json(db.whatsappLogs || []);
+});
+
+// Full Database Backup & Restore APIs
+app.get('/api/database/backup', (req, res) => {
+  const db = loadDatabase();
+  res.json(db);
+});
+
+app.get('/api/database/download', (req, res) => {
+  const db = loadDatabase();
+  const dateStr = new Date().toISOString().split('T')[0];
+  res.setHeader('Content-Disposition', `attachment; filename="senthilvel_vidyalaya_db_${dateStr}.json"`);
+  res.setHeader('Content-Type', 'application/json');
+  res.send(JSON.stringify(db, null, 2));
+});
+
+app.post('/api/database/restore', (req, res) => {
+  try {
+    const data = req.body;
+    if (!data.students || !Array.isArray(data.students)) {
+      return res.status(400).json({ error: "Invalid backup data: missing students list" });
+    }
+    saveDatabase(data);
+    res.json({
+      success: true,
+      message: "Database restored successfully!",
+      studentCount: data.students.length,
+      paymentCount: (data.payments || []).length
+    });
+  } catch (err) {
+    res.status(500).json({ error: "Failed to restore database: " + err.message });
+  }
 });
 
 // Reset demo data API

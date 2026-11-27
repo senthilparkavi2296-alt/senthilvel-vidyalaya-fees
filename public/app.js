@@ -3659,3 +3659,53 @@ function printClassDuesReport() {
   }, 350);
 }
 
+// -------------------------------------------------------------
+// Database Backup & Restore Handlers
+// -------------------------------------------------------------
+function downloadDatabaseBackup() {
+  window.location.href = '/api/database/download';
+  showToast("Downloading full database backup file...");
+}
+
+async function handleDbRestoreFile(event) {
+  const file = event.target.files && event.target.files[0];
+  if (!file) return;
+
+  if (!confirm(`Are you sure you want to restore data from "${file.name}"? This will update the database with the contents of this file.`)) {
+    event.target.value = '';
+    return;
+  }
+
+  const reader = new FileReader();
+  reader.onload = async (e) => {
+    try {
+      const json = JSON.parse(e.target.result);
+      if (!json.students || !Array.isArray(json.students)) {
+        showToast("Invalid backup file: Missing students data", true);
+        return;
+      }
+
+      const res = await fetch('/api/database/restore', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(json)
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        showToast(`Database restored! ${data.studentCount} students and ${data.paymentCount} payments loaded.`);
+        await loadAllData();
+        renderSchoolFeesTab();
+      } else {
+        const err = await res.json();
+        showToast(err.error || "Failed to restore database", true);
+      }
+    } catch (err) {
+      showToast("Error parsing JSON backup file: " + err.message, true);
+    } finally {
+      event.target.value = '';
+    }
+  };
+  reader.readAsText(file);
+}
+
