@@ -910,7 +910,8 @@
       "transportMonthlyFee": 850,
       "transportFee": 9350,
       "concession": 0,
-      "academicYear": "2026-2027"
+      "academicYear": "2026-2027",
+      "customSchoolFee": 14000
     },
     {
       "id": "41",
@@ -27240,5 +27241,7 @@
       "mode": "Single Reminder",
       "status": "Sent"
     }
-  ]
+  ],
+  "tableHeadings": {},
+  "lastUpdated": "2026-11-28T14:49:15.856Z"
 }
