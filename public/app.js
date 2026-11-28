@@ -117,7 +117,8 @@ function switchTab(tabId) {
     'collect': 'Collect Student Fees',
     'transactions': 'Fee Payment History & Official Receipts',
     'structure': 'Standardized Fee Structure Setup',
-    'reports': 'Reports & Defaulter Tracking'
+    'reports': 'Reports & Defaulter Tracking',
+    'settings': 'Admin Settings — Data Backup & Restore Center'
   };
   const titleElem = document.getElementById('pageTitle');
   if (titleElem && titles[tabId]) {
@@ -130,6 +131,11 @@ function switchTab(tabId) {
 
   if (tabId === 'schoolfees') {
     renderSchoolFeesTab();
+  }
+
+  if (tabId === 'settings') {
+    refreshAdminSummary();
+    loadAutoBackupsList();
   }
 
   applySavedHeadings();
@@ -4574,3 +4580,237 @@ function dismissVaultBanner() {
   if (banner) banner.remove();
 }
 
+
+
+// ============================================================
+// === ADMIN SETTINGS — BACKUP & RESTORE CENTER ===============
+// ============================================================
+
+let adminRestoreParsedData = null;
+
+async function refreshAdminSummary() {
+  try {
+    const res = await fetch('/api/database/backup');
+    const db = await res.json();
+    const payments = db.payments || [];
+    const van = payments.filter(p => (p.feeCategories || []).includes('Transport / Van Fees'));
+    const sch = payments.filter(p => (p.feeCategories || []).includes('School Academic Fees'));
+    const total = payments.reduce((s, p) => s + (Number(p.amount) || 0), 0);
+    const studEl = document.getElementById('adminStatStudents');
+    const payEl  = document.getElementById('adminStatPayments');
+    const vanEl  = document.getElementById('adminStatVan');
+    const schEl  = document.getElementById('adminStatSchool');
+    const totEl  = document.getElementById('adminStatTotal');
+    if (studEl) studEl.innerText = db.students.length;
+    if (payEl)  payEl.innerText  = payments.length;
+    if (vanEl)  vanEl.innerText  = van.length;
+    if (schEl)  schEl.innerText  = sch.length;
+    if (totEl)  totEl.innerText  = '\u20b9' + total.toLocaleString('en-IN');
+  } catch (e) {
+    showToast('Failed to load database summary', true);
+  }
+}
+
+async function loadAutoBackupsList() {
+  const container = document.getElementById('autoBackupsList');
+  if (!container) return;
+  container.innerHTML = '<span style="color:#64748b;">Loading backups...</span>';
+  try {
+    const res = await fetch('/api/database/backups');
+    const data = await res.json();
+    if (!data.backups || data.backups.length === 0) {
+      container.innerHTML = '<span style="color:#64748b; font-style:italic;">No automatic backups found on server yet.</span>';
+      return;
+    }
+    container.innerHTML = `
+      <div style="overflow-x:auto;">
+        <table style="width:100%; border-collapse:collapse; font-size:0.8rem;">
+          <thead>
+            <tr style="background:#fef3c7; color:#78350f;">
+              <th style="padding:6px 8px; text-align:left; border:1px solid #fde68a;">Backup File</th>
+              <th style="padding:6px 8px; text-align:center; border:1px solid #fde68a;">Students</th>
+              <th style="padding:6px 8px; text-align:center; border:1px solid #fde68a;">Payments</th>
+              <th style="padding:6px 8px; text-align:center; border:1px solid #fde68a;">Van</th>
+              <th style="padding:6px 8px; text-align:center; border:1px solid #fde68a;">School</th>
+              <th style="padding:6px 8px; text-align:right; border:1px solid #fde68a;">Size</th>
+              <th style="padding:6px 8px; text-align:center; border:1px solid #fde68a;">Created</th>
+              <th style="padding:6px 8px; text-align:center; border:1px solid #fde68a;">Download</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${data.backups.map(b => `
+              <tr style="border-bottom:1px solid #fde68a;">
+                <td style="padding:5px 8px; border:1px solid #fde68a; font-family:monospace; font-size:0.72rem; color:#0f172a;">${b.filename}</td>
+                <td style="padding:5px 8px; border:1px solid #fde68a; text-align:center; font-weight:700; color:#166534;">${b.studentCount ?? '—'}</td>
+                <td style="padding:5px 8px; border:1px solid #fde68a; text-align:center; font-weight:700;">${b.paymentCount ?? '—'}</td>
+                <td style="padding:5px 8px; border:1px solid #fde68a; text-align:center; color:#b45309;">${b.vanCount ?? '—'}</td>
+                <td style="padding:5px 8px; border:1px solid #fde68a; text-align:center; color:#7c3aed;">${b.schoolCount ?? '—'}</td>
+                <td style="padding:5px 8px; border:1px solid #fde68a; text-align:right; color:#64748b;">${b.sizeFormatted}</td>
+                <td style="padding:5px 8px; border:1px solid #fde68a; text-align:center; font-size:0.72rem; color:#475569;">${b.formattedTime}</td>
+                <td style="padding:5px 8px; border:1px solid #fde68a; text-align:center;">
+                  <a href="/api/database/backups/${encodeURIComponent(b.filename)}" download="${b.filename}" class="btn btn-outline btn-sm" style="padding:3px 10px; font-size:0.72rem; border-color:#d97706; color:#92400e;">
+                    <i data-lucide="download" style="width:11px; height:11px;"></i> Get
+                  </a>
+                </td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      </div>`;
+    initIcons();
+  } catch (e) {
+    container.innerHTML = '<span style="color:#ef4444;">Failed to load backup list from server.</span>';
+  }
+}
+
+async function validateAndPreviewBackup(event) {
+  const file = event.target.files && event.target.files[0];
+  if (!file) return;
+  adminRestoreParsedData = null;
+
+  const filenameEl = document.getElementById('adminRestoreFilename');
+  if (filenameEl) filenameEl.innerText = file.name;
+
+  const validationPanel = document.getElementById('restoreValidationPanel');
+  const confirmPanel    = document.getElementById('restoreConfirmPanel');
+  if (validationPanel) validationPanel.style.display = 'none';
+  if (confirmPanel)    confirmPanel.style.display    = 'none';
+
+  const reader = new FileReader();
+  reader.onload = async (e) => {
+    let parsed;
+    try {
+      parsed = JSON.parse(e.target.result);
+    } catch (err) {
+      if (validationPanel) validationPanel.style.display = 'block';
+      const contentEl = document.getElementById('restoreValidationContent');
+      if (contentEl) contentEl.innerHTML = '<span style="color:#dc2626; font-weight:700;">\u274c Invalid file: Not a valid JSON file. (' + err.message + ')</span>';
+      return;
+    }
+
+    try {
+      const res = await fetch('/api/database/validate-backup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(parsed)
+      });
+      const result = await res.json();
+      if (validationPanel) validationPanel.style.display = 'block';
+      const contentEl = document.getElementById('restoreValidationContent');
+
+      if (result.valid) {
+        adminRestoreParsedData = parsed;
+        const bs = result.backupSummary;
+        const ls = result.currentLiveSummary;
+        if (contentEl) contentEl.innerHTML = `
+          <div style="color:#166534; font-weight:700; margin-bottom:10px;">\u2705 Backup file is VALID and safe for restoration.</div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+            <div>
+              <strong style="color:#1e3a8a; display:block; margin-bottom:6px;">\ud83d\udcc2 Backup File Contains:</strong>
+              <div>Students: <strong>${bs.studentCount}</strong></div>
+              <div>Total Payments: <strong>${bs.paymentCount}</strong></div>
+              <div>Van Payments: <strong>${bs.vanPaymentCount}</strong></div>
+              <div>School Payments: <strong>${bs.schoolPaymentCount}</strong></div>
+              <div>Total Collected: <strong>\u20b9${Number(bs.totalFeesAmount).toLocaleString('en-IN')}</strong></div>
+              <div style="margin-top:4px; font-size:0.78rem; color:#64748b;">Academic Year: ${bs.academicYear}</div>
+              <div style="font-size:0.78rem; color:#64748b;">Backup Date: ${bs.backupDate}</div>
+            </div>
+            <div>
+              <strong style="color:#1e3a8a; display:block; margin-bottom:6px;">\ud83c\udf10 Current Live Database:</strong>
+              <div>Students: <strong>${ls.studentCount}</strong></div>
+              <div>Total Payments: <strong>${ls.paymentCount}</strong></div>
+              <div>Van Payments: <strong>${ls.vanPaymentCount}</strong></div>
+              <div>School Payments: <strong>${ls.schoolPaymentCount}</strong></div>
+              <div>Total Collected: <strong>\u20b9${Number(ls.totalFeesAmount).toLocaleString('en-IN')}</strong></div>
+            </div>
+          </div>`;
+        if (confirmPanel) confirmPanel.style.display = 'block';
+        const confirmInput = document.getElementById('adminRestoreConfirmInput');
+        const confirmBtn   = document.getElementById('adminRestoreConfirmBtn');
+        if (confirmInput) confirmInput.value = '';
+        if (confirmBtn) {
+          confirmBtn.disabled = true;
+          confirmBtn.style.opacity = '0.4';
+          confirmBtn.style.cursor = 'not-allowed';
+        }
+      } else {
+        if (contentEl) contentEl.innerHTML = '<span style="color:#dc2626; font-weight:700;">\u274c ' + (result.error || 'Backup validation failed') + '</span>';
+        adminRestoreParsedData = null;
+      }
+    } catch (err) {
+      const contentEl = document.getElementById('restoreValidationContent');
+      if (contentEl) contentEl.innerHTML = '<span style="color:#dc2626;">\u274c Validation request failed: ' + err.message + '</span>';
+    }
+  };
+  reader.readAsText(file);
+}
+
+function checkRestoreConfirmText() {
+  const val = (document.getElementById('adminRestoreConfirmInput') ? document.getElementById('adminRestoreConfirmInput').value : '').trim();
+  const btn = document.getElementById('adminRestoreConfirmBtn');
+  if (btn) {
+    const enabled = val === 'RESTORE' && adminRestoreParsedData !== null;
+    btn.disabled = !enabled;
+    btn.style.opacity = enabled ? '1' : '0.4';
+    btn.style.cursor  = enabled ? 'pointer' : 'not-allowed';
+  }
+}
+
+async function executeRestoreFromAdmin() {
+  if (!adminRestoreParsedData) { showToast('No validated backup loaded.', true); return; }
+  const confirmVal = (document.getElementById('adminRestoreConfirmInput') ? document.getElementById('adminRestoreConfirmInput').value : '').trim();
+  if (confirmVal !== 'RESTORE') { showToast('Please type RESTORE to confirm.', true); return; }
+
+  const btn = document.getElementById('adminRestoreConfirmBtn');
+  if (btn) {
+    btn.disabled = true;
+    btn.innerText = 'Restoring\u2026 Please wait';
+  }
+
+  try {
+    const res = await fetch('/api/database/restore', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(adminRestoreParsedData)
+    });
+    const result = await res.json();
+    if (res.ok && result.success) {
+      showToast('\u2705 Database restored successfully! ' + result.studentCount + ' students, ' + result.paymentCount + ' payments.');
+      cancelAdminRestore();
+      await loadAllData();
+      refreshAdminSummary();
+      loadAutoBackupsList();
+    } else {
+      showToast('\u274c Restore failed: ' + (result.error || 'Unknown error'), true);
+    }
+  } catch (err) {
+    showToast('\u274c Restore request failed: ' + err.message, true);
+  } finally {
+    if (btn) {
+      btn.disabled = false;
+      btn.innerText = 'Confirm Restore';
+      btn.style.opacity = '0.4';
+      btn.style.cursor  = 'not-allowed';
+    }
+  }
+}
+
+function cancelAdminRestore() {
+  adminRestoreParsedData = null;
+  const fileInput    = document.getElementById('adminRestoreFileInput');
+  const filenameEl   = document.getElementById('adminRestoreFilename');
+  const valPanel     = document.getElementById('restoreValidationPanel');
+  const confPanel    = document.getElementById('restoreConfirmPanel');
+  const confirmInput = document.getElementById('adminRestoreConfirmInput');
+  if (fileInput)    fileInput.value = '';
+  if (filenameEl)   filenameEl.innerText = 'No file selected';
+  if (valPanel)     valPanel.style.display  = 'none';
+  if (confPanel)    confPanel.style.display = 'none';
+  if (confirmInput) confirmInput.value = '';
+}
+
+// Trigger manual download backup (uses existing endpoint)
+function downloadDatabaseBackupFromAdmin() {
+  window.location.href = '/api/database/download';
+  showToast('\ud83d\udcbe Downloading full database backup\u2026');
+}

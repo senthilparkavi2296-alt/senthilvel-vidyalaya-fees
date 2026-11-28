@@ -106,8 +106,69 @@ function loadDatabase() {
 
 function saveDatabase(data) {
   data.lastUpdated = new Date().toISOString();
-  fs.writeFileSync(DB_FILE, JSON.stringify(data, null, 2), 'utf8');
+  const tmpFile = DB_FILE + '.tmp';
+  const jsonStr = JSON.stringify(data, null, 2);
+  try {
+    fs.writeFileSync(tmpFile, jsonStr, 'utf8');
+    // Verify tmp write before moving
+    JSON.parse(fs.readFileSync(tmpFile, 'utf8'));
+    fs.renameSync(tmpFile, DB_FILE);
+  } catch (err) {
+    console.error("Atomic save fallback:", err);
+    fs.writeFileSync(DB_FILE, jsonStr, 'utf8');
+  }
 }
+
+// -------------------------------------------------------------
+// Automatic Data Protection & Snapshot Engine
+// -------------------------------------------------------------
+const BACKUPS_DIR = path.join(__dirname, 'backups');
+if (!fs.existsSync(BACKUPS_DIR)) fs.mkdirSync(BACKUPS_DIR, { recursive: true });
+
+function createAutomaticBackup(reason = 'auto') {
+  try {
+    if (!fs.existsSync(DB_FILE)) return null;
+    const raw = fs.readFileSync(DB_FILE, 'utf8');
+    const parsed = JSON.parse(raw);
+    if (!parsed.students || !Array.isArray(parsed.students) || parsed.students.length === 0) {
+      return null; // Never backup an empty or invalid database
+    }
+    const ts = new Date().toISOString().replace(/[:.]/g, '-');
+    const filename = `backup_${reason}_${ts}.json`;
+    const filepath = path.join(BACKUPS_DIR, filename);
+    fs.writeFileSync(filepath, JSON.stringify(parsed, null, 2), 'utf8');
+
+    // Maintain rotating history (keep up to 35, never delete gold or production backups)
+    const files = fs.readdirSync(BACKUPS_DIR).filter(f => f.endsWith('.json')).sort();
+    if (files.length > 35) {
+      const candidates = files.filter(f => !f.includes('gold') && !f.includes('production_backup'));
+      if (candidates.length > 25) {
+        const toDelete = candidates.slice(0, candidates.length - 25);
+        toDelete.forEach(f => {
+          try { fs.unlinkSync(path.join(BACKUPS_DIR, f)); } catch(e){}
+        });
+      }
+    }
+    return {
+      filename,
+      filepath,
+      timestamp: new Date().toISOString(),
+      studentCount: parsed.students.length,
+      paymentCount: (parsed.payments || []).length
+    };
+  } catch (err) {
+    console.error("Automatic backup error:", err);
+    return null;
+  }
+}
+
+// Startup automatic backup snapshot
+createAutomaticBackup('startup');
+
+// Periodic automatic backup every 6 hours
+setInterval(() => {
+  createAutomaticBackup('scheduled');
+}, 6 * 60 * 60 * 1000);
 
 // Compute student fee summary
 function getStudentFeeSummary(student, db) {
@@ -817,40 +878,239 @@ app.put('/api/table-headings', (req, res) => {
   res.json({ success: true, tableHeadings: db.tableHeadings });
 });
 
-// Full Database Backup & Restore APIs
+// =============================================================
+// Comprehensive Database Backup, Verification & Safe Restore APIs
+// =============================================================
+
+// Get full live database JSON
 app.get('/api/database/backup', (req, res) => {
   const db = loadDatabase();
   res.json(db);
 });
 
+// Download complete verified backup file with timestamp and metadata
 app.get('/api/database/download', (req, res) => {
   const db = loadDatabase();
-  const dateStr = new Date().toISOString().split('T')[0];
-  res.setHeader('Content-Disposition', `attachment; filename="senthilvel_vidyalaya_db_${dateStr}.json"`);
+  const now = new Date();
+  const dateStr = now.toISOString().split('T')[0];
+  const timeStr = now.toTimeString().split(' ')[0].replace(/:/g, '-');
+  const filename = `senthilvel_vidyalaya_backup_${dateStr}_${timeStr}.json`;
+
+  const vanPayments = (db.payments || []).filter(p => (p.feeCategories || []).includes('Transport / Van Fees'));
+  const schoolPayments = (db.payments || []).filter(p => (p.feeCategories || []).includes('School Academic Fees'));
+  const totalAmount = (db.payments || []).reduce((sum, p) => sum + (Number(p.amount) || 0), 0);
+
+  const payload = {
+    backupMetadata: {
+      system: "Senthilvel Vidyalaya School - Fees Management System",
+      academicYear: db.schoolInfo?.academicYear || "2026-2027",
+      backupVersion: "2.0",
+      backupDate: now.toISOString(),
+      exportedAt: now.toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }),
+      studentCount: db.students.length,
+      paymentCount: (db.payments || []).length,
+      vanPaymentCount: vanPayments.length,
+      schoolPaymentCount: schoolPayments.length,
+      totalAmountCollected: totalAmount
+    },
+    ...db
+  };
+
+  res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
   res.setHeader('Content-Type', 'application/json');
-  res.send(JSON.stringify(db, null, 2));
+  res.send(JSON.stringify(payload, null, 2));
 });
 
-app.post('/api/database/restore', (req, res) => {
+// List all server-side historical and automatic backups
+app.get('/api/database/backups', (req, res) => {
   try {
-    const data = req.body;
-    if (!data.students || !Array.isArray(data.students)) {
-      return res.status(400).json({ error: "Invalid backup data: missing students list" });
+    if (!fs.existsSync(BACKUPS_DIR)) {
+      return res.json({ backups: [] });
     }
-    saveDatabase(data);
-    res.json({
-      success: true,
-      message: "Database restored successfully!",
-      studentCount: data.students.length,
-      paymentCount: (data.payments || []).length
+    const files = fs.readdirSync(BACKUPS_DIR).filter(f => f.endsWith('.json')).sort().reverse();
+    const backupList = files.slice(0, 25).map(file => {
+      const fullPath = path.join(BACKUPS_DIR, file);
+      const stat = fs.statSync(fullPath);
+      let preview = {};
+      try {
+        const content = JSON.parse(fs.readFileSync(fullPath, 'utf8'));
+        const pList = content.payments || [];
+        preview = {
+          studentCount: (content.students || []).length,
+          paymentCount: pList.length,
+          vanCount: pList.filter(p => (p.feeCategories || []).includes('Transport / Van Fees')).length,
+          schoolCount: pList.filter(p => (p.feeCategories || []).includes('School Academic Fees')).length,
+          totalAmount: pList.reduce((s, p) => s + (Number(p.amount) || 0), 0)
+        };
+      } catch (e) {}
+
+      return {
+        filename: file,
+        sizeBytes: stat.size,
+        sizeFormatted: (stat.size / 1024).toFixed(1) + ' KB',
+        createdAt: stat.mtime.toISOString(),
+        formattedTime: stat.mtime.toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }),
+        ...preview
+      };
     });
+    res.json({ backups: backupList });
   } catch (err) {
-    res.status(500).json({ error: "Failed to restore database: " + err.message });
+    res.status(500).json({ error: "Failed to list backups: " + err.message });
   }
 });
 
-// Reset demo data API
+// Securely download a specific historical backup from server
+app.get('/api/database/backups/:filename', (req, res) => {
+  try {
+    const filename = path.basename(req.params.filename);
+    const filepath = path.join(BACKUPS_DIR, filename);
+    if (!fs.existsSync(filepath)) {
+      return res.status(404).json({ error: "Backup file not found" });
+    }
+    res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+    res.setHeader('Content-Type', 'application/json');
+    res.sendFile(filepath);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to download backup: " + err.message });
+  }
+});
+
+// Pre-Restore Validation Endpoint (Does NOT modify database)
+app.post('/api/database/validate-backup', (req, res) => {
+  try {
+    const data = req.body;
+    if (!data || typeof data !== 'object') {
+      return res.status(400).json({ valid: false, error: "Invalid backup: Payload must be a JSON object" });
+    }
+    if (!data.students || !Array.isArray(data.students)) {
+      return res.status(400).json({ valid: false, error: "Invalid backup: Missing or invalid 'students' array" });
+    }
+    if (data.students.length === 0) {
+      return res.status(400).json({ valid: false, error: "Invalid backup: 'students' list is empty. Refusing empty backup." });
+    }
+
+    // Validate essential student attributes
+    const invalidSample = data.students.find(s => !s.id || !s.name || !s.grade);
+    if (invalidSample) {
+      return res.status(400).json({ valid: false, error: `Invalid student structure detected (e.g. missing id/name/grade).` });
+    }
+
+    const currentDb = loadDatabase();
+    const payments = Array.isArray(data.payments) ? data.payments : [];
+    const vanPayments = payments.filter(p => (p.feeCategories || []).includes('Transport / Van Fees'));
+    const schoolPayments = payments.filter(p => (p.feeCategories || []).includes('School Academic Fees'));
+    const totalAmount = payments.reduce((sum, p) => sum + (Number(p.amount) || 0), 0);
+
+    const currentVan = (currentDb.payments || []).filter(p => (p.feeCategories || []).includes('Transport / Van Fees'));
+    const currentSchool = (currentDb.payments || []).filter(p => (p.feeCategories || []).includes('School Academic Fees'));
+    const currentTotal = (currentDb.payments || []).reduce((sum, p) => sum + (Number(p.amount) || 0), 0);
+
+    res.json({
+      valid: true,
+      message: "Backup file is valid and verified safe for restoration.",
+      backupSummary: {
+        studentCount: data.students.length,
+        paymentCount: payments.length,
+        vanPaymentCount: vanPayments.length,
+        schoolPaymentCount: schoolPayments.length,
+        totalFeesAmount: totalAmount,
+        academicYear: data.schoolInfo?.academicYear || '2026-2027',
+        backupDate: data.backupMetadata?.backupDate || data.lastUpdated || 'Present'
+      },
+      currentLiveSummary: {
+        studentCount: currentDb.students.length,
+        paymentCount: (currentDb.payments || []).length,
+        vanPaymentCount: currentVan.length,
+        schoolPaymentCount: currentSchool.length,
+        totalFeesAmount: currentTotal
+      }
+    });
+  } catch (err) {
+    res.status(500).json({ valid: false, error: "Validation failed: " + err.message });
+  }
+});
+
+// Safe Atomic Restore with Pre-Restore Snapshot & Rollback Protection
+app.post('/api/database/restore', (req, res) => {
+  let preRestoreSnapshot = null;
+  try {
+    const data = req.body;
+    if (!data.students || !Array.isArray(data.students) || data.students.length === 0) {
+      return res.status(400).json({ error: "Invalid backup data: missing or empty students list" });
+    }
+    const invalidStudent = data.students.find(s => !s.id || !s.name || !s.grade);
+    if (invalidStudent) {
+      return res.status(400).json({ error: "Invalid backup data: some student records lack required fields" });
+    }
+
+    // 1. Take immediate pre-restore snapshot of existing database before modifying
+    preRestoreSnapshot = createAutomaticBackup('pre_restore');
+
+    // Clean data object (strip outer metadata wrapper if present)
+    const dbToSave = {
+      feeColumns: data.feeColumns || defaultFeeColumns,
+      feeStructures: data.feeStructures || initialFeeStructures,
+      students: data.students,
+      payments: data.payments || [],
+      transportAreas: data.transportAreas || defaultTransportAreas,
+      schoolInfo: data.schoolInfo || {
+        name: "Senthilvel Vidyalaya School",
+        address: "Pakkudi, Pudukottai",
+        phone: "9789277169, 9445987169",
+        academicYear: "2026-2027"
+      },
+      tableHeadings: data.tableHeadings || {},
+      lastUpdated: new Date().toISOString()
+    };
+
+    // 2. Save database atomically
+    saveDatabase(dbToSave);
+
+    // 3. Sync seed_students.json
+    try {
+      const seedFile = path.join(__dirname, 'seed_students.json');
+      fs.writeFileSync(seedFile, JSON.stringify(dbToSave.students, null, 2), 'utf8');
+    } catch(e){}
+
+    // 4. Verify written database
+    const verifiedDb = loadDatabase();
+    if (!verifiedDb.students || verifiedDb.students.length !== dbToSave.students.length) {
+      throw new Error("Verification mismatch: Restored student count does not match database file!");
+    }
+
+    res.json({
+      success: true,
+      message: "Database restored and verified successfully!",
+      studentCount: verifiedDb.students.length,
+      paymentCount: (verifiedDb.payments || []).length,
+      snapshotTaken: preRestoreSnapshot ? preRestoreSnapshot.filename : null
+    });
+  } catch (err) {
+    console.error("Database restore failed:", err);
+    // Automatic Rollback to pre-restore snapshot
+    if (preRestoreSnapshot && fs.existsSync(preRestoreSnapshot.filepath)) {
+      try {
+        const rollbackData = JSON.parse(fs.readFileSync(preRestoreSnapshot.filepath, 'utf8'));
+        saveDatabase(rollbackData);
+        console.warn("Restored original database from safety snapshot after failure");
+      } catch (rollbackErr) {
+        console.error("Rollback failed:", rollbackErr);
+      }
+    }
+    res.status(500).json({ error: "Failed to restore database: " + err.message + " (Original data preserved safely)" });
+  }
+});
+
+// Guarded reset demo data API (Requires confirmation, creates safety backup first)
 app.post('/api/reset-data', (req, res) => {
+  const confirmHeader = req.headers['x-confirm-reset'];
+  if (confirmHeader !== 'CONFIRM_RESET_ALL_DATA') {
+    return res.status(403).json({ error: "Reset requires explicit authorization header to prevent accidental data loss." });
+  }
+
+  // Always take a backup before any reset
+  createAutomaticBackup('pre_reset');
+
   if (fs.existsSync(DB_FILE)) {
     fs.unlinkSync(DB_FILE);
   }

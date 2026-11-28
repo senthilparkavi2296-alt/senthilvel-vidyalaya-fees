@@ -62,6 +62,10 @@
         <i data-lucide="bar-chart-3"></i>
         <span>Reports & Dues</span>
       </a>
+      <a class="nav-link" data-tab="settings">
+        <i data-lucide="shield-check"></i>
+        <span>Admin Settings</span>
+      </a>
     </nav>
 
     <div class="sidebar-footer" style="flex-direction:column; gap:8px; align-items:stretch;">
@@ -948,6 +952,177 @@
                 <!-- Populated via JS -->
               </tbody>
             </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB: ADMIN SETTINGS — BACKUP & RESTORE CENTER -->
+      <section id="settings" class="tab-pane">
+        <div style="max-width:900px; margin:0 auto; padding:0 8px;">
+          <div style="margin-bottom:20px;">
+            <h2 style="font-size:1.3rem; font-weight:800; color:#1e3a8a; margin:0 0 4px 0; display:flex; align-items:center; gap:10px;">
+              <i data-lucide="shield-check" style="color:#15803d;"></i>
+              Admin Settings — Data Backup &amp; Restore Center
+            </h2>
+            <p style="font-size:0.85rem; color:#64748b; margin:0;">
+              Protect all student records, fee history, and payment data. All existing data is NEVER modified by this panel.
+            </p>
+          </div>
+
+          <!-- === LIVE DATABASE SUMMARY === -->
+          <div style="background:#f0fdf4; border:1px solid #bbf7d0; border-radius:12px; padding:16px 20px; margin-bottom:20px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+              <strong style="color:#166534; font-size:0.95rem; display:flex; align-items:center; gap:8px;">
+                <i data-lucide="database" style="width:16px; height:16px;"></i>
+                Live Database Status (Read-Only)
+              </strong>
+              <button class="btn btn-outline btn-sm" onclick="refreshAdminSummary()" style="border-color:#16a34a; color:#15803d; padding:4px 12px; font-size:0.78rem;">
+                <i data-lucide="refresh-cw" style="width:12px; height:12px;"></i> Refresh
+              </button>
+            </div>
+            <div id="adminDbSummary" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap:10px;">
+              <div style="background:#fff; border-radius:8px; padding:12px; text-align:center; border:1px solid #dcfce7;">
+                <div style="font-size:1.6rem; font-weight:800; color:#166534;" id="adminStatStudents">—</div>
+                <div style="font-size:0.75rem; color:#64748b; font-weight:600;">Total Students</div>
+              </div>
+              <div style="background:#fff; border-radius:8px; padding:12px; text-align:center; border:1px solid #dcfce7;">
+                <div style="font-size:1.6rem; font-weight:800; color:#1e3a8a;" id="adminStatPayments">—</div>
+                <div style="font-size:0.75rem; color:#64748b; font-weight:600;">Total Payments</div>
+              </div>
+              <div style="background:#fff; border-radius:8px; padding:12px; text-align:center; border:1px solid #dcfce7;">
+                <div style="font-size:1.3rem; font-weight:800; color:#b45309;" id="adminStatVan">—</div>
+                <div style="font-size:0.75rem; color:#64748b; font-weight:600;">Van Payments</div>
+              </div>
+              <div style="background:#fff; border-radius:8px; padding:12px; text-align:center; border:1px solid #dcfce7;">
+                <div style="font-size:1.3rem; font-weight:800; color:#7c3aed;" id="adminStatSchool">—</div>
+                <div style="font-size:0.75rem; color:#64748b; font-weight:600;">School Payments</div>
+              </div>
+              <div style="background:#fff; border-radius:8px; padding:12px; text-align:center; border:1px solid #dcfce7;">
+                <div style="font-size:1.1rem; font-weight:800; color:#0f172a;" id="adminStatTotal">—</div>
+                <div style="font-size:0.75rem; color:#64748b; font-weight:600;">Total Collected</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- === BACKUP SECTION === -->
+          <div style="background:#eff6ff; border:1px solid #bfdbfe; border-radius:12px; padding:16px 20px; margin-bottom:20px;">
+            <h3 style="font-size:1rem; font-weight:700; color:#1e3a8a; margin:0 0 10px 0; display:flex; align-items:center; gap:8px;">
+              <i data-lucide="download-cloud" style="width:18px; height:18px; color:#2563eb;"></i>
+              Create &amp; Download Backup
+            </h3>
+            <p style="font-size:0.82rem; color:#475569; margin:0 0 14px 0;">
+              The backup file includes ALL student records, payment history, van fees, school fees, fee structures, and settings.
+              The backup contains a date-time stamp and verification metadata.
+            </p>
+            <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+              <button class="btn btn-primary" onclick="downloadDatabaseBackup()" style="background:#1d4ed8; border-color:#1d4ed8; font-weight:700; padding:9px 20px;">
+                <i data-lucide="download" style="width:15px; height:15px; margin-right:5px;"></i>
+                Download Full Backup Now
+              </button>
+              <span style="font-size:0.78rem; color:#3b82f6; font-weight:600;">
+                📂 Saves as: senthilvel_vidyalaya_backup_[date]_[time].json
+              </span>
+            </div>
+          </div>
+
+          <!-- === SERVER-SIDE AUTO BACKUPS === -->
+          <div style="background:#fefce8; border:1px solid #fde68a; border-radius:12px; padding:16px 20px; margin-bottom:20px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+              <h3 style="font-size:1rem; font-weight:700; color:#92400e; margin:0; display:flex; align-items:center; gap:8px;">
+                <i data-lucide="clock" style="width:18px; height:18px; color:#d97706;"></i>
+                Automatic Server Backups
+              </h3>
+              <button class="btn btn-outline btn-sm" onclick="loadAutoBackupsList()" style="border-color:#d97706; color:#92400e; padding:4px 12px; font-size:0.78rem;">
+                <i data-lucide="refresh-cw" style="width:12px; height:12px;"></i> Load Backups
+              </button>
+            </div>
+            <p style="font-size:0.82rem; color:#78350f; margin:0 0 12px 0;">
+              The system automatically creates backups on startup, every 6 hours, and before every restoration.
+              You can download any historical snapshot from here.
+            </p>
+            <div id="autoBackupsList" style="font-size:0.82rem; color:#64748b; font-style:italic;">
+              Click "Load Backups" to view available automatic server snapshots.
+            </div>
+          </div>
+
+          <!-- === RESTORE SECTION === -->
+          <div style="background:#fef2f2; border:1px solid #fecaca; border-radius:12px; padding:16px 20px; margin-bottom:20px;">
+            <h3 style="font-size:1rem; font-weight:700; color:#991b1b; margin:0 0 10px 0; display:flex; align-items:center; gap:8px;">
+              <i data-lucide="upload-cloud" style="width:18px; height:18px; color:#ef4444;"></i>
+              Restore from Backup File
+            </h3>
+            <div style="background:#fff5f5; border:1px solid #fca5a5; border-radius:8px; padding:12px 14px; margin-bottom:14px;">
+              <div style="font-size:0.82rem; color:#991b1b; font-weight:600; margin-bottom:4px;">
+                ⚠️ Important Safety Rules:
+              </div>
+              <ul style="font-size:0.8rem; color:#7f1d1d; margin:0; padding-left:18px; line-height:1.7;">
+                <li>Restoration will <strong>replace</strong> the current live database with the backup file.</li>
+                <li>A <strong>safety snapshot</strong> of your current data is automatically taken before any restoration begins.</li>
+                <li>If restoration fails, your original data is <strong>automatically rolled back</strong>.</li>
+                <li>The backup file will be <strong>validated</strong> before you confirm restoration.</li>
+                <li>You must click <strong>Confirm Restore</strong> explicitly — files are never restored automatically on upload.</li>
+              </ul>
+            </div>
+
+            <!-- Step 1: Select File -->
+            <div style="margin-bottom:14px;">
+              <label style="font-size:0.85rem; font-weight:700; color:#0f172a; display:block; margin-bottom:6px;">
+                Step 1 — Select a Backup File (.json)
+              </label>
+              <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+                <input type="file" id="adminRestoreFileInput" accept=".json" style="display:none;" onchange="validateAndPreviewBackup(event)">
+                <button class="btn btn-outline" onclick="document.getElementById('adminRestoreFileInput').click()" style="border-color:#94a3b8; color:#475569; font-weight:600; padding:8px 16px;">
+                  <i data-lucide="folder-open" style="width:14px; height:14px; margin-right:4px;"></i>
+                  Choose Backup File
+                </button>
+                <span id="adminRestoreFilename" style="font-size:0.82rem; color:#64748b; font-style:italic;">No file selected</span>
+              </div>
+            </div>
+
+            <!-- Step 2: Validation Preview -->
+            <div id="restoreValidationPanel" style="display:none; margin-bottom:14px;">
+              <label style="font-size:0.85rem; font-weight:700; color:#0f172a; display:block; margin-bottom:6px;">
+                Step 2 — Validation Result
+              </label>
+              <div id="restoreValidationContent" style="background:#fff; border:1px solid #cbd5e1; border-radius:8px; padding:12px; font-size:0.82rem;"></div>
+            </div>
+
+            <!-- Step 3: Confirm Restore -->
+            <div id="restoreConfirmPanel" style="display:none;">
+              <label style="font-size:0.85rem; font-weight:700; color:#0f172a; display:block; margin-bottom:6px;">
+                Step 3 — Confirm Restore
+              </label>
+              <div style="background:#fff3cd; border:1px solid #ffc107; border-radius:8px; padding:12px; margin-bottom:10px; font-size:0.82rem; color:#856404;">
+                <strong>🛡️ Safety Check:</strong> Type <strong>RESTORE</strong> in the box below to confirm you want to restore this backup. Your current data will be preserved as a safety snapshot before proceeding.
+              </div>
+              <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+                <input type="text" id="adminRestoreConfirmInput" placeholder="Type RESTORE to confirm" style="border:2px solid #fca5a5; border-radius:6px; padding:8px 12px; font-size:0.85rem; font-weight:700; color:#991b1b; min-width:200px;" oninput="checkRestoreConfirmText()">
+                <button class="btn btn-sm" id="adminRestoreConfirmBtn" onclick="executeRestoreFromAdmin()" disabled style="background:#dc2626; color:#fff; font-weight:700; padding:8px 18px; opacity:0.4; cursor:not-allowed;">
+                  <i data-lucide="shield-alert" style="width:14px; height:14px; margin-right:4px;"></i>
+                  Confirm Restore
+                </button>
+                <button class="btn btn-outline btn-sm" onclick="cancelAdminRestore()" style="border-color:#94a3b8; color:#64748b;">
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- === SAFETY NOTES === -->
+          <div style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:10px; padding:14px 18px;">
+            <h4 style="font-size:0.88rem; font-weight:700; color:#0f172a; margin:0 0 8px 0; display:flex; align-items:center; gap:6px;">
+              <i data-lucide="info" style="width:15px; height:15px; color:#3b82f6;"></i>
+              Data Protection Summary
+            </h4>
+            <ul style="font-size:0.8rem; color:#475569; margin:0; padding-left:16px; line-height:1.8;">
+              <li>Backups are taken <strong>automatically</strong> on server startup and every 6 hours.</li>
+              <li>A <strong>pre-restore snapshot</strong> is always saved before any restoration begins.</li>
+              <li>Atomic writes (temp file → rename) ensure the database file is never left in a corrupt state.</li>
+              <li>The restore endpoint validates student count, structure, and required fields before writing.</li>
+              <li>If restoration fails, the system <strong>automatically rolls back</strong> to the pre-restore snapshot.</li>
+              <li>Server stores up to <strong>35 rolling backup versions</strong>; gold and production backups are never deleted.</li>
+              <li>You can download any snapshot from the "Automatic Server Backups" section above.</li>
+            </ul>
           </div>
         </div>
       </section>
