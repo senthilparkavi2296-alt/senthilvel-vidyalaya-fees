@@ -1228,41 +1228,51 @@
     </div>
   </div>
 
-  <!-- MODAL: DUAL WHATSAPP SENDER (ENGLISH & TAMIL SEPARATELY) -->
+  <!-- MODAL: DUAL WHATSAPP SENDER (ENGLISH & TAMIL SEPARATELY) - EDITABLE -->
   <div class="modal-overlay" id="waDualSendModal">
-    <div class="modal-box" style="max-width: 580px;">
+    <div class="modal-box" style="max-width: 620px;">
       <div class="modal-header">
         <h3 style="color:#166534; margin:0; font-size:1.1rem; display:flex; align-items:center; gap:8px;">
           <i data-lucide="message-circle" style="color:#25D366;"></i>
-          WhatsApp 2-Message Sender (Bilingual)
+          WhatsApp 2-Message Sender (Bilingual - Editable)
         </h3>
         <button class="close-btn" onclick="closeDualWaModal()">&times;</button>
       </div>
       <div class="modal-body">
-        <div style="background:#f0fdf4; border:1px solid #bbf7d0; border-radius:8px; padding:10px 14px; margin-bottom:14px; display:flex; justify-content:space-between; align-items:center;">
+        <div style="background:#f0fdf4; border:1px solid #bbf7d0; border-radius:8px; padding:10px 14px; margin-bottom:12px; display:flex; justify-content:space-between; align-items:center;">
           <div>
             <strong id="dualWaStudentName" style="color:#166534; font-size:0.95rem;">Student Name</strong>
             <div id="dualWaStudentMeta" style="font-size:0.8rem; color:#475569;">Class - | Roll No: -</div>
           </div>
           <div style="text-align:right;">
-            <div id="dualWaContact" style="font-size:0.85rem; font-weight:700; color:#1e3a8a;">-</div>
-            <span id="dualWaStatusBadge" class="badge badge-unpaid">Pending</span>
+            <div style="display:flex; align-items:center; gap:6px; justify-content:flex-end;">
+              <span style="font-size:0.75rem; color:#475569; font-weight:600;">Phone:</span>
+              <input type="text" id="dualWaContactInput" style="font-size:0.85rem; font-weight:700; color:#1e3a8a; border:1px solid #94a3b8; border-radius:4px; padding:3px 8px; width:140px; text-align:right;" title="Edit recipient WhatsApp phone number">
+            </div>
+            <div style="margin-top:4px;">
+              <span id="dualWaStatusBadge" class="badge badge-unpaid">Pending</span>
+            </div>
           </div>
         </div>
 
-        <p style="font-size:0.82rem; color:#475569; margin-bottom:12px; background:#eff6ff; padding:8px 12px; border-radius:6px; border-left:3px solid #3b82f6; line-height:1.4;">
-          Both <strong>English</strong> and <strong>Tamil</strong> messages are sent separately in clean typography without emojis or symbols that cause question marks.
-        </p>
+        <div style="font-size:0.82rem; color:#1e293b; margin-bottom:12px; background:#eff6ff; padding:8px 12px; border-radius:6px; border-left:3px solid #3b82f6; display:flex; justify-content:space-between; align-items:center;">
+          <span><strong>✏️ Editable Message:</strong> You can edit the text directly in either box below, add custom notes or instructions, and change the phone number before sending.</span>
+          <span style="font-size:0.75rem; color:#16a34a; font-weight:700; background:#dcfce7; padding:2px 8px; border-radius:4px; white-space:nowrap; margin-left:8px;">Live Edit Mode</span>
+        </div>
 
         <div style="display:flex; flex-direction:column; gap:12px;">
-          <!-- Card 1: English Message -->
+          <!-- Card 1: English Message (Editable) -->
           <div style="border:1px solid #cbd5e1; border-radius:8px; padding:12px; background:#ffffff;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
               <strong style="color:#0f172a; font-size:0.88rem; display:flex; align-items:center; gap:6px;">
                 <span style="background:#1e3a8a; color:#fff; border-radius:50%; width:20px; height:20px; display:inline-flex; align-items:center; justify-content:center; font-size:0.75rem;">1</span>
                 Message 1: English Format
+                <span style="font-size:0.7rem; color:#16a34a; background:#f0fdf4; border:1px solid #bbf7d0; padding:1px 5px; border-radius:4px; font-weight:600;">✏️ Editable</span>
               </strong>
               <div style="display:flex; gap:6px;">
+                <button class="btn btn-outline btn-sm" onclick="resetDualWaMsg('eng')" style="padding:4px 8px; font-size:0.75rem;" title="Reset back to default template">
+                  Reset
+                </button>
                 <button class="btn btn-outline btn-sm" onclick="copyDualWaMsg('eng')" style="padding:4px 8px; font-size:0.78rem;">
                   <i data-lucide="copy" style="width:12px; height:12px;"></i> Copy
                 </button>
@@ -1271,17 +1281,21 @@
                 </button>
               </div>
             </div>
-            <pre id="dualWaEngText" style="background:#f8fafc; padding:10px; border-radius:6px; font-family:monospace; font-size:0.74rem; max-height:115px; overflow-y:auto; white-space:pre-wrap; color:#1e293b; border:1px solid #e2e8f0; margin:0;"></pre>
+            <textarea id="dualWaEngText" class="form-control" rows="8" style="background:#f8fafc; padding:10px; border-radius:6px; font-family:monospace; font-size:0.8rem; width:100%; resize:vertical; color:#0f172a; border:1px solid #cbd5e1; line-height:1.45;" placeholder="Edit English message before sending..."></textarea>
           </div>
 
-          <!-- Card 2: Tamil Message -->
+          <!-- Card 2: Tamil Message (Editable) -->
           <div style="border:1px solid #cbd5e1; border-radius:8px; padding:12px; background:#ffffff;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
               <strong style="color:#0f172a; font-size:0.88rem; display:flex; align-items:center; gap:6px;">
                 <span style="background:#b45309; color:#fff; border-radius:50%; width:20px; height:20px; display:inline-flex; align-items:center; justify-content:center; font-size:0.75rem;">2</span>
                 Message 2: Tamil Format (தமிழ் வடிவம்)
+                <span style="font-size:0.7rem; color:#16a34a; background:#f0fdf4; border:1px solid #bbf7d0; padding:1px 5px; border-radius:4px; font-weight:600;">✏️ Editable</span>
               </strong>
               <div style="display:flex; gap:6px;">
+                <button class="btn btn-outline btn-sm" onclick="resetDualWaMsg('tam')" style="padding:4px 8px; font-size:0.75rem;" title="Reset back to default template">
+                  Reset
+                </button>
                 <button class="btn btn-outline btn-sm" onclick="copyDualWaMsg('tam')" style="padding:4px 8px; font-size:0.78rem;">
                   <i data-lucide="copy" style="width:12px; height:12px;"></i> Copy
                 </button>
@@ -1290,7 +1304,7 @@
                 </button>
               </div>
             </div>
-            <pre id="dualWaTamText" style="background:#f8fafc; padding:10px; border-radius:6px; font-family:monospace; font-size:0.74rem; max-height:115px; overflow-y:auto; white-space:pre-wrap; color:#1e293b; border:1px solid #e2e8f0; margin:0;"></pre>
+            <textarea id="dualWaTamText" class="form-control" rows="8" style="background:#f8fafc; padding:10px; border-radius:6px; font-family:monospace; font-size:0.8rem; width:100%; resize:vertical; color:#0f172a; border:1px solid #cbd5e1; line-height:1.45;" placeholder="Edit Tamil message before sending..."></textarea>
           </div>
         </div>
 
@@ -1307,30 +1321,84 @@
     </div>
   </div>
 
-  <!-- MODAL: WHATSAPP TEMPLATE PREVIEW -->
+  <!-- MODAL: EDITABLE RECEIPT WHATSAPP SENDER -->
+  <div class="modal-overlay" id="receiptWaModal">
+    <div class="modal-box" style="max-width: 600px;">
+      <div class="modal-header">
+        <h3 style="color:#166534; margin:0; font-size:1.1rem; display:flex; align-items:center; gap:8px;">
+          <i data-lucide="message-circle" style="color:#25D366;"></i>
+          Send Receipt via WhatsApp (Editable)
+        </h3>
+        <button class="close-btn" onclick="closeReceiptWaModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div style="background:#f0fdf4; border:1px solid #bbf7d0; border-radius:8px; padding:10px 14px; margin-bottom:12px; display:flex; justify-content:space-between; align-items:center;">
+          <div>
+            <strong id="receiptWaStudentName" style="color:#166534; font-size:0.95rem;">Student Name</strong>
+            <div id="receiptWaReceiptNo" style="font-size:0.8rem; color:#475569;">Receipt No: -</div>
+          </div>
+          <div style="display:flex; align-items:center; gap:6px;">
+            <span style="font-size:0.78rem; color:#475569; font-weight:600;">Phone:</span>
+            <input type="text" id="receiptWaPhoneInput" style="font-size:0.85rem; font-weight:700; color:#1e3a8a; border:1px solid #94a3b8; border-radius:4px; padding:3px 8px; width:140px; text-align:right;" title="Edit recipient WhatsApp phone number">
+          </div>
+        </div>
+        <div style="font-size:0.82rem; color:#1e293b; margin-bottom:10px; background:#eff6ff; padding:8px 12px; border-radius:6px; border-left:3px solid #3b82f6; display:flex; justify-content:space-between; align-items:center;">
+          <span><strong>✏️ Editable Format:</strong> You can edit the receipt text directly below before sending to the parent.</span>
+          <button class="btn btn-outline btn-sm" onclick="resetReceiptWaMsg()" style="padding:2px 8px; font-size:0.75rem;">Reset</button>
+        </div>
+        <textarea id="receiptWaMsgText" class="form-control" rows="12" style="background:#f8fafc; padding:12px; border-radius:6px; font-family:monospace; font-size:0.8rem; width:100%; resize:vertical; color:#0f172a; border:1px solid #cbd5e1; line-height:1.45;"></textarea>
+      </div>
+      <div class="modal-footer" style="display:flex; justify-content:space-between; align-items:center;">
+        <button class="btn btn-outline btn-sm" onclick="copyReceiptWaMsg()">
+          <i data-lucide="copy" style="width:12px; height:12px;"></i> Copy Text
+        </button>
+        <div style="display:flex; gap:8px;">
+          <button type="button" class="btn btn-secondary btn-sm" onclick="closeReceiptWaModal()">Cancel</button>
+          <button type="button" class="btn btn-sm" onclick="sendEditedReceiptWhatsApp()" style="background:#25D366; color:#fff; font-weight:700; padding:6px 16px;">
+            <i data-lucide="send" style="width:14px; height:14px;"></i> Open WhatsApp Now
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: WHATSAPP TEMPLATE PREVIEW & FORMAT EDITOR -->
   <div class="modal-overlay" id="waTemplateModal">
     <div class="modal-box" style="max-width: 650px;">
       <div class="modal-header">
-        <h3 style="color:#166534; margin:0; font-size:1.1rem;">Bilingual WhatsApp Messages Preview</h3>
+        <h3 style="color:#166534; margin:0; font-size:1.1rem; display:flex; align-items:center; gap:8px;">
+          <i data-lucide="file-text" style="color:#16a34a;"></i>
+          Bilingual WhatsApp Message Format (Preview &amp; Editable)
+        </h3>
         <button class="close-btn" onclick="closeWaTemplateModal()">&times;</button>
       </div>
       <div class="modal-body">
-        <p style="font-size:0.83rem; color:#64748b; margin-bottom:12px;">
-          Both messages are generated separately with clean text formatting without emojis that cause question marks:
-        </p>
+        <div style="font-size:0.83rem; color:#1e293b; margin-bottom:12px; background:#eff6ff; padding:8px 12px; border-radius:6px; border-left:3px solid #3b82f6;">
+          <strong>💡 Format Customizer:</strong> You can customize this template format below. Click <strong>Save Format</strong> to remember your customized layout across sessions.
+        </div>
         
-        <div style="display:flex; gap:8px; margin-bottom:10px;">
-          <button class="btn btn-sm btn-primary" id="waTabBtnEng" onclick="switchWaPreviewTab('eng')">Message 1: English Format</button>
-          <button class="btn btn-sm btn-secondary" id="waTabBtnTam" onclick="switchWaPreviewTab('tam')">Message 2: Tamil Format (தமிழ்)</button>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+          <div style="display:flex; gap:8px;">
+            <button class="btn btn-sm btn-primary" id="waTabBtnEng" onclick="switchWaPreviewTab('eng')">Message 1: English Format</button>
+            <button class="btn btn-sm btn-secondary" id="waTabBtnTam" onclick="switchWaPreviewTab('tam')">Message 2: Tamil Format (தமிழ்)</button>
+          </div>
+          <button class="btn btn-outline btn-sm" onclick="resetWaTemplateFormat()" style="padding:4px 8px; font-size:0.75rem;" title="Reset back to school default">
+            Reset to Default
+          </button>
         </div>
 
-        <pre id="waTemplatePreviewText" style="background:#f8fafc; padding:14px; border-radius:8px; font-family:monospace; font-size:0.78rem; white-space:pre-wrap; color:#0f172a; border:1px solid #cbd5e1; max-height:300px; overflow-y:auto;"></pre>
+        <textarea id="waTemplatePreviewText" class="form-control" rows="12" style="background:#f8fafc; padding:12px; border-radius:8px; font-family:monospace; font-size:0.8rem; width:100%; resize:vertical; color:#0f172a; border:1px solid #cbd5e1; line-height:1.45;"></textarea>
       </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" onclick="closeWaTemplateModal()">Close</button>
-        <button type="button" class="btn btn-outline" onclick="copyWaTemplateText()">
+      <div class="modal-footer" style="display:flex; justify-content:space-between; align-items:center;">
+        <button type="button" class="btn btn-outline btn-sm" onclick="copyWaTemplateText()">
           <i data-lucide="copy"></i> Copy Current View
         </button>
+        <div style="display:flex; gap:8px;">
+          <button type="button" class="btn btn-secondary btn-sm" onclick="closeWaTemplateModal()">Close</button>
+          <button type="button" class="btn btn-primary btn-sm" onclick="saveWaTemplateFormat()" style="background:#15803d; border-color:#15803d; font-weight:700;">
+            <i data-lucide="save"></i> Save Format
+          </button>
+        </div>
       </div>
     </div>
   </div>

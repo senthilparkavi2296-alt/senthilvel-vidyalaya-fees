@@ -2633,13 +2633,17 @@ function formatStudentWhatsAppMessage(student) {
 let activeDualWaSession = null;
 let activeWaPreviewTab = 'eng';
 let samplePreviewMessages = null;
+let activeReceiptWaData = null;
 
 function openDualWaModal(student, phone, engMsg, tamMsg) {
   activeDualWaSession = {
     student,
     phone,
+    originalPhone: phone,
     engMsg,
     tamMsg,
+    defaultEngMsg: engMsg,
+    defaultTamMsg: tamMsg,
     urlEng: `https://wa.me/${phone}?text=${encodeURIComponent(engMsg)}`,
     urlTam: `https://wa.me/${phone}?text=${encodeURIComponent(tamMsg)}`
   };
@@ -2648,17 +2652,17 @@ function openDualWaModal(student, phone, engMsg, tamMsg) {
   if (nameEl) nameEl.innerText = student.name;
   const metaEl = document.getElementById('dualWaStudentMeta');
   if (metaEl) metaEl.innerText = `Class: ${student.grade} (Sec ${student.section || 'A'}) | Roll No: ${student.rollNo || student.id}`;
-  const contactEl = document.getElementById('dualWaContact');
-  if (contactEl) contactEl.innerText = phone;
+  const phoneInput = document.getElementById('dualWaContactInput');
+  if (phoneInput) phoneInput.value = phone || '';
   const badgeEl = document.getElementById('dualWaStatusBadge');
   if (badgeEl) {
     badgeEl.innerText = (student.balanceDue || 0) > 0 ? `Due: ₹${Number(student.balanceDue || 0).toLocaleString('en-IN')}` : 'Paid';
     badgeEl.className = (student.balanceDue || 0) > 0 ? 'badge badge-unpaid' : 'badge badge-paid';
   }
   const engTextEl = document.getElementById('dualWaEngText');
-  if (engTextEl) engTextEl.innerText = engMsg;
+  if (engTextEl) engTextEl.value = engMsg;
   const tamTextEl = document.getElementById('dualWaTamText');
-  if (tamTextEl) tamTextEl.innerText = tamMsg;
+  if (tamTextEl) tamTextEl.value = tamMsg;
 
   const modal = document.getElementById('waDualSendModal');
   if (modal) {
@@ -2672,16 +2676,64 @@ function closeDualWaModal() {
   if (modal) modal.classList.remove('open');
 }
 
+function resetDualWaMsg(lang) {
+  if (!activeDualWaSession) return;
+  if (lang === 'eng') {
+    const el = document.getElementById('dualWaEngText');
+    if (el) el.value = activeDualWaSession.defaultEngMsg;
+    showToast("English message reset to default");
+  } else {
+    const el = document.getElementById('dualWaTamText');
+    if (el) el.value = activeDualWaSession.defaultTamMsg;
+    showToast("Tamil message reset to default");
+  }
+}
+
 function openDualWaWindow(lang) {
   if (!activeDualWaSession) return;
-  const url = lang === 'eng' ? activeDualWaSession.urlEng : activeDualWaSession.urlTam;
+  const phoneInput = document.getElementById('dualWaContactInput');
+  let rawPhone = phoneInput ? phoneInput.value.replace(/[^0-9]/g, '') : activeDualWaSession.phone;
+  if (!rawPhone || rawPhone.length < 10) {
+    showToast("Please enter a valid 10-digit phone number", true);
+    return;
+  }
+  const phone = rawPhone.length === 10 ? `91${rawPhone}` : rawPhone;
+
+  const textEl = lang === 'eng' ? document.getElementById('dualWaEngText') : document.getElementById('dualWaTamText');
+  const text = textEl ? textEl.value : (lang === 'eng' ? activeDualWaSession.engMsg : activeDualWaSession.tamMsg);
+
+  if (!text.trim()) {
+    showToast("Message text cannot be empty", true);
+    return;
+  }
+
+  // Auto-copy Tamil message so user can paste if needed
+  if (lang === 'tam' && navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).catch(() => {});
+  }
+
+  // Log in backend
+  fetch('/api/whatsapp/log', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      studentId: activeDualWaSession.student.id,
+      studentName: activeDualWaSession.student.name,
+      parentName: activeDualWaSession.student.parentName,
+      contact: phone,
+      amountDue: activeDualWaSession.student.balanceDue,
+      mode: `${lang === 'eng' ? 'English' : 'Tamil'} (Editable)`
+    })
+  }).catch(() => {});
+
+  const url = `https://wa.me/${phone}?text=${encodeURIComponent(text)}`;
   window.open(url, '_blank');
-  showToast(`WhatsApp ${lang === 'eng' ? 'English' : 'Tamil'} message opened`);
+  showToast(`WhatsApp ${lang === 'eng' ? 'English' : 'Tamil'} message opened!`);
 }
 
 function copyDualWaMsg(lang) {
-  if (!activeDualWaSession) return;
-  const text = lang === 'eng' ? activeDualWaSession.engMsg : activeDualWaSession.tamMsg;
+  const textEl = lang === 'eng' ? document.getElementById('dualWaEngText') : document.getElementById('dualWaTamText');
+  const text = textEl ? textEl.value : '';
   if (navigator.clipboard && navigator.clipboard.writeText) {
     navigator.clipboard.writeText(text).then(() => {
       showToast(`${lang === 'eng' ? 'English' : 'Tamil'} message copied!`);
@@ -2693,10 +2745,29 @@ function copyDualWaMsg(lang) {
 
 function triggerSendBothAtOnce() {
   if (!activeDualWaSession) return;
-  window.open(activeDualWaSession.urlEng, '_blank');
-  window.open(activeDualWaSession.urlTam, '_blank');
+  const phoneInput = document.getElementById('dualWaContactInput');
+  let rawPhone = phoneInput ? phoneInput.value.replace(/[^0-9]/g, '') : activeDualWaSession.phone;
+  if (!rawPhone || rawPhone.length < 10) {
+    showToast("Please enter a valid 10-digit phone number", true);
+    return;
+  }
+  const phone = rawPhone.length === 10 ? `91${rawPhone}` : rawPhone;
+
+  const engText = document.getElementById('dualWaEngText')?.value || activeDualWaSession.engMsg;
+  const tamText = document.getElementById('dualWaTamText')?.value || activeDualWaSession.tamMsg;
+
+  if (!engText.trim() || !tamText.trim()) {
+    showToast("Messages cannot be empty", true);
+    return;
+  }
+
+  const urlEng = `https://wa.me/${phone}?text=${encodeURIComponent(engText)}`;
+  const urlTam = `https://wa.me/${phone}?text=${encodeURIComponent(tamText)}`;
+
+  window.open(urlEng, '_blank');
+  window.open(urlTam, '_blank');
   if (navigator.clipboard && navigator.clipboard.writeText) {
-    navigator.clipboard.writeText(activeDualWaSession.tamMsg).catch(() => {});
+    navigator.clipboard.writeText(tamText).catch(() => {});
   }
   showToast("Both English and Tamil messages opened in WhatsApp!");
 }
@@ -2709,44 +2780,13 @@ function sendSingleWhatsAppReminder(studentId) {
   }
 
   const rawPhone = String(student.contact || '').replace(/[^0-9]/g, '');
-  if (!rawPhone || rawPhone.length < 10) {
-    showToast(`Invalid contact number for ${student.name}`, true);
-    return;
-  }
-  const phone = rawPhone.length === 10 ? `91${rawPhone}` : rawPhone;
+  const phone = rawPhone.length === 10 ? `91${rawPhone}` : (rawPhone || '');
 
   const { engMsg, tamMsg } = formatStudentWhatsAppMessages(student);
-  const urlEng = `https://wa.me/${phone}?text=${encodeURIComponent(engMsg)}`;
-  const urlTam = `https://wa.me/${phone}?text=${encodeURIComponent(tamMsg)}`;
 
-  // Log in backend
-  fetch('/api/whatsapp/log', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      studentId: student.id,
-      studentName: student.name,
-      parentName: student.parentName,
-      contact: student.contact,
-      amountDue: student.balanceDue,
-      mode: "Bilingual (Eng + Tamil Separately)"
-    })
-  }).catch(() => {});
-
-  // 1. Open English Message in WhatsApp
-  window.open(urlEng, '_blank');
-
-  // 2. Open Tamil Message in second tab
-  window.open(urlTam, '_blank');
-
-  // 3. Auto-copy Tamil message so user can instantly paste (Ctrl+V) in WhatsApp
-  if (navigator.clipboard && navigator.clipboard.writeText) {
-    navigator.clipboard.writeText(tamMsg).catch(() => {});
-  }
-
-  // 4. Open Dual Sender Modal on screen
+  // Open the Dual WhatsApp Modal so the user can review and edit before sending!
   openDualWaModal(student, phone, engMsg, tamMsg);
-  showToast(`WhatsApp reminder opened for ${student.parentName || student.name}`);
+  showToast(`Review & edit WhatsApp message for ${student.name}`);
 }
 
 function sendCurrentReceiptWhatsApp() {
@@ -2762,11 +2802,7 @@ function sendCurrentReceiptWhatsApp() {
   const schoolPhone = schoolInfo.phone || "9789277169, 9445987169";
 
   const rawPhone = String(s?.contact || '').replace(/[^0-9]/g, '');
-  if (!rawPhone || rawPhone.length < 10) {
-    showToast("Parent contact number missing or invalid", true);
-    return;
-  }
-  const phone = rawPhone.length === 10 ? `91${rawPhone}` : rawPhone;
+  const phone = rawPhone.length === 10 ? `91${rawPhone}` : (rawPhone || '');
 
   const monthLine = p.transportMonth ? `\nFee Month: *${p.transportMonth}*` : '';
 
@@ -2800,24 +2836,82 @@ Term / Component: ${p.term || 'Fee Payment'}${monthLine}
 Thank you for your payment!
 - Accounts Office, Senthilvel Vidyalaya School`;
 
-  const url = `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
+  activeReceiptWaData = {
+    p, s, phone, defaultMsg: msg
+  };
+
+  const nameEl = document.getElementById('receiptWaStudentName');
+  if (nameEl) nameEl.innerText = `${p.studentName} (${p.grade})`;
+  const rcptEl = document.getElementById('receiptWaReceiptNo');
+  if (rcptEl) rcptEl.innerText = `Receipt No: ${p.receiptNo} | Amount: ₹${Number(p.amount).toLocaleString('en-IN')}`;
+  const phoneEl = document.getElementById('receiptWaPhoneInput');
+  if (phoneEl) phoneEl.value = phone;
+  const msgEl = document.getElementById('receiptWaMsgText');
+  if (msgEl) msgEl.value = msg;
+
+  const modal = document.getElementById('receiptWaModal');
+  if (modal) {
+    modal.classList.add('open');
+    initIcons();
+  }
+}
+
+function closeReceiptWaModal() {
+  const modal = document.getElementById('receiptWaModal');
+  if (modal) modal.classList.remove('open');
+}
+
+function resetReceiptWaMsg() {
+  if (!activeReceiptWaData) return;
+  const msgEl = document.getElementById('receiptWaMsgText');
+  if (msgEl) msgEl.value = activeReceiptWaData.defaultMsg;
+  showToast("Receipt message reset to default");
+}
+
+function copyReceiptWaMsg() {
+  const text = document.getElementById('receiptWaMsgText')?.value || '';
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(() => {
+      showToast("Receipt text copied!");
+    }).catch(() => {
+      showToast("Could not copy text", true);
+    });
+  }
+}
+
+function sendEditedReceiptWhatsApp() {
+  if (!activeReceiptWaData) return;
+  const phoneInput = document.getElementById('receiptWaPhoneInput');
+  let rawPhone = phoneInput ? phoneInput.value.replace(/[^0-9]/g, '') : activeReceiptWaData.phone;
+  if (!rawPhone || rawPhone.length < 10) {
+    showToast("Please enter a valid 10-digit contact number", true);
+    return;
+  }
+  const phone = rawPhone.length === 10 ? `91${rawPhone}` : rawPhone;
+
+  const msg = document.getElementById('receiptWaMsgText')?.value || '';
+  if (!msg.trim()) {
+    showToast("Message text cannot be empty", true);
+    return;
+  }
 
   // Log in backend
   fetch('/api/whatsapp/log', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      studentId: p.studentId,
-      studentName: p.studentName,
-      parentName: s?.parentName,
-      contact: s?.contact,
-      amountDue: s?.balanceDue,
-      mode: "Receipt & Due Notice"
+      studentId: activeReceiptWaData.p.studentId,
+      studentName: activeReceiptWaData.p.studentName,
+      parentName: activeReceiptWaData.s?.parentName,
+      contact: phone,
+      amountDue: activeReceiptWaData.s?.balanceDue,
+      mode: "Receipt & Due Notice (Edited)"
     })
   }).catch(() => {});
 
+  const url = `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
   window.open(url, '_blank');
-  showToast("WhatsApp receipt opened for parent");
+  showToast("WhatsApp receipt opened for parent!");
 }
 
 async function openBulkWhatsAppModal() {
@@ -2995,23 +3089,45 @@ function renderWaPreviewContent() {
   const btnTam = document.getElementById('waTabBtnTam');
   const previewEl = document.getElementById('waTemplatePreviewText');
 
+  const customEng = localStorage.getItem('sv_custom_wa_eng_template');
+  const customTam = localStorage.getItem('sv_custom_wa_tam_template');
+
   if (activeWaPreviewTab === 'eng') {
-    if (btnEng) {
-      btnEng.className = 'btn btn-sm btn-primary';
-    }
-    if (btnTam) {
-      btnTam.className = 'btn btn-sm btn-secondary';
-    }
-    if (previewEl) previewEl.innerText = samplePreviewMessages.engMsg;
+    if (btnEng) btnEng.className = 'btn btn-sm btn-primary';
+    if (btnTam) btnTam.className = 'btn btn-sm btn-secondary';
+    if (previewEl) previewEl.value = customEng || samplePreviewMessages.engMsg;
   } else {
-    if (btnEng) {
-      btnEng.className = 'btn btn-sm btn-secondary';
-    }
-    if (btnTam) {
-      btnTam.className = 'btn btn-sm btn-primary';
-    }
-    if (previewEl) previewEl.innerText = samplePreviewMessages.tamMsg;
+    if (btnEng) btnEng.className = 'btn btn-sm btn-secondary';
+    if (btnTam) btnTam.className = 'btn btn-sm btn-primary';
+    if (previewEl) previewEl.value = customTam || samplePreviewMessages.tamMsg;
   }
+}
+
+function saveWaTemplateFormat() {
+  const previewEl = document.getElementById('waTemplatePreviewText');
+  if (!previewEl || !previewEl.value.trim()) {
+    showToast("Template format cannot be empty", true);
+    return;
+  }
+
+  if (activeWaPreviewTab === 'eng') {
+    localStorage.setItem('sv_custom_wa_eng_template', previewEl.value);
+    showToast("Custom English WhatsApp format saved successfully!");
+  } else {
+    localStorage.setItem('sv_custom_wa_tam_template', previewEl.value);
+    showToast("Custom Tamil WhatsApp format saved successfully!");
+  }
+}
+
+function resetWaTemplateFormat() {
+  if (activeWaPreviewTab === 'eng') {
+    localStorage.removeItem('sv_custom_wa_eng_template');
+    showToast("English format reset to school default");
+  } else {
+    localStorage.removeItem('sv_custom_wa_tam_template');
+    showToast("Tamil format reset to school default");
+  }
+  renderWaPreviewContent();
 }
 
 function closeWaTemplateModal() {
@@ -3019,13 +3135,15 @@ function closeWaTemplateModal() {
 }
 
 function copyWaTemplateText() {
-  if (!samplePreviewMessages) return;
-  const text = activeWaPreviewTab === 'eng' ? samplePreviewMessages.engMsg : samplePreviewMessages.tamMsg;
-  navigator.clipboard.writeText(text).then(() => {
-    showToast(`Template (${activeWaPreviewTab === 'eng' ? 'English' : 'Tamil'}) copied!`);
-  }).catch(() => {
-    showToast("Could not copy text", true);
-  });
+  const previewEl = document.getElementById('waTemplatePreviewText');
+  const text = previewEl ? previewEl.value : '';
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(() => {
+      showToast(`Template (${activeWaPreviewTab === 'eng' ? 'English' : 'Tamil'}) copied!`);
+    }).catch(() => {
+      showToast("Could not copy text", true);
+    });
+  }
 }
 
 // ==========================================
