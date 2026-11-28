@@ -3648,9 +3648,14 @@ function updateClassDuesPrintReport() {
 
     container.innerHTML = `
       <div class="report-header-print">
-        <h2 class="report-school-title">${schoolName}</h2>
-        <p class="report-school-sub">${schoolAddr} | Ph: ${schoolPhone}</p>
-        <div class="report-doc-title" style="background:#f0fdf4; color:#15803d; border-color:#bbf7d0;">
+        <div style="display:flex; justify-content:center; align-items:center; gap:12px; margin-bottom:6px;">
+          <img src="/school-logo.jpg" alt="Senthilvel Vidyalaya Logo" style="width:52px; height:52px; border-radius:50%; object-fit:contain; border:1px solid #cbd5e1; padding:2px; background:#fff;">
+          <div>
+            <h2 class="report-school-title" style="margin:0;">${schoolName}</h2>
+            <p class="report-school-sub" style="margin:2px 0 0 0;">${schoolAddr} | Ph: ${schoolPhone}</p>
+          </div>
+        </div>
+        <div class="report-doc-title" style="background:#f0fdf4; color:#15803d; border-color:#bbf7d0; margin-top:4px;">
           ${classTitle} — CLASS TEACHER'S FEE FOLLOW-UP STATEMENT
         </div>
         <div style="font-size:0.78rem; color:#475569; margin-top:4px;">
@@ -3779,9 +3784,14 @@ function updateClassDuesPrintReport() {
 
   container.innerHTML = `
     <div class="report-header-print">
-      <h2 class="report-school-title">${schoolName}</h2>
-      <p class="report-school-sub">${schoolAddr} | Ph: ${schoolPhone}</p>
-      <div class="report-doc-title">
+      <div style="display:flex; justify-content:center; align-items:center; gap:12px; margin-bottom:6px;">
+        <img src="/school-logo.jpg" alt="Senthilvel Vidyalaya Logo" style="width:52px; height:52px; border-radius:50%; object-fit:contain; border:1px solid #cbd5e1; padding:2px; background:#fff;">
+        <div>
+          <h2 class="report-school-title" style="margin:0;">${schoolName}</h2>
+          <p class="report-school-sub" style="margin:2px 0 0 0;">${schoolAddr} | Ph: ${schoolPhone}</p>
+        </div>
+      </div>
+      <div class="report-doc-title" style="margin-top:4px;">
         ${classTitle} — OFFICIAL FEE DUE &amp; DEFAULTER STATEMENT
       </div>
       <div style="font-size:0.78rem; color:#475569; margin-top:4px;">
