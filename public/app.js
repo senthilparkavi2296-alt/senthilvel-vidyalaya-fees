@@ -132,7 +132,21 @@ function switchTab(tabId) {
     renderSchoolFeesTab();
   }
 
+  applySavedHeadings();
   initIcons();
+}
+
+let savedTableHeadings = {};
+
+async function fetchTableHeadings() {
+  try {
+    const res = await fetch('/api/table-headings');
+    if (res.ok) {
+      savedTableHeadings = await res.json();
+    }
+  } catch (e) {
+    console.error("Error fetching table headings:", e);
+  }
 }
 
 // Data Fetching
@@ -143,13 +157,15 @@ async function loadAllData() {
       fetchStudents(),
       fetchFeeStructure(),
       fetchTransportAreas(),
-      fetchPayments()
+      fetchPayments(),
+      fetchTableHeadings()
     ]);
     populateStudentSelect();
     populateStudentModalBoardingAreas();
     renderDefaulters();
     renderVanFeesTab();
     updateDashboardVanStats();
+    applySavedHeadings();
     checkAndMaintainLocalVault();
     initIcons();
   } catch (err) {
@@ -289,24 +305,24 @@ function renderStudentsTable(students) {
         <strong style="color:#0f172a;">${s.name}</strong>
         ${s.nameTamil ? `<div style="font-size:0.75rem; color:#64748b; font-weight:500;">${s.nameTamil}</div>` : ''}
       </td>
-      <td><span class="grade-pill">${s.grade}</span> Sec ${s.section || 'A'}</td>
+      <td ondblclick="startInlineCellEdit(this, '${s.id}', 'gradeSection', 'directory')" title="Double-click to edit Class & Section" style="cursor:pointer;"><span class="grade-pill">${s.grade}</span> Sec ${s.section || 'A'}</td>
       <td>
         <div ondblclick="startInlineCellEdit(this.parentElement, '${s.id}', 'parentName', 'directory')" title="Double-click to edit Parent Name" style="cursor:pointer;">${s.parentName || '-'}</div>
         <div ondblclick="event.stopPropagation(); startInlineCellEdit(this.parentElement, '${s.id}', 'contact', 'directory')" title="Double-click to edit Phone" style="font-size:0.78rem; color:#64748b; cursor:pointer;">${s.contact || '-'}</div>
       </td>
       <td ondblclick="startInlineCellEdit(this, '${s.id}', 'schoolFee', 'directory')" title="Double-click to edit School Fee" style="cursor:pointer;">${schoolFeeDisplay}</td>
-      <td>
+      <td ondblclick="startInlineCellEdit(this, '${s.id}', 'transportFee', 'directory')" title="Double-click to edit Transport Fee" style="cursor:pointer;">
         ${hasBus 
           ? `<div style="line-height:1.25;">
                <span class="badge" style="background:#fef3c7; color:#92400e; font-weight:700; white-space:nowrap;">
                  <i data-lucide="bus" style="width:12px; height:12px; margin-right:4px; display:inline;"></i>₹${Number(s.transportFee).toLocaleString('en-IN')}
                </span>
-               <div style="font-size:0.75rem; color:#1e3a8a; font-weight:600; margin-top:2px;">${s.boardingArea || 'Bus Route'}</div>
+               <div ondblclick="event.stopPropagation(); startInlineCellEdit(this.closest('td'), '${s.id}', 'boardingArea', 'directory')" title="Double-click to edit Boarding Area" style="font-size:0.75rem; color:#1e3a8a; font-weight:600; margin-top:2px; cursor:pointer;">${s.boardingArea || 'Bus Route'}</div>
                <div style="font-size:0.7rem; color:#64748b;">${s.transportType === 'Monthly' ? `(Monthly: ₹${s.transportMonthlyFee || Math.round(s.transportFee / 10)}/mo)` : '(Yearly Pass)'}</div>
              </div>` 
           : `<span style="color:#94a3b8; font-size:0.8rem;">Self Commute</span>`}
       </td>
-      <td><strong>₹${s.netPayable.toLocaleString('en-IN')}</strong></td>
+      <td ondblclick="startInlineCellEdit(this, '${s.id}', 'schoolFee', 'directory')" title="Double-click to edit School Fee" style="cursor:pointer;"><strong>₹${s.netPayable.toLocaleString('en-IN')}</strong></td>
       <td id="dirPaidCell-${s.id}">
         <div id="dirPaidView-${s.id}" onclick="startInlinePaidEdit('${s.id}')" title="Click to edit Paid amount directly" style="display:inline-flex; align-items:center; gap:5px; cursor:pointer; padding:2px 6px; border-radius:4px; border:1px dashed transparent; transition:border-color 0.15s;" onmouseover="this.style.borderColor='#86efac'; this.style.background='#f0fdf4';" onmouseout="this.style.borderColor='transparent'; this.style.background='transparent';">
           <strong style="color:#059669; font-size:0.92rem;">₹${s.totalPaid.toLocaleString('en-IN')}</strong>
@@ -319,7 +335,7 @@ function renderStudentsTable(students) {
         </div>
         ${s.hasCustomPaid ? `<span style="font-size:0.68rem; color:#b45309; font-weight:600; display:block;">(Adjusted)</span>` : ''}
       </td>
-      <td style="color:#ef4444; font-weight:700;">₹${s.balanceDue.toLocaleString('en-IN')}</td>
+      <td ondblclick="startInlinePaidEdit('${s.id}')" style="color:#ef4444; font-weight:700; cursor:pointer;" title="Double-click to adjust Paid / Due">₹${s.balanceDue.toLocaleString('en-IN')}</td>
       <td><span class="badge ${badgeClass}">${s.status}</span></td>
       <td>
         <div style="display:flex; gap:6px;">
@@ -1444,6 +1460,20 @@ function startInlineCellEdit(td, studentId, field, source) {
     currentVal = Number(student.totalPaid || 0);
     inputType = 'number';
     width = '90px';
+  } else if (field === 'gradeSection') {
+    currentVal = `${student.grade || 'LKG'} - ${student.section || 'A'}`;
+    width = '115px';
+  } else if (field === 'boardingArea') {
+    currentVal = student.boardingArea || '';
+    width = '130px';
+  } else if (field === 'transportMonthlyFee') {
+    currentVal = Number(student.transportMonthlyFee || 0);
+    inputType = 'number';
+    width = '80px';
+  } else if (field === 'transportFee') {
+    currentVal = Number(student.transportFee || 0);
+    inputType = 'number';
+    width = '90px';
   }
 
   const escapedVal = String(currentVal).replace(/"/g, '&quot;');
@@ -1517,6 +1547,35 @@ async function saveInlineCellEdit(el, studentId, field, source) {
     }
     const ledgerSum = Number(student.paymentSum !== undefined ? student.paymentSum : 0);
     payload.customPaidAmount = (valStr === '' || num === ledgerSum) ? null : num;
+  } else if (field === 'gradeSection') {
+    if (!valStr) {
+      showToast("Class cannot be empty", true);
+      return;
+    }
+    const parts = valStr.split('-').map(p => p.trim());
+    payload.grade = parts[0] || student.grade;
+    if (parts[1]) {
+      payload.section = parts[1].replace(/^Sec\s*/i, '').trim() || 'A';
+    }
+  } else if (field === 'boardingArea') {
+    payload.boardingArea = valStr || 'School Van Route';
+  } else if (field === 'transportMonthlyFee') {
+    const num = Number(valStr);
+    if (valStr === '' || isNaN(num) || num < 0) {
+      showToast("Please enter a valid monthly van fee", true);
+      return;
+    }
+    payload.transportMonthlyFee = num;
+    payload.transportFee = num > 0 ? num * 11 : 0;
+    payload.transportOpted = true;
+  } else if (field === 'transportFee') {
+    const num = Number(valStr);
+    if (valStr === '' || isNaN(num) || num < 0) {
+      showToast("Please enter a valid annual van fee", true);
+      return;
+    }
+    payload.transportFee = num;
+    payload.transportOpted = num > 0 || Boolean(student.transportOpted);
   }
 
   try {
@@ -1531,6 +1590,9 @@ async function saveInlineCellEdit(el, studentId, field, source) {
       await loadAllData();
       if (source === 'schoolfees') {
         renderSchoolFeesTab();
+      } else if (source === 'vanregister') {
+        if (typeof filterVanRegister === 'function') filterVanRegister();
+        else renderVanFeesTab();
       } else if (typeof filterStudents === 'function') {
         filterStudents();
       } else {
@@ -2031,7 +2093,7 @@ function renderSchoolFeesTab() {
             <td ondblclick="startInlineCellEdit(this, '${s.id}', 'contact', 'schoolfees')" title="Double-click to edit Phone" style="color:#1e3a8a; font-weight:600; white-space:nowrap; cursor:pointer;">${s.contact || '-'}</td>
             <td ondblclick="startInlineCellEdit(this, '${s.id}', 'schoolFee', 'schoolfees')" title="Double-click to edit School Fee" style="text-align:right; font-weight:700; cursor:pointer;">₹${sFee.toLocaleString('en-IN')}${feeNote}</td>
             <td ondblclick="startInlineCellEdit(this, '${s.id}', 'schoolPaid', 'schoolfees')" title="Double-click to edit Paid Amount" style="text-align:right; color:#059669; font-weight:600; cursor:pointer;">₹${sPaid.toLocaleString('en-IN')}</td>
-            <td style="text-align:right; color:#ef4444; font-weight:700;">₹${sDue.toLocaleString('en-IN')}</td>
+            <td ondblclick="startInlineCellEdit(this, '${s.id}', 'schoolPaid', 'schoolfees')" title="Double-click to adjust Paid / Due" style="text-align:right; color:#ef4444; font-weight:700; cursor:pointer;">₹${sDue.toLocaleString('en-IN')}</td>
             <td style="text-align:center;">${statusBadge}</td>
             <td style="text-align:center;">
               <div style="display:flex; gap:4px; justify-content:center;">
@@ -2109,19 +2171,19 @@ function renderSchoolFeesTab() {
         </div>
         <div class="sf-accordion-body" ${!isOpen ? 'style="display:none;"' : ''}>
           <div class="table-responsive">
-            <table class="custom-table">
+            <table class="custom-table" id="sfTable-${grade.replace(/\s+/g, '')}">
               <thead>
                 <tr>
-                  <th style="width:30px; text-align:center;">#</th>
-                  <th style="width:75px;">Roll No</th>
-                  <th style="min-width:130px;">Student Name</th>
-                  <th style="min-width:110px;">Parent Name</th>
-                  <th style="width:100px;">Phone</th>
-                  <th style="width:110px; text-align:right;">School Fee</th>
-                  <th style="width:90px; text-align:right;">Paid</th>
-                  <th style="width:90px; text-align:right;">Due</th>
-                  <th style="width:75px; text-align:center;">Status</th>
-                  <th style="width:130px; text-align:center;">Actions</th>
+                  <th data-heading-key="schoolfees__th_0" style="width:30px; text-align:center;">#</th>
+                  <th data-heading-key="schoolfees__th_1" style="width:75px;">Roll No</th>
+                  <th data-heading-key="schoolfees__th_2" style="min-width:130px;">Student Name</th>
+                  <th data-heading-key="schoolfees__th_3" style="min-width:110px;">Parent Name</th>
+                  <th data-heading-key="schoolfees__th_4" style="width:100px;">Phone</th>
+                  <th data-heading-key="schoolfees__th_5" style="width:110px; text-align:right;">School Fee</th>
+                  <th data-heading-key="schoolfees__th_6" style="width:90px; text-align:right;">Paid</th>
+                  <th data-heading-key="schoolfees__th_7" style="width:90px; text-align:right;">Due</th>
+                  <th data-heading-key="schoolfees__th_8" style="width:75px; text-align:center;">Status</th>
+                  <th data-heading-key="schoolfees__th_9" style="width:130px; text-align:center;">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -2150,6 +2212,7 @@ function renderSchoolFeesTab() {
   }
 
   container.innerHTML = html;
+  applySavedHeadings();
   initIcons();
 
   // Toggle accordion on click (only when clicking the header itself, not buttons/inputs inside)
@@ -3102,20 +3165,20 @@ function renderVanRegisterTable(students) {
     });
 
     tr.innerHTML = `
-      <td>
+      <td ondblclick="startInlineCellEdit(this, '${s.id}', 'rollNo', 'vanregister')" title="Double-click to edit Roll No" style="cursor:pointer;">
         <strong style="color:#1e3a8a;">${s.rollNo}</strong>
       </td>
       <td>
-        <div style="font-weight:700; color:#0f172a;">${s.name}</div>
-        <div style="font-size:0.72rem; color:#64748b;">${s.boardingArea || 'School Van Route'}</div>
+        <div ondblclick="startInlineCellEdit(this.parentElement, '${s.id}', 'name', 'vanregister')" title="Double-click to edit Student Name" style="font-weight:700; color:#0f172a; cursor:pointer;">${s.name}</div>
+        <div ondblclick="event.stopPropagation(); startInlineCellEdit(this.parentElement, '${s.id}', 'boardingArea', 'vanregister')" title="Double-click to edit Van Route / Boarding Area" style="font-size:0.72rem; color:#64748b; cursor:pointer;">${s.boardingArea || 'School Van Route'}</div>
       </td>
-      <td>
+      <td ondblclick="startInlineCellEdit(this, '${s.id}', 'gradeSection', 'vanregister')" title="Double-click to edit Class & Section" style="cursor:pointer;">
         <span class="grade-pill">${s.grade}</span> Sec ${s.section || 'A'}
       </td>
-      <td style="font-weight:700; color:#0f172a;">
+      <td ondblclick="startInlineCellEdit(this, '${s.id}', 'transportMonthlyFee', 'vanregister')" title="Double-click to edit Monthly Van Rate" style="font-weight:700; color:#0f172a; cursor:pointer;">
         ₹${van.monthlyRate}
       </td>
-      <td style="font-weight:600; color:#475569;">
+      <td ondblclick="startInlineCellEdit(this, '${s.id}', 'transportFee', 'vanregister')" title="Double-click to edit Annual Van Fee" style="font-weight:600; color:#475569; cursor:pointer;">
         ₹${van.annualVanFee.toLocaleString('en-IN')}
       </td>
       ${monthCellsHtml}
@@ -4166,18 +4229,140 @@ async function handleDbRestoreFile(event) {
 }
 
 // -------------------------------------------------------------
+// Universal Double-Click Editable Table & Section Headings
+// -------------------------------------------------------------
+function applySavedHeadings() {
+  document.querySelectorAll('table').forEach((tbl, tIdx) => {
+    const tblKey = tbl.id || tbl.closest('.tab-pane')?.id || `tbl-${tIdx}`;
+    tbl.querySelectorAll('thead th').forEach((th, cIdx) => {
+      if (th.dataset.editingHeading === 'true') return;
+      const key = th.dataset.headingKey || `${tblKey}__th_${cIdx}`;
+      th.dataset.headingKey = key;
+      if (!th.dataset.defaultHeadingText) {
+        th.dataset.defaultHeadingText = th.innerText.trim();
+      }
+      if (savedTableHeadings && savedTableHeadings[key]) {
+        th.innerText = savedTableHeadings[key];
+      }
+      th.style.cursor = 'pointer';
+      if (!th.title) {
+        th.title = 'Double-click to edit column heading';
+      }
+      th.ondblclick = function (e) {
+        e.stopPropagation();
+        startInlineHeadingEdit(th, key);
+      };
+    });
+  });
+
+  document.querySelectorAll('.card-header h3, #pageTitle').forEach((el, idx) => {
+    if (el.dataset.editingHeading === 'true') return;
+    const key = el.id ? `h__${el.id}` : `h__${el.closest('.tab-pane')?.id || 'main'}_${idx}`;
+    el.dataset.headingKey = key;
+    if (savedTableHeadings && savedTableHeadings[key]) {
+      el.innerText = savedTableHeadings[key];
+    }
+    el.style.cursor = 'pointer';
+    el.title = 'Double-click to edit heading';
+    el.ondblclick = function (e) {
+      e.stopPropagation();
+      startInlineHeadingEdit(el, key);
+    };
+  });
+}
+
+function startInlineHeadingEdit(el, key) {
+  if (!el || el.dataset.editingHeading === 'true') return;
+  el.dataset.editingHeading = 'true';
+  el.dataset.origHtml = el.innerHTML;
+  const currentText = el.innerText.trim();
+  const escaped = currentText.replace(/"/g, '&quot;');
+
+  el.innerHTML = `
+    <span style="display:inline-flex; align-items:center; gap:3px;" onclick="event.stopPropagation()">
+      <input type="text" class="inline-heading-input" value="${escaped}"
+        style="min-width:85px; max-width:220px; padding:2px 5px; font-size:0.82rem; font-weight:700; border:1.5px solid #2563eb; border-radius:4px; color:#0f172a; background:#fff;"
+        onkeydown="if(event.key==='Enter'){event.preventDefault();saveInlineHeadingEdit(this,'${key}');}else if(event.key==='Escape'){cancelInlineHeadingEdit(this);}">
+      <button type="button" class="btn btn-sm" onclick="saveInlineHeadingEdit(this,'${key}')" style="background:#16a34a; color:#fff; padding:1px 6px; font-size:0.7rem; font-weight:700;">✓</button>
+      <button type="button" class="btn btn-sm" onclick="cancelInlineHeadingEdit(this)" style="background:#94a3b8; color:#fff; padding:1px 6px; font-size:0.7rem;">✕</button>
+    </span>
+  `;
+
+  const inp = el.querySelector('.inline-heading-input');
+  if (inp) {
+    inp.focus();
+    inp.select();
+  }
+}
+
+function cancelInlineHeadingEdit(btnOrInp) {
+  const el = btnOrInp.closest('[data-editing-heading="true"]');
+  if (!el) return;
+  if (el.dataset.origHtml !== undefined) {
+    el.innerHTML = el.dataset.origHtml;
+  }
+  delete el.dataset.editingHeading;
+  delete el.dataset.origHtml;
+}
+
+async function saveInlineHeadingEdit(btnOrInp, key) {
+  const el = btnOrInp.closest('[data-editing-heading="true"]');
+  const inp = el ? el.querySelector('.inline-heading-input') : null;
+  if (!el || !inp) return;
+
+  const newText = inp.value.trim();
+  const fallback = el.dataset.defaultHeadingText || '';
+  const textToSave = newText || fallback;
+
+  try {
+    const res = await fetch('/api/table-headings', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ key, text: newText ? newText : null })
+    });
+    if (res.ok) {
+      const data = await res.json();
+      savedTableHeadings = data.tableHeadings || {};
+      delete el.dataset.editingHeading;
+      delete el.dataset.origHtml;
+      el.innerText = textToSave;
+      showToast(`Heading updated to "${textToSave}"`);
+      saveToLocalVault();
+    } else {
+      showToast("Failed to save heading", true);
+      cancelInlineHeadingEdit(btnOrInp);
+    }
+  } catch (err) {
+    showToast("Network error saving heading", true);
+    cancelInlineHeadingEdit(btnOrInp);
+  }
+}
+
+// -------------------------------------------------------------
 // Client-side Local Vault Protection (Prevents any data loss on redeploys)
 // -------------------------------------------------------------
-function checkAndMaintainLocalVault() {
+async function checkAndMaintainLocalVault() {
   try {
     const rawVault = localStorage.getItem('sv_db_vault');
     if (rawVault) {
       const vault = JSON.parse(rawVault);
       const vaultPmts = (vault.payments || []).length;
       const currentPmts = (allReceipts || []).length;
-      
-      // If server has FEWER payments than saved in this browser, offer instant restore!
-      if (vaultPmts > currentPmts) {
+
+      // Fetch server backup timestamp so newer server updates aren't overwritten by older local vaults
+      let serverUpdatedMs = 0;
+      try {
+        const res = await fetch('/api/database/backup');
+        if (res.ok) {
+          const serverDb = await res.json();
+          if (serverDb.lastUpdated) serverUpdatedMs = new Date(serverDb.lastUpdated).getTime();
+        }
+      } catch (e) {}
+
+      const vaultUpdatedMs = vault.lastUpdated ? new Date(vault.lastUpdated).getTime() : (vault.timestamp || 0);
+
+      // Only offer restore if server is strictly older/fewer AND vault is newer than server
+      if (vaultPmts > currentPmts && (!serverUpdatedMs || vaultUpdatedMs > serverUpdatedMs)) {
         showVaultRestoreBanner(vaultPmts, currentPmts);
       } else {
         saveToLocalVault();

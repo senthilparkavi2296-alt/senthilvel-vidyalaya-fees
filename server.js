@@ -94,14 +94,18 @@ function loadDatabase() {
     if (!parsed.transportAreas || !Array.isArray(parsed.transportAreas)) {
       parsed.transportAreas = defaultTransportAreas;
     }
+    if (!parsed.tableHeadings || typeof parsed.tableHeadings !== 'object') {
+      parsed.tableHeadings = {};
+    }
     return parsed;
   } catch (e) {
     console.error("Error reading database:", e);
-    return { feeColumns: defaultFeeColumns, feeStructures: initialFeeStructures, students: initialStudents, payments: initialPayments, transportAreas: defaultTransportAreas };
+    return { feeColumns: defaultFeeColumns, feeStructures: initialFeeStructures, students: initialStudents, payments: initialPayments, transportAreas: defaultTransportAreas, tableHeadings: {} };
   }
 }
 
 function saveDatabase(data) {
+  data.lastUpdated = new Date().toISOString();
   fs.writeFileSync(DB_FILE, JSON.stringify(data, null, 2), 'utf8');
 }
 
@@ -787,6 +791,30 @@ app.post('/api/whatsapp/log', (req, res) => {
 app.get('/api/whatsapp/logs', (req, res) => {
   const db = loadDatabase();
   res.json(db.whatsappLogs || []);
+});
+
+// Table Headings persistence APIs (for double-click inline heading edits)
+app.get('/api/table-headings', (req, res) => {
+  const db = loadDatabase();
+  res.json(db.tableHeadings || {});
+});
+
+app.put('/api/table-headings', (req, res) => {
+  const db = loadDatabase();
+  const { key, text } = req.body || {};
+  if (!key) {
+    return res.status(400).json({ error: "Heading key is required" });
+  }
+  if (!db.tableHeadings || typeof db.tableHeadings !== 'object') {
+    db.tableHeadings = {};
+  }
+  if (text === null || text === undefined || String(text).trim() === '') {
+    delete db.tableHeadings[key];
+  } else {
+    db.tableHeadings[key] = String(text).trim();
+  }
+  saveDatabase(db);
+  res.json({ success: true, tableHeadings: db.tableHeadings });
 });
 
 // Full Database Backup & Restore APIs
